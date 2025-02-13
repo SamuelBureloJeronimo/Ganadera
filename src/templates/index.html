@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Cargar el archivo CSS desde la carpeta static -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script href="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+    <title>El herrero</title>
+</head>
+{% block content %}
+<div class="container" id="nav_init">
+    <div class="row align-items-start">
+        <div class="col text-start">
+        <a class="navbar-brand" href="#">El herrero</a>
+        </div>
+        <div class="col text-end">
+        <button class="btn btn-primary">Acceder</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block productos %}
+<div class="productos container text-center" id="nav_init">
+    <div class="row">
+        <div class="col">PRODUCTOS</div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Nombre
+        </div>
+        <div class="col">
+            Cantidad (Kg)
+        </div>
+        <div class="col">
+            Proveedor
+        </div>
+        <div class="col">
+            Calorias
+        </div>
+        <div class="col">
+            Importe gastado
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            ...
+        </div>
+        <div class="col">
+            ...
+        </div>
+        <div class="col">
+            ...
+        </div>
+        <div class="col">
+            ...
+        </div>
+        <div class="col">
+            ...
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block cuerpo %}
+<div class="cuerpo container text-center" id="nav_init">
+    <div class="row">
+        <div class="col">
+            Compras
+        </div>
+        <div class="col">
+            Empleados
+        </div>
+        <div class="col">
+            Ventas
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            ...
+        </div>
+        <div class="col">
+            ...
+        </div>
+        <div class="col">
+            ...
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+</body>
+</html>

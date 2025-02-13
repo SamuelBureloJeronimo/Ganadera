@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Cargar el archivo CSS desde la carpeta static -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script href="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+    <title>El herrero</title>
+</head>
+<body class="container">
+    <div class="row">
+      <div class="col">
+        <!--Logo-->
+        <a href="/login" class="">
+          <img class="img__herrero" src="/img/logo.jpg" alt="logo">
+        </a>
+      </div>
+      <div class="col">
+        <nav class="navegacion-principal">
+          <!--Navegación-->
+          <div class="nav-normal">
+            <a class="navegacion__enlace">Inicio</a>
+            <a class="navegacion__enlace">Soluciones</a>
+            <a class="navegacion__enlace">Tecnología</a>
+            <a class="navegacion__enlace">Contacto</a>
+          </div>
+        </nav>
+      </div>
+      <div class="col text-end" style="padding: 1%;">
+          <button class="btn btn-light">
+            Ingresar</button>
+      </div>
+    </div>
+    
+      <div class="row">
+        <div class="col" style="padding: 5%;">
+          <h6 class="blog__txt" style="color: #6b4b00;">Cada gota cuenta</h6>
+          <h2 style="text-align: left; font-weight: bold;">
+            Control y gestión eficiente del agua
+          </h2>
+          <p class="blog__txt">
+            Okox es un sistema inteligente que ayuda a gestionar redes de agua potable, usando utilizando el internet de las cosas.
+          </p>
+          <button class="btn btn-principal" style="display: flex; padding: 15px; padding-right: 25px; padding-left: 35px; background-color: rgb(77, 7, 83);">
+            Comenzar ahora <mat-icon style="margin-left: 10px;">arrow_forward</mat-icon>
+          </button>
+        </div>
+        <div class="col" style="padding-top: 6%;">
+          <img src="/assets/peop.png" alt="">
+        </div>
+      </div>
+</body>
+</html>

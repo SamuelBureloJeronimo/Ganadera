@@ -1,0 +1,61 @@
+:root {
+    --B: #FFFFFF;
+    --N: #000000;
+    --A1: #00225A;
+    --A2: #6188B9;
+    --A3: #B9D1EB;
+    --AM1: #E8AB1E;
+    --Gris: #242424;
+  }
+
+  .col {
+    border: 1px solid green;
+  }
+
+  .img__herrero {
+    height: 10vh;
+  }
+  
+  .nav-normal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 1px solid green;
+    width: 100%;
+    margin-bottom: 0px;
+    a {
+      height: 100%;
+      margin-left: 15px;
+      color: #000000;
+      margin-right: 15px;
+      text-decoration: none;
+      border: 1px solid green;
+      font-size: 18px;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.336);
+    }
+    a:hover {
+      color: rgb(208, 162, 166);
+      cursor: pointer;
+    }
+  }
+  
+  .bg-navegacion {
+    background-color: rgba(38, 38, 38, 0);
+  }
+  
+  .navegacion {
+    padding: 1rem;
+    display: flex;
+    color: var(--B);
+  }
+  
+  
+  .navegacion-principal {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgb(128, 81, 0);
+  }

@@ -1,9 +1,3 @@
-# Entorno virtual
-venv/
-env/
-ENV/
-*.env
-
 # Configuración de Python
 __pycache__/
 *.py[cod]

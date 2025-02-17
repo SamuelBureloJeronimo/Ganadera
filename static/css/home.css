@@ -8,6 +8,7 @@
     --Gris: #242424;
   }
 
+
   .col {
     border: 1px solid green;
   }
@@ -27,7 +28,7 @@
     a {
       height: 100%;
       margin-left: 15px;
-      color: #000000;
+      color: #ffffff;
       margin-right: 15px;
       text-decoration: none;
       border: 1px solid green;
@@ -49,7 +50,6 @@
     display: flex;
     color: var(--B);
   }
-  
   
   .navegacion-principal {
     display: flex;

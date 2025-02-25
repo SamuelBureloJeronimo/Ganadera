@@ -1,37 +1,41 @@
-# Configuración de Python
+# Entorno virtual
+venv/
+.env
+*.env
+
+# Archivos de Python compilados
 __pycache__/
-*.py[cod]
+*.pyc
 *.pyo
 *.pyd
-*.pdb
-*.log
 
-# Archivos y carpetas generados por Flask
+# Configuración del IDE
+.vscode/
+.idea/
+*.iml
+
+# Archivos de logs y bases de datos locales
+logs/
+*.log
 instance/
 *.sqlite3
 *.db
 
-# Archivos de configuración de Flask
-*.cfg
-*.ini
+# Archivos de dependencias
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Archivos sensibles
-*.key
-*.pem
+# Caché de Flask y sesiones
+flask_session/
+.cache/
 
-# Archivos de compilación
-build/
-dist/
-*.egg-info/
+# Archivos de despliegue
+*.pid
+*.sock
 
-# IDEs y editores
-.vscode/
+# Archivos de Docker (si usas Docker)
+docker-compose.override.yml
 
-# Logs y datos temporales
-logs/
-*.log
-*.tmp
-*.bak
-
-# Archivos de Jupyter Notebook (si usas notebooks en tu proyecto)
-.ipynb_checkpoints/
+# Archivos específicos de Mac/Linux/Windows
+.DS_Store
+Thumbs.db

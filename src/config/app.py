@@ -12,6 +12,7 @@ if not os.path.exists(os.getenv("UPL_FOL_ROUTES")):
     
 from config.jwt_conf import jwt
 from config.bp_conf import bp
+from config.mail_conf import mail
 
 app = bp
 

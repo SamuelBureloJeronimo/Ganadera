@@ -1,0 +1,143 @@
+{% extends 'index.html' %}
+
+{% block title %}Sales{% endblock %}
+
+{% block content %}
+
+<form id="multi-step-form" method="POST" class="max-w-lg mx-auto bg-white shadow-lg rounded-lg p-8">
+    <!-- Indicador de pasos -->
+    <div class="flex justify-between items-center mb-6">
+      <div class="text-center">
+        <div id="step-1-indicator" class="w-10 h-10 flex items-center justify-center rounded-full text-white font-bold bg-indigo-600">
+          1
+        </div>
+        <p class="text-indigo-600 text-sm mt-2">Correo</p>
+      </div>
+      <div class="w-20 h-1 bg-gray-300"></div>
+      <div class="text-center">
+        <div id="step-2-indicator" class="w-10 h-10 flex items-center justify-center rounded-full text-white font-bold bg-gray-300">
+          2
+        </div>
+        <p class="text-gray-600 text-sm mt-2">Empresa</p>
+      </div>
+    </div>
+  
+    <!-- Paso 1: Confirmación del correo -->
+    <div id="step-1" class="step">
+      <h2 class="text-xl font-semibold text-gray-800">Verifica tu correo</h2>
+      
+      <div id="cValidGroup">
+          <p class="text-gray-600 text-sm mt-2">Ingresa tu correo y confirma para continuar con la activación del plan.</p>
+          
+          <div class="mt-4">
+              <label class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+              <input type="email" id="email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 text-gray-700" required>
+            </div>
+            
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700">Confirma tu correo</label>
+                <input type="email" id="confirmEmail" name="confirmEmail" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 text-gray-700" required>
+            </div>
+            <button type="button" id="validateCorreo" class="mt-6 w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition">
+                Validar correo
+              </button>
+        </div>
+
+      <div class="mt-4" id="codeEmail" name="codeEmail" style="display: none;">
+          <label class="block text-sm font-medium text-gray-700">Ingresa el código:</label>
+          <label class="itim-regular" style="font-size: 12px;">Se ha enviado un código de verificación a tu correo, revisa su carpeta de SPAM si no esta en los coreos principales</label>
+        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 text-gray-700" required>
+        <button type="button" id="next-step-1" class="mt-6 w-full bg-black text-white py-2 rounded-md hover:bg-indigo-700 transition">
+            Validar código
+          </button>  
+    </div>
+    </div>
+  
+    <!-- Paso 2: Datos de la empresa -->
+    <div id="step-2" class="step hidden">
+      <h2 class="text-xl font-semibold text-gray-800">Datos de tu empresa</h2>
+      <p class="text-gray-600 text-sm mt-2">Ingresa los datos de tu empresa para finalizar el registro.</p>
+  
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700">Nombre de la empresa</label>
+        <input type="text" id="empresaNombre" name="empresaNombre" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 text-gray-700" required>
+      </div>
+  
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700">RFC de la empresa</label>
+        <input type="text" id="empresaRFC" name="empresaRFC" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 text-gray-700" required>
+      </div>
+  
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700">Correo electrónico empresarial</label>
+        <input type="email" id="empresaCorreo" name="empresaCorreo" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 text-gray-700" required>
+      </div>
+  
+      <!-- Campo de carga de logo -->
+      <div class="mt-4" style="display: flex; width: 100%; justify-content: center; align-items: center; flex-direction: column;">
+        <input type="file" id="fileInput" (change)="onFileSelected($event)" class="mt-1 block w-full text-gray-700" hidden>
+        <img id="logoPreview" src="#" alt="Logo Preview" class="h-24 mb-4 object-contain rounded-md shadow hidden">
+        <button type="button" id="uploadLogo" class="mt-2 bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition" onclick="document.getElementById('fileInput').click();">
+          Subir logotipo
+        </button>
+      </div>
+  
+      <button type="submit" class="mt-6 w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition">
+        Finalizar registro
+      </button>
+    </div>
+  </form>
+  
+  <script>
+    document.getElementById("validateCorreo").addEventListener("click", function(event) {
+        const code = document.getElementById("codeEmail");
+        const cValidGroup = document.getElementById("cValidGroup");
+
+        const email = document.getElementById("email").value;
+        const confirmEmail = document.getElementById("confirmEmail").value;
+
+        if(email !== confirmEmail || email == ""){
+            Swal.fire({
+                  title: "Los correos no coinciden",
+                  text: "Asegurate que los correos coincidan, no uses mayusculas.",
+                  icon: "info"
+              });
+              return;
+        }
+        cValidGroup.style.display = "none";
+        code.style.display = "block";
+        fetch('http://localhost:5000/send_code/'+email)
+        .then(response => response.json())  // Convertir la respuesta en formato JSON
+        .then(data => {
+        console.log('Respuesta del servidor:', data);
+        })
+        .catch(error => {
+        console.error('Error en la solicitud:', error);
+        });
+    })
+
+    // Previene el envío del formulario y maneja el paso del formulario
+    document.getElementById("next-step-1").addEventListener("click", function(event) {
+      event.preventDefault(); // Prevenir el envío del formulario
+  
+      const email = document.getElementById("email").value;
+      const confirmEmail = document.getElementById("confirmEmail").value;
+    });
+  
+    // Función para mostrar la vista previa del logo cargado
+    document.getElementById("fileInput").addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+  
+      reader.onload = function(e) {
+        document.getElementById("logoPreview").src = e.target.result;
+        document.getElementById("logoPreview").classList.remove("hidden");
+      };
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+  
+
+  {% endblock %}

@@ -1,0 +1,179 @@
+{% extends 'index.html' %}
+
+{% block content %}
+  <div class="content" style="display: flex; justify-content: center; z-index: 0;">
+    <div class="row bottom-header">
+      <div class="col" id="call-action" style="padding: 5%;">
+        <h6 class="blog__txt itim-regular" style="color: #6b4b00;">Cada gota cuenta</h6>
+        <h1 style="font-weight: bold;">
+          Control y gestión eficiente de ganado
+        </h1>
+        <p class="blog__txt poppins-light" style="margin-top: 1vh;">
+          El herrero es un sistema inteligente que te lleva de la mano en todo el proceso de crianza del ganado.        </p>
+        <a href="#precios">
+          <button class="btn btn-principal" style="margin-top: 2vh;">
+            Comenzar ahora ->
+          </button>
+        </a>
+      </div>
+      <div class="col" style="display: flex; justify-content: center">
+        <img src="/img/logo_2.jpg" style="height: 30vh;">
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row" id="precios">
+    <div class="col">
+      <section class="text-gray-600 body-font overflow-hidden">
+        <div class="container px-5 py-24 mx-auto">
+          <div class="text-center w-full mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Nuestros Planes</h1>
+            <p class="lg:w-2/3 mx-auto text-gray-500 text-lg">Elige el plan que mejor se adapte a tus necesidades ganaderas.</p>
+          </div>
+          <div class="flex flex-wrap justify-center -m-4">
+  
+            <!-- Plan Comercial -->
+            <div class="p-4 w-full md:w-1/2 xl:w-1/3">
+              <div class="h-full p-6 rounded-lg border-2 border-indigo-500 shadow-lg flex flex-col relative overflow-hidden">
+                <span class="bg-indigo-500 text-white px-3 py-1 text-xs absolute right-0 top-0 rounded-bl">POPULAR</span>
+                <h2 class="text-sm font-semibold uppercase text-gray-600">PLAN Comercial</h2>
+                <h1 class="text-5xl font-bold text-gray-900 my-4">$999<span class="text-lg text-gray-500">/mensual</span></h1>
+                <ul class="mb-6 space-y-4">
+                  <li class="flex items-center text-gray-600"><span class="text-indigo-500 mr-2">✔</span> Gestión integral del ganado (registro, seguimiento, historial)</li>
+                  <li class="flex items-center text-gray-600"><span class="text-indigo-500 mr-2">✔</span> Gestión de recursos (alimentos, medicinas, inventarios)</li>
+                  <li class="flex items-center text-gray-600"><span class="text-indigo-500 mr-2">✔</span> Sistema multiusuario con roles básicos</li>
+                  <li class="flex items-center text-gray-600"><span class="text-indigo-500 mr-2">✔</span> Monitoreo básico de salud animal</li>
+                  <li class="flex items-center text-gray-600"><span class="text-indigo-500 mr-2">✔</span> Reportes estándar y estadísticas</li>
+                  <li class="flex items-center text-gray-600"><span class="text-indigo-500 mr-2">✔</span> Soporte técnico por correo electrónico</li>
+                </ul>
+                <a href="/sales">
+                  <button class="text-white bg-indigo-500 hover:bg-indigo-600 py-2 px-4 w-full rounded">Elegir el plan</button>
+                </a>
+              </div>
+            </div>
+  
+            <!-- Plan Institucional -->
+            <div class="p-4 w-full md:w-1/2 xl:w-1/3">
+              <div class="h-full p-6 rounded-lg border-2 border-gray-300 shadow-lg flex flex-col relative overflow-hidden">
+                <h2 class="text-sm font-semibold uppercase text-gray-600">PLAN Institucional</h2>
+                <h1 class="text-5xl font-bold text-gray-900 my-4">$1,799<span class="text-lg text-gray-500">/mensual</span></h1>
+                <ul class="mb-6 space-y-4">
+                  <li class="flex items-center text-gray-600"><span class="text-gray-500 mr-2">✔</span> Gestión avanzada de ganado con trazabilidad completa</li>
+                  <li class="flex items-center text-gray-600"><span class="text-gray-500 mr-2">✔</span> Optimización de recursos y planificación de compras</li>
+                  <li class="flex items-center text-gray-600"><span class="text-gray-500 mr-2">✔</span> Acceso multiusuario con roles personalizados</li>
+                  <li class="flex items-center text-gray-600"><span class="text-gray-500 mr-2">✔</span> Sistema de salud animal con alertas tempranas</li>
+                  <li class="flex items-center text-gray-600"><span class="text-gray-500 mr-2">✔</span> Reportes avanzados personalizables</li>
+                  <li class="flex items-center text-gray-600"><span class="text-gray-500 mr-2">✔</span> Integración con APIs de terceros + Soporte prioritario 24/7</li>
+                </ul>
+                <button class="text-white bg-gray-500 hover:bg-gray-600 py-2 px-4 w-full rounded" [routerLink]="['/salespage']">Elegir el plan</button>
+              </div>
+            </div>
+  
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <section id="servicios" class="max-w-6xl mx-auto py-12 px-6">
+    <h2 class="text-4xl font-bold text-center text-gray-900 mb-6">Nuestros Servicios</h2>
+    <p class="text-lg text-center text-gray-600 mb-10">Soluciones integrales para la gestión eficiente de tu ganado.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Servicio 1 -->
+        <div class="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center text-center">
+            <span class="material-icons text-blue-500 text-5xl">agriculture</span>
+            <h3 class="text-xl font-semibold mt-4">Gestión del Ganado</h3>
+            <p class="text-gray-600 mt-2">Control total de la información de cada animal, desde su compra hasta su venta.</p>
+        </div>
+
+        <!-- Servicio 2 -->
+        <div class="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center text-center">
+            <span class="material-icons text-green-500 text-5xl">inventory_2</span>
+            <h3 class="text-xl font-semibold mt-4">Gestión de Recursos</h3>
+            <p class="text-gray-600 mt-2">Administra eficientemente insumos, alimentos y otros recursos clave.</p>
+        </div>
+
+        <!-- Servicio 3 -->
+        <div class="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center text-center">
+            <span class="material-icons text-purple-500 text-5xl">group</span>
+            <h3 class="text-xl font-semibold mt-4">Sistema Multiusuario</h3>
+            <p class="text-gray-600 mt-2">Acceso controlado para distintos roles dentro de la organización.</p>
+        </div>
+
+        <!-- Servicio 4 -->
+        <div class="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center text-center">
+            <span class="material-icons text-red-500 text-5xl">health_and_safety</span>
+            <h3 class="text-xl font-semibold mt-4">Gestión de Salud</h3>
+            <p class="text-gray-600 mt-2">Monitoreo de vacunas, tratamientos y salud general del ganado.</p>
+        </div>
+
+        <!-- Servicio 5 -->
+        <div class="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center text-center">
+            <span class="material-icons text-yellow-500 text-5xl">bar_chart</span>
+            <h3 class="text-xl font-semibold mt-4">Reportes Avanzados</h3>
+            <p class="text-gray-600 mt-2">Generación de informes detallados para una mejor toma de decisiones.</p>
+        </div>
+    </div>
+</section>
+
+<section class="relative bg-cover bg-center text-white py-20 px-6" style="background-image: url('/img/ganado.jpg'); z-index: 1;">
+  <!-- Capa de fondo para oscurecer la imagen -->
+  <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+
+  <div class="relative max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl sm:text-5xl font-bold leading-tight">
+          Gestiona tu ganado de forma más eficiente que nunca.
+      </h2>
+      <p class="text-lg sm:text-xl mt-4 text-gray-300">
+        Optimiza la gestión de tu ganado con nuestras soluciones inteligentes. Desde la compra hasta la venta, llevamos el control por ti. ¡Descubre cómo podemos ayudarte hoy!
+      </p>
+      <a href="/contact" class="mt-6 inline-block bg-white text-black font-semibold text-lg py-3 px-6 rounded-lg transition duration-300">
+          Contactanos ->
+      </a>
+  </div>
+</section>
+
+<div class="bg-white-50 py-24 px-6 sm:py-32 lg:px-8">
+  <div class="max-w-7xl mx-auto text-center">
+    <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+      Técnologias
+    </h2>
+
+    <!-- Contenedor de Tecnologías -->
+    <div class="mt-16 grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
+
+      <!-- IoT con Monitoreo en Tiempo Real -->
+      <div class="flex flex-col items-center text-center bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H7m0 0L3 8m0 0l4-4M7 12h10" />
+        </svg>
+        <h3 class="mt-4 text-xl font-semibold text-gray-900">Python y Flask</h3>
+        <p class="mt-2 text-base text-gray-500">Un potente framework para python que permite crear aplicaciones web ligeras, flexibles y fácil de usar</p>
+      </div>
+
+      <!-- Análisis de Datos -->
+      <div class="flex flex-col items-center text-center bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v12l4-4 4 4V3" />
+        </svg>
+        <h3 class="mt-4 text-xl font-semibold text-gray-900">MySQL</h3>
+        <p class="mt-2 text-base text-gray-500">Un sistema de gestión de bases de datos relacionales de código abierto</p>
+      </div>
+
+      <!-- Inteligencia Artificial -->
+      <div class="flex flex-col items-center text-center bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8m4-4H8" />
+        </svg>
+        <h3 class="mt-4 text-xl font-semibold text-gray-900">SQLAlchemy</h3>
+        <p class="mt-2 text-base text-gray-500">Biblioteca para python de código abierto que proporciona un kit de herramientas SQL y un mapeador relacional de objetos para interacciones de bases de datos.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

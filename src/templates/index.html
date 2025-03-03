@@ -6,55 +6,136 @@
     <!-- Cargar el archivo CSS desde la carpeta static -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <script href="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
-    <title>El herrero</title>
-</head>
-<body class="container">
-    <div class="row" style="background-color: black; box-shadow: 0px 0px 10px 0px black;">
-      <div class="col">
-        <!--Logo-->
-        <a href="/login">
-          <img class="img__herrero" src="/img/logo_3.png" alt="logo">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+  <title>{% block title %}El herrado{% endblock %}</title>
+  <link rel="icon" type="image/x-icon" href="/img/logo_3.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ganadera.js') }}"></script> 
+  </head>
+<body style="width: 100%; background-color: #e4e4e4;">
+  <div class="container" style="padding: 0; max-width: 1250px; background-color: white;">
+    {% block header %}
+    <header id="main-header" class="bg-black text-white shadow-md left-0 top-0 w-full transition-all z-50" style="max-width: 100%;">
+      <div class="container mx-auto flex items-center justify-between px-6 py-4">
+    
+        <!-- Logo -->
+        <a href="/" class="text-2xl font-semibold flex items-center gap-2">
+          <img src="/img/logo_herrado.png" alt="Logo" class="h-10">
+          <span>El herrado</span>
         </a>
+    
+        <!-- Menú de Navegación (Escritorio) -->
+        <nav class="hidden md:flex space-x-8 z-50">
+          <a href="/" class="hover:text-yellow-400 transition">Inicio</a>
+          <a href="#precios" class="hover:text-yellow-400 transition">Precios</a>
+          <a href="#servicios" class="hover:text-yellow-400 transition">Servicios</a>
+          <a href="/contact" class="hover:text-yellow-400 transition">Contáctanos</a>
+        </nav>
+    
+        <!-- Botón de Iniciar Sesión (Escritorio) -->
+        <a href="/login" class="hidden md:block bg-white text-gray-900 px-4 py-2 rounded-md font-semibold hover:bg-black transition">
+          Iniciar Sesión
+        </a>
+    
+        <!-- Botón de Menú (Móvil) -->
+        <button id="menuButton" class="md:hidden focus:outline-none" style="width: fit-content;">
+          <i class="material-icons">menu</i>
+        </button>
       </div>
-      <div class="col">
-        <nav class="navegacion-principal">
-          <!--Navegación-->
-          <div class="nav-normal">
-            <a class="navegacion__enlace">Inicio</a>
-            <a class="navegacion__enlace">Soluciones</a>
-            <a class="navegacion__enlace">Tecnología</a>
-            <a class="navegacion__enlace">Contacto</a>
-          </div>
+    
+      <!-- Menú Desplegable (Móvil) -->
+      <div id="menuMobile" class="md:hidden transition-all duration-300 ease-in-out bg-gray-800 hidden z-50">
+        <nav class="flex flex-col items-center py-4 space-y-4 z-50">
+          <a href="/" class="text-white hover:text-yellow-400" onclick="hideNav()">Inicio</a>
+          <a href="#precios" class="text-white hover:text-yellow-400" onclick="hideNav()">Precios</a>
+          <a href="#servicios" class="text-white hover:text-yellow-400" onclick="hideNav()">Servicios</a>
+          <a href="/contact" class="text-white hover:text-yellow-400" onclick="hideNav()">Contáctanos</a>
+          <a href="/login" class="bg-white text-gray-900 px-4 py-2 rounded-md font-semibold hover:bg-white-600" onclick="hideNav()">
+            Iniciar Sesión
+          </a>
         </nav>
       </div>
-      <div class="col text-end" style="padding: 1%;">
-          <button class="btn btn-light">
-            Ingresar</button>
-      </div>
-    </div>
-    
-      <div class="row" style="height: 55vh;">
-        <div class="col" style="padding: 5%;">
-          <h6 class="blog__txt" style="color: #6b4b00;">Cada ganado es ganacia</h6>
-          <h2 style="text-align: left; font-weight: bold;">
-            Control y gestión eficiente de ganado
-          </h2>
-          <p class="blog__txt">
-            El herrero es un sistema inteligente que te lleva de la mano en todo el proceso de crianza del ganado.
-          </p>
-          <button class="btn btn-principal" style="color: aliceblue; display: flex; padding: 15px; padding-right: 25px; padding-left: 35px; background-color: rgb(77, 7, 83);">
-            Comenzar ahora ->
-          </button>
-        </div>
-        <div class="col text-center">
-          <img src="/img/logo_2.jpg" alt="logo_2" height="330vh" style="margin: 3%;">
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          
-        </div>
-      </div>
+    </header>
+    {% endblock %}
+        <!-- Contenido dinámico de cada página -->
+      <main>
+          {% block content %}
+          <!-- Aquí se insertará el contenido específico de cada página -->
+          {% endblock %}
+      </main>
+      {% block footer %}
+      <footer class="bg-gray-900 text-white py-10">
+          <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+            <!-- Logo y descripción -->
+            <div>
+              <h2 class="text-2xl font-bold">Nuestra Empresa</h2>
+              <p class="text-gray-400 mt-2">Brindamos servicios de calidad para mejorar tu experiencia. Contáctanos para más información.</p>
+            </div>
+        
+            <!-- Enlaces rápidos -->
+            <div>
+              <h3 class="text-lg font-semibold">Enlaces rápidos</h3>
+              <ul class="mt-2 space-y-2">
+                <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition">Inicio</a></li>
+                <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition">Servicios</a></li>
+                <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition">Contacto</a></li>
+                <li><a href="#" class="text-gray-400 hover:text-indigo-400 transition">Preguntas Frecuentes</a></li>
+              </ul>
+            </div>
+        
+            <!-- Redes sociales -->
+            <div>
+              <h3 class="text-lg font-semibold">Síguenos</h3>
+              <div class="flex space-x-4 mt-2">
+                <a href="#" class="text-gray-400 hover:text-blue-500 transition text-2xl">
+                  <i class="bi bi-facebook"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-sky-400 transition text-2xl">
+                  <i class="bi bi-twitter"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-red-500 transition text-2xl">
+                  <i class="bi bi-youtube"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-pink-500 transition text-2xl">
+                  <i class="bi bi-instagram"></i>
+                </a>
+              </div>
+            </div>
+        
+          </div>
+        
+          <!-- Copyright -->
+          <div class="border-t border-gray-700 mt-8 pt-4 text-center text-gray-400 text-sm">
+            © 2025 Nuestra Empresa. Todos los derechos reservados.
+          </div>
+      </footer>
+      {% endblock %} 
+      <!-- Script para abrir/cerrar el menú en móviles -->
+      <script>
+        function hideNav(){
+          const menuMobile = document.getElementById("menuMobile");
+          menuMobile.classList.toggle("hidden");
+        }
+        // Espera a que el DOM esté listo
+        document.addEventListener("DOMContentLoaded", function() {
+          const menuButton = document.getElementById("menuButton");
+          const menuMobile = document.getElementById("menuMobile");
+      
+          // Agrega un evento de clic al botón del menú
+          menuButton.addEventListener("click", function() {
+            // Alterna la clase 'hidden' en el menú móvil
+            menuMobile.classList.toggle("hidden");
+          });
+        });
+      </script>
+      
+  </div>
 </body>
 </html>

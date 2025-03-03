@@ -1,0 +1,63 @@
+{% extends 'index.html' %}
+
+{% block title %}Iniciar sesión{% endblock %}
+
+{% block content %}
+
+  <div  class="flex items-center justify-center min-h-screen">
+    <div class="login__container" style="height: max-content;">
+      <div class="login__info">
+        <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+  
+          <!-- Logo -->
+          <div class="flex justify-center">
+            <img class="w-20 h-20" src="https://cdn-icons-png.flaticon.com/512/5087/5087579.png" alt="Logo">
+          </div>
+  
+          <h2 class="mt-4 text-center text-2xl font-semibold text-gray-800">Iniciar sesión</h2>
+  
+          <!-- Formulario -->
+          <form class="mt-6" id="loginForm" action="{{ url_for('BP_PublicRoutes.login_user') }}" method="POST">
+            <label class="block">
+              <span class="text-gray-700">Correo Electrónico</span>
+              <input type="email" id="email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring focus:ring-yellow-500 focus:ring-opacity-50 px-4 py-2" placeholder="ejemplo@correo.com" required>
+            </label>
+  
+            <label class="block mt-4">
+              <span class="text-gray-700">Contraseña</span>
+              <input type="password" id="password" name="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring focus:ring-yellow-500 focus:ring-opacity-50 px-4 py-2" placeholder="********" required>
+            </label>
+  
+            <!-- Botón de Iniciar Sesión -->
+            <button type="submit" class="mt-6 w-full rounded-md bg-yellow-500 px-4 py-2 text-white font-semibold shadow-md hover:bg-yellow-600 transition">
+              Iniciar sesión
+            </button>
+          </form>
+  
+          <!-- Divider -->
+          <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="bg-white px-2 text-gray-500">O</span>
+            </div>
+          </div>
+          <!-- Registro -->
+          <p class="mt-4 text-center text-sm text-gray-600">
+            ¿No tienes cuenta?
+            <a href="/contact" class="text-yellow-500 hover:underline">Contactanos</a>
+          </p>
+  
+        </div>
+      </div>
+      <div class="login__img"></div>
+    </div>
+  </div>
+  
+<script>
+    addSwalAlert("loginForm", "/login_user", "/dashboard");
+</script>
+{% endblock %}
+
+{% block footer %}{% endblock %}

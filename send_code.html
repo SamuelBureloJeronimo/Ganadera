@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Cuenta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            margin: 0;
+            padding: 0;
+            color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .header img {
+            width: 100px;
+            height: auto;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #f5c12f;
+            margin-top: 10px;
+        }
+        .content {
+            text-align: center;
+            padding: 20px;
+            background-color: #444;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .content h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        .content p {
+            font-size: 16px;
+            color: #ccc;
+        }
+        .code {
+            font-size: 28px;
+            font-weight: bold;
+            color: #f5c12f;
+            background-color: #222;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+        .footer a {
+            color: #f5c12f;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <img src="https://macuspana-my.sharepoint.com/personal/l21e40195_macuspana_tecnm_mx/_layouts/15/embed.aspx?UniqueId=dd774c6b-9df2-453c-8a84-e9cada8e90dc" alt="Logo de la empresa">
+            <h1>El Herrado - Verificación de Cuenta</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <h2> Código 2FA</h2>
+            <p>Para continuar con el proceso de registro, por favor ingresa el siguiente código de verificación:</p>
+            
+            <div class="code">
+                {{codigo_verificacion}}
+            </div>
+            
+            <p>Este código es válido por 15 minutos. Si no lo solicitaste, ignora este correo.</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2025 El Herrado. Todos los derechos reservados.</p>
+            <p>Visítanos en <a href="https://www.elherrado.com">elherrado.com</a></p>
+        </div>
+    </div>
+</body>
+</html>

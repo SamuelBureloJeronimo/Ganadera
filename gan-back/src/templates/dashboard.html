@@ -1,0 +1,95 @@
+{% extends 'index.html' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block header %}{% endblock %}
+
+{% block content %}
+
+<div class="flex h-screen w-full">
+    <!-- Overlay para móviles -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden md:hidden"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-64 bg-[#001b29] text-white p-5 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 md:translate-x-0 md:relative md:flex-shrink-0">
+        <!-- Logo -->
+        <a class="text-2xl font-semibold flex items-center pb-4 justify-center gap-2">
+            <img src="/img/logo_herradopng" alt="Logo" class="h-20">
+          </a>          
+        <nav>
+            <ul>
+                <li class="mb-4"><a href="#" class="block p-2 rounded hover:bg-blue-500">Inicio</a></li>
+                <li class="mb-4"><a href="#" class="block p-2 rounded hover:bg-blue-500">Reportes</a></li>
+                <li class="mb-4"><a href="#" class="block p-2 rounded hover:bg-blue-500">Ajustes</a></li>
+            </ul>
+        </nav>
+
+        <!-- Botón de cerrar sesión -->
+        <div class="absolute bottom-5 left-5 right-5">
+            <button onclick="logOut()" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                Cerrar Sesión
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="flex flex-col w-full h-full">
+        <!-- Barra Superior -->
+        <header class="bg-white shadow p-4 flex justify-between items-center">
+            <!-- Botón para abrir/cerrar sidebar en móviles -->
+            <button id="toggleSidebar" class="md:hidden text-blue-500 text-2xl">
+                ☰
+            </button>
+            <h1 class="text-xl font-semibold">{% block title_bar %} Panel de Control {% endblock %}</h1>
+        </header>
+
+        <!-- Contenido -->
+        <main class="flex-grow p-6 w-full overflow-auto">
+            {% block cont_dash %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold">Cabezas de ganado</h3>
+                    <p class="text-2xl font-bold mt-2">56</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold">Ganados vendidos</h3>
+                    <p class="text-2xl font-bold mt-2">16</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold">Gastos</h3>
+                    <p class="text-2xl font-bold mt-2">$24,000</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold">Ingresos</h3>
+                    <p class="text-2xl font-bold mt-2">$44,000</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold">Balance general</h3>
+                    <p class="text-2xl font-bold mt-2">+$20,000</p>
+                </div>
+            </div>
+            {% endblock %}
+        </main>
+    </div>
+</div>
+
+
+<!-- Script para abrir/cerrar el menú en móviles -->
+<script>
+    document.getElementById("toggleSidebar").addEventListener("click", function () {
+        let sidebar = document.getElementById("sidebar");
+        let overlay = document.getElementById("overlay");
+
+        sidebar.classList.toggle("-translate-x-full");
+        overlay.classList.toggle("hidden");
+    });
+
+    // Cerrar sidebar cuando se toca el overlay
+    document.getElementById("overlay").addEventListener("click", function () {
+        document.getElementById("sidebar").classList.add("-translate-x-full");
+        this.classList.add("hidden");
+    });
+</script>
+{% endblock %}
+
+
+{% block footer %}{% endblock %}

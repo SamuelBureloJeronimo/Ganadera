@@ -1,0 +1,153 @@
+{% extends 'index.html' %}
+
+{% block title %}Contactanos{% endblock %}
+
+{% block content %}
+
+  <div class="container mt-4" style="margin-bottom: 10vh;">
+    <div class="relative isolate overflow-hidden bg-[#001b29] py-16 sm:py-24 lg:py-32 rounded-[2vh] shadow-lg shadow-[#00718233]">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="grid max-w-2xl mx-auto lg:grid-cols-2 gap-8 lg:max-w-none">
+          <!-- Form Section -->
+          <div class="lg:max-w-lg">
+            <h2 class="text-4xl font-semibold text-white tracking-tight flex items-center">
+              <svg class="w-8 h-8 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 01-8 0m4 4v4m-4-4a4 4 0 008 0m-8 0H4m12 0h4m-9-4V8m0 4h4"></path>
+              </svg>
+              Contáctanos
+            </h2>
+            <p class="mt-4 text-lg text-gray-300">
+              ¿Listo para optimizar la gestión del ganado en tu rancho?
+            </p>
+            <p class="mt-4 text-lg text-gray-300">
+              ¡Contáctanos hoy mismo y descubre cómo podemos ayudarte a ahorrar tiempo y recursos!
+            </p>
+  
+            <!-- Plan Selection -->
+            <div class="mt-6">
+              <label for="tipo-servicio" class="sr-only">Tipo de plan</label>
+              <select id="tipo-servicio" name="tipo-servicio" required class="w-full rounded-md bg-white/5 px-4 py-2 text-white placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <option value="" disabled selected style="color: rgb(133, 133, 133);">¿Cuál es el plan que se ajusta más a ti?</option>
+                <option value="agua" style="color: black;">Plan comercial</option>
+                <option value="electricidad" style="color: black;">Plan industrial</option>
+              </select>
+            </div>
+  
+            <!-- Email Input -->
+            <div class="mt-6">
+              <label for="email-address" class="sr-only">Correo electrónico</label>
+              <input id="email-address" name="email" type="email" autocomplete="email" required class="w-full rounded-md bg-white/5 px-4 py-2 text-white placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Correo electrónico">
+            </div>
+  
+            <!-- Message Textarea -->
+            <div class="mt-6">
+              <label for="message" class="block text-sm font-medium text-white">Cuéntanos más</label>
+              <textarea id="message" name="message" rows="4" required class="w-full mt-2 rounded-md bg-white/5 px-4 py-2 text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-indigo-500 resize-none" placeholder="Escribe aquí tu mensaje..."></textarea>
+            </div>
+  
+            <!-- Submit Button -->
+            <div class="mt-6">
+              <button type="submit" class="w-full py-2 px-4 text-sm font-semibold text-white bg-indigo-500 rounded-md hover:bg-indigo-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                Enviar mensaje
+              </button>
+            </div>
+          </div>
+  
+          <!-- Features Section -->
+          <dl class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:pt-2">
+            <div class="flex flex-col items-start">
+              <div class="rounded-md bg-white/5 p-2 ring-1 ring-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m424-312 282-282-56-56-226 226-114-114-56 56 170 170ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/></svg>
+              </div>
+              <dt class="mt-4 text-base font-semibold text-white">Gestión del Ganado</dt>
+              <dd class="mt-2 text-base text-gray-400">Control total de la información de cada animal, desde su compra hasta su venta.</dd>
+            </div>
+            <div class="flex flex-col items-start">
+              <div class="rounded-md bg-white/5 p-2 ring-1 ring-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m424-312 282-282-56-56-226 226-114-114-56 56 170 170ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/></svg>
+              </div>
+              <dt class="mt-4 text-base font-semibold text-white">Gestión de Recursos</dt>
+              <dd class="mt-2 text-base text-gray-400">Administra eficientemente insumos, alimentos y otros recursos clave.</dd>
+            </div>
+            <div class="flex flex-col items-start">
+              <div class="rounded-md bg-white/5 p-2 ring-1 ring-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m424-312 282-282-56-56-226 226-114-114-56 56 170 170ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/></svg>
+              </div>
+              <dt class="mt-4 text-base font-semibold text-white">Gestión de Salud</dt>
+              <dd class="mt-2 text-base text-gray-400">Monitoreo de vacunas, tratamientos y salud general del ganado.</dd>
+            </div>
+            <div class="flex flex-col items-start">
+              <div class="rounded-md bg-white/5 p-2 ring-1 ring-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m424-312 282-282-56-56-226 226-114-114-56 56 170 170ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/></svg>
+              </div>
+              <dt class="mt-4 text-base font-semibold text-white">Reportes Avanzados</dt>
+              <dd class="mt-2 text-base text-gray-400">Generación de informes detallados para una mejor toma de decisiones.</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+  
+      <!-- Decorative Background -->
+      <div class="absolute top-0 left-1/2 -z-10 -translate-x-1/2 blur-3xl xl:-top-6" aria-hidden="true">
+        <div class="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-black to-black opacity-40"
+          style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contáctanos -->
+<div class="bg-white-100 py-16" style="margin-top: -5vh; padding-top: 0;">
+  <section class="container mx-auto px-6 text-center">
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+
+      <!-- Atención Telefónica -->
+      <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center transition transform hover:scale-105">
+        <div class="text-indigo-500 text-4xl">
+          📞
+        </div>
+        <h6 class="text-lg font-semibold mt-4">Atención Telefónica</h6>
+        <p class="text-gray-600 text-sm mt-2">Disponible 24/7 <br>
+          <a href="tel:9361005031" class="text-indigo-500 font-medium hover:underline">936 100 5031</a>
+        </p>
+      </div>
+
+      <!-- Mail -->
+      <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center transition transform hover:scale-105">
+        <div class="text-red-500 text-4xl">
+          ✉️
+        </div>
+        <h6 class="text-lg font-semibold mt-4">Correo Electrónico</h6>
+        <p class="text-gray-600 text-sm mt-2">Escríbenos para cualquier consulta <br>
+          <a href="mailto:correo@empresa.com" class="text-red-500 font-medium hover:underline">Enviar Email</a>
+        </p>
+      </div>
+
+      <!-- Redes Sociales -->
+      <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center transition transform hover:scale-105">
+        <div class="text-blue-500 text-4xl">
+          👍
+        </div>
+        <h6 class="text-lg font-semibold mt-4">Redes Sociales</h6>
+        <p class="text-gray-600 text-sm mt-2">Síguenos en nuestras redes <br>
+          <a href="#" class="text-blue-500 font-medium hover:underline">Facebook</a> |
+          <a href="#" class="text-pink-500 font-medium hover:underline">Instagram</a>
+        </p>
+      </div>
+
+      <!-- WhatsApp -->
+      <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center transition transform hover:scale-105">
+        <div class="text-green-500 text-4xl">
+          💬
+        </div>
+        <h6 class="text-lg font-semibold mt-4">WhatsApp</h6>
+        <p class="text-gray-600 text-sm mt-2">Saldos y pagos al instante <br>
+          <a href="https://wa.me/9367913467" class="text-green-500 font-medium hover:underline">936 791 3467</a>
+        </p>
+      </div>
+
+    </div>
+  </section>
+</div>
+{% endblock %}

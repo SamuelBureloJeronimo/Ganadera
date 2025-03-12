@@ -1,0 +1,32 @@
+a {
+  text-decoration: none;
+}
+.content {
+  color: white;
+  background-color: #000000;
+  background-image: url("/fondo_black.jpg");
+  background-repeat:no-repeat;
+  background-size: contain;
+  background-position-x: right;
+}
+
+.bottom-header button:hover {
+  background-color: white;
+}
+
+@media (min-width: 768px) {
+  .bottom-header h1{
+    font-size: 24px
+  }
+  .bottom-header button {
+    color:rgb(0, 0, 0);
+    display: flex;
+    padding: 15px;
+    padding-right: 35px;
+    padding-left: 55px;
+    background-color: antiquewhite;
+  }
+  .bottom-header button label:hover {
+    cursor: pointer;
+  }
+}

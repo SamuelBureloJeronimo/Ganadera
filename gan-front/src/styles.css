@@ -1,1 +1,47 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.big-shoulders-stencil-900 {
+  font-family: "Big Shoulders Stencil", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-size: 32px;
+  font-style: normal;
+}
+.fira-sans-semibold {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+
+:root {
+  --AM_F: #ffff00;
+  --AM_M: #feff36;
+  --AM_B: #fcfd96;
+  --AZ_F: #2196f3;
+  --AZ_B: #ffc40015;
+
+  --A1T: #00235a64;
+  --A2T: #c9e1ff80;
+}
+a {
+  text-decoration: none;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 14px; /* Ajusta según tu preferencia */
+}
+
+html,
+body {
+  height: 100%;
+}

@@ -1,0 +1,96 @@
+.bg__login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--G3);
+}
+
+.login {
+  background-color: var(--B);
+  border-radius: 1rem;
+  width: 70rem;
+  height: 40rem;
+  display: flex;
+}
+
+.login__presentacion {
+  width: 35rem;
+  height: 40rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  background-image: url("/assets/login.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 1rem;
+  color: var(--B);
+}
+
+.login__presentacion h1 {
+  font-weight: bold;
+  font-size: 3rem;
+  z-index: 1000;
+}
+
+.presentacion__img {
+  background-color: var(--B);
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.presentacion__txt p {
+  text-align: center;
+}
+
+.login__info {
+  margin-left: -10px;
+  width: 35rem;
+  height: 40rem;
+  display: flex;
+  border-radius: 0px 5px 5px 0px;
+  align-items: start;
+  flex-direction: column;
+  gap: 2rem;
+  background-color: rgb(234, 234, 234);
+  padding: 4rem;
+  z-index: 1;
+}
+
+.login__info h2 {
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.formulario {
+  display: flex;
+  gap: 2rem;
+  flex-direction: column;
+  align-items: start;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 1rem;
+}
+
+.campo label {
+  color: var(--A1T);
+}
+
+.campo input {
+  background-color: var(--G2);
+  border: none;
+  padding: 1rem;
+}

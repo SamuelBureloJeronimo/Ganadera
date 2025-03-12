@@ -1,0 +1,61 @@
+<div class="bg__login">
+  <div class="login ox-sw">
+    <div class="login__presentacion" style="color: white;">
+      <div class="presentacion__img">
+        <img src="/logo_herrado.png" alt="Logotipo de la empresa" />
+      </div>
+      <div class="presentacion__txt">
+        <h1 class="big-shoulders-stencil-900">El herrado</h1>
+        <p>Agua en la nube, Sistema inteligente de redes de agua potable</p>
+      </div>
+
+      <p>www.herrado.com</p>
+    </div>
+    <div class="login__info">
+      <h2 class="">Iniciar sesión</h2>
+      <!-- Formulario -->
+      <form class="formulario" (ngSubmit)="onSubmit()">
+        <div class="campo campo__correo">
+          <label for="email">Correo electronico</label>
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="email"
+            class=""
+            placeholder="ejemplo@correo.com"
+            required
+          />
+        </div>
+        <div class="campo campo__contrasena">
+          <label for="password">Contraseña</label>
+          <input
+            type="password"
+            name="password"
+            [(ngModel)]="this.password"
+            class=""
+            placeholder="********"
+            required
+          />
+        </div>
+        <!-- Botón de Iniciar Sesión -->
+        <button type="submit" class="ox-btn">Iniciar sesión</button>
+      </form>
+      <!-- Registro -->
+      <p class="">
+        ¿No tienes cuenta?
+        <a href="/contact" class="">Contactanos</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!--
+      <h1 class="login__title">Inicio de sesión</h1>
+      <form (ngSubmit)="onSubmit()" class="login__imputs">
+        <input class="login__input" type="text" name="email" [(ngModel)]="email" placeholder="Correo electronico">
+        <input class="login__input" type="password" name="password" [(ngModel)]="this.password" placeholder="Contraseña">
+        <p>¿Olvidaste tu contraseña?<span class="login__span"> Recuperar</span></p>
+        <button class="login__btn">Acceder</button>
+        <p>¿No tienes una cuenta?<span class="login__span" [routerLink]="['/contactanos']"> Conactanos</span></p>
+      </form>
+    -->

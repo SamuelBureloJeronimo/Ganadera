@@ -19,3 +19,15 @@
     width: 150vh;
 }
 
+.big-shoulders-stencil-900 {
+    font-family: "Big Shoulders Stencil", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-size: 32px;
+    font-style: normal;
+  }
+  .fira-sans-semibold {
+    font-family: "Fira Sans", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+  }

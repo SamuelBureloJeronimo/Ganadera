@@ -1,14 +1,16 @@
 import random
 from flask import Blueprint, jsonify, render_template, render_template_string, request, send_from_directory
 from flask_mail import Message
+from sqlalchemy import func
 from database.db import *
 from config.mail_conf import mail
 import os
+from mysql.connector import Error
 
 # Cargar variables desde el archivo .env
 load_dotenv()
 
-BP_PublicRoutes = Blueprint('BP_PublicRoutes', __name__, url_prefix='/')
+BP_PublicRoutes = Blueprint('BP_PublicRoutes', __name__)
 
 @BP_PublicRoutes.route('/img/<path:filename>')
 def public_files(filename):
@@ -25,6 +27,26 @@ def login():
 @BP_PublicRoutes.route('/sales')
 def sales():
     return render_template('sale.html')
+
+@BP_PublicRoutes.route('/prueba', methods=["GET"])
+def prueba():
+    try:
+        # Conectar a la base de datos
+        connection = connect_to_database()
+        if connection is None:
+            return jsonify({"error": "No se pudo conectar a la base de datos"}), 500
+        
+        cursor = connection.cursor()
+        insert_query = "SELECT * FROM paises;"
+        cursor.execute(insert_query)
+        data = cursor.fetchall()
+        cursor.close()
+
+        # Mostrar los datos en la página
+        return jsonify(data), 200
+
+    except Error as e:
+        return jsonify({"Error al conectar a la base de datos: ": str(e)}), 400
 
 @BP_PublicRoutes.route('/login_user', methods=["GET", "POST"])
 def login_user():
@@ -53,7 +75,6 @@ def contact():
 @BP_PublicRoutes.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
-
 
 @BP_PublicRoutes.route("/send_code/<email>")
 def enviar_codigo(email):

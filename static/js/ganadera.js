@@ -24,7 +24,5 @@ function addSwalAlert(id, endpoint, url_redir){
 }
 
 function logOut(){
-    alert("Salir")
     window.location.href = "/";  // Redirige a otra página
-
 }

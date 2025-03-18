@@ -1,3 +1,4 @@
+from collections import namedtuple
 import random
 from flask import Blueprint, jsonify, render_template, render_template_string, request, send_from_directory
 from flask_mail import Message
@@ -28,8 +29,20 @@ def login():
 def sales():
     return render_template('sale.html')
 
-@BP_PublicRoutes.route('/prueba', methods=["GET"])
-def prueba():
+@BP_PublicRoutes.route('/login_user', methods=["GET", "POST"])
+def login_user():
+
+    required_fields = ["email", "password"]
+    missing_fields = [field for field in required_fields if not request.form.get(field)]
+
+    # Validar si falta algún campo
+    if missing_fields:
+        return jsonify({"error": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+
+    email = str(request.form.get("email"))
+    password = str(request.form.get("password"))
+
     try:
         # Conectar a la base de datos
         connection = connect_to_database()
@@ -37,26 +50,24 @@ def prueba():
             return jsonify({"error": "No se pudo conectar a la base de datos"}), 500
         
         cursor = connection.cursor()
-        insert_query = "SELECT * FROM paises;"
-        cursor.execute(insert_query)
-        data = cursor.fetchall()
+        insert_query =  '''
+                        SELECT personas.rfc, personas.correo
+                        FROM personas JOIN usuarios ON usuarios.rfc = personas.rfc
+                        WHERE personas.correo=%s AND usuarios.pass=%s;
+                        '''
+        cursor.execute(insert_query, (email, password))
+        res1 = cursor.fetchone()
+
+        if res1 == None:
+            return jsonify({"message": "Credenciales invalidas"}), 400
+        
         cursor.close()
 
         # Mostrar los datos en la página
-        return jsonify(data), 200
+        return jsonify({"success": True, "message": "Inicio de sesión éxitoso"}), 200
 
     except Error as e:
-        return jsonify({"Error al conectar a la base de datos: ": str(e)}), 400
-
-@BP_PublicRoutes.route('/login_user', methods=["GET", "POST"])
-def login_user():
-    email = str(request.form["email"])
-    password = str(request.form["password"])
-
-    if email == "admin@gmail.com" and password == "1415":
-        return jsonify({"success": True, "message": "Bienvenido"})
-    
-    return jsonify({"success": False, "message": "Usuario o contraseña incorrecto"})
+        return jsonify({"success": False, "message": str(e)}), 400
 
 @BP_PublicRoutes.route('/confirm_mail', methods=["GET", "POST"])
 def confirm_mail():
@@ -94,3 +105,14 @@ def enviar_codigo(email):
     mail.send(msg)
 
     return jsonify("Correo enviado con éxito."), 200
+
+def convertToObject(cursor):
+    columnas = [column[0] for column in cursor.description]  # Obtiene los nombres de las columnas
+    # Usar namedtuple para tratar las filas como objetos
+    TABLE = namedtuple('TABLE', columnas)  # Crear una clase con los nombres de las columnas como atributos
+    response = cursor.fetchall()
+
+    # Crear una lista de objetos Pais
+    object_data = [TABLE(*row) for row in response]
+    # Retornar la respuesta como JSON con los nombres de las columnas y los datos
+    return [object._asdict() for object in object_data]  # Convertir namedtuple a diccionario para JSON

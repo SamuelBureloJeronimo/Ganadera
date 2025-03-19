@@ -1,125 +1,43 @@
-:root {
-    --B: #FFFFFF;
-    --N: #000000;
-    --A1: #00225A;
-    --A2: #6188B9;
-    --A3: #B9D1EB;
-    --AM1: #E8AB1E;
-    --Gris: #242424;
-  }
+.content {
+  color: white;
+  background-color: #000000;
+  background-image: url("/img/fondo_black.jpg");
+  background-repeat:no-repeat;
+  background-size: contain;
+  background-position-x: right;
+}
 
+.bottom-header button:hover {
+  background-color: #5a4438;
+}
 
-  @media (min-width: 768px) {
-    .bottom-header h1{
-      font-size: 24px
-    }
-    .bottom-header button {
-      color:white;
-      display: flex;
-      padding: 10px;
-      padding-right: 25px;
-      padding-left: 35px;
-      background-color: rgb(0, 0, 0);
-    }  
+@media (min-width: 768px) {
+  .bottom-header h1{
+    font-size: 24px
   }
-  .bottom-header button:hover {
+  .bottom-header button {
+    color:rgb(0, 0, 0);
+    display: flex;
+    padding: 15px;
+    margin-top: 3vh;
+    padding-right: 35px;
+    padding-left: 35px;
     color: white;
-    background-color: #4f4b4b;
-  } 
-
-  @media (max-width: 768px) {
-    .bottom-header, .col {
-      display: flex;
-    }
-    .bottom-header h1{
-      font-size: 24px
-    }
-    .bottom-header button {
-      color:white;
-      display: flex;
-      padding: 10px;
-      padding-right: 25px;
-      padding-left: 35px;
-      background-color: rgb(0, 0, 0);
-    }
-    .bottom-header, #call-action {
-      display: flex;
-      flex-direction: column;
-    }
+    background-color: #7b6152;
   }
-  
-  .bottom-header #words h6{
-    margin-bottom: 1vh;
-
+  .bottom-header a:hover {
+    cursor:default;
   }
-
-  .img__herrero {
-    margin: 1%;
-    height: 8vh;
+  .bottom-header button label:hover {
+    cursor: pointer;
   }
-  
-  .nav-normal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    /* border: 1px solid green; */
-    width: 100%;
-    margin-bottom: 0px;
-    a {
-      height: 100%;
-      margin-left: 15px;
-      color: #ffffff;
-      margin-right: 15px;
-      text-decoration: none;
-      /* border: 1px solid green; */
-      font-size: 18px;
-      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.336);
-    }
-    a:hover {
-      color: rgb(208, 162, 166);
-      cursor: pointer;
-    }
-  }
-  
-  .bg-navegacion {
-    background-color: rgba(38, 38, 38, 0);
-  }
-  
-  .navegacion {
-    padding: 1rem;
-    display: flex;
-    color: var(--B);
-  }
-  
-  .navegacion-principal {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    /* border: 1px solid green; */
-  }
-
-  /* Estilos de letras de Google Fonts */
-.itim-regular {
-  font-family: "Itim", serif;
-  font-weight: 400;
-  font-style: normal;
 }
-.atkinson-hyperlegible-mono {
-  font-family: "Atkinson Hyperlegible Mono", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+
+.groupTransitionSlide p {
+  transition: 0.2s;
+  opacity: 0;
 }
-.poppins-light {
-  font-family: "Poppins", serif;
-}
-.roboto-weight {
-  font-family: "Roboto", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-variation-settings: "wdth" 100;
+.groupTransitionSlide:hover p {
+  transition: 0.2s;
+  opacity: 100;
 }

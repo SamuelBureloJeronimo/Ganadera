@@ -19,7 +19,8 @@ def public_files(filename):
 
 @BP_PublicRoutes.route('/')
 def index():
-    return render_template('home.html')
+    images = ["/img/slide/img1.png", "/img/slide/img2.webp", "/img/slide/img3.png", "/img/slide/img4.png"]  # Agrega más imágenes si es necesario
+    return render_template("home.html", images=images)
 
 @BP_PublicRoutes.route('/login')
 def login():

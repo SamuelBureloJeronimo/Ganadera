@@ -1,33 +1,54 @@
-#nav_init {
-    padding: 15px;
-    background-color: rgb(26, 26, 26);
-    color: white;
+:root {
+  --BLACK_1: #1a120c;
+  --BLACK_2: #261c16;
+  --BLACK_3: #3c2b21;
+  --CLARO_1: #d4cea5;
+  --CLARO_2: #e5e5cb;
+  --CLARO_2: #f4f1ec;
+
+  --CHAT1: #3B2F2F;
+  --CHAT2: #6B8E23;
+  --CHAT3: #D2B48C;
+  --CHAT4: #1C1C1C;
+  --CHAT5: #C85A28;
 }
 
-.productos {
-    margin-top: 15px;
-    background-color: rgb(47, 47, 47);
-}
-
-.cuerpo {
-    margin-top: 15px;
-    background-color: rgb(44, 44, 44);
-}
-
-
-.img__herrero {
-    width: 150vh;
-}
-
+/* Estilos de letras de Google Fonts */
 .big-shoulders-stencil-900 {
-    font-family: "Big Shoulders Stencil", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 900;
-    font-size: 32px;
-    font-style: normal;
-  }
-  .fira-sans-semibold {
-    font-family: "Fira Sans", sans-serif;
-    font-weight: 600;
-    font-style: normal;
-  }
+  font-family: "Big Shoulders Stencil", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-size: 32px;
+  font-style: normal;
+}
+.fira-sans-semibold {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.itim-regular {
+  font-family: "Itim", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.atkinson-hyperlegible-mono {
+  font-family: "Atkinson Hyperlegible Mono", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+.poppins-light {
+  font-family: "Poppins", serif;
+}
+.roboto-weight {
+  font-family: "Roboto", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+a {
+  text-decoration: none;
+}

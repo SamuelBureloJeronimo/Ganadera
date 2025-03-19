@@ -7,8 +7,8 @@ app = Flask(__name__,template_folder='../templates', static_folder='../../static
 
 # Cargar variables desde el archivo .env
 load_dotenv()
-if not os.path.exists(os.getenv("UPL_FOL_ROUTES")):
-    os.makedirs(os.getenv("UPL_FOL_ROUTES"))
+if not os.path.exists(os.getenv("URL_FOR_ROUTES")):
+    os.makedirs(os.getenv("URL_FOR_ROUTES"))
     
 from config.jwt_conf import jwt
 from config.bp_conf import bp

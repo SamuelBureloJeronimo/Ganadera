@@ -10,16 +10,18 @@
     <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden md:hidden"></div>
 
     <!-- Sidebar -->
-    <div id="sidebar" class="w-64 bg-[#001b29] text-white p-5 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 md:translate-x-0 md:relative md:flex-shrink-0">
+    <div id="sidebar" class="w-64 bg-[#261c16] text-white p-5 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 md:translate-x-0 md:relative md:flex-shrink-0">
         <!-- Logo -->
         <a class="text-2xl font-semibold flex items-center pb-4 justify-center gap-2">
-            <img src="/img/logo_herradopng" alt="Logo" class="h-20">
+            <img src="/img/logo_herrado.png" alt="Logo" class="h-20">
           </a>          
         <nav>
             <ul>
+                {% block sidenavbar %}
                 <li class="mb-4"><a href="#" class="block p-2 rounded hover:bg-blue-500">Inicio</a></li>
                 <li class="mb-4"><a href="#" class="block p-2 rounded hover:bg-blue-500">Reportes</a></li>
                 <li class="mb-4"><a href="#" class="block p-2 rounded hover:bg-blue-500">Ajustes</a></li>
+                {% endblock %}
             </ul>
         </nav>
 
@@ -45,33 +47,15 @@
         <!-- Contenido -->
         <main class="flex-grow p-6 w-full overflow-auto">
             {% block cont_dash %}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-lg font-semibold">Cabezas de ganado</h3>
-                    <p class="text-2xl font-bold mt-2">56</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-lg font-semibold">Ganados vendidos</h3>
-                    <p class="text-2xl font-bold mt-2">16</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-lg font-semibold">Gastos</h3>
-                    <p class="text-2xl font-bold mt-2">$24,000</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-lg font-semibold">Ingresos</h3>
-                    <p class="text-2xl font-bold mt-2">$44,000</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h3 class="text-lg font-semibold">Balance general</h3>
-                    <p class="text-2xl font-bold mt-2">+$20,000</p>
-                </div>
-            </div>
+
+            Contenido del DASHBOARD
+            
             {% endblock %}
         </main>
     </div>
 </div>
 
+{% endblock %}
 
 <!-- Script para abrir/cerrar el menú en móviles -->
 <script>
@@ -92,7 +76,6 @@
         window.location.href = "/";  // Redirige a otra página
     }
 </script>
-{% endblock %}
 
 
 {% block footer %}{% endblock %}

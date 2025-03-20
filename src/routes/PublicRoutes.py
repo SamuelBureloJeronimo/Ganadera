@@ -87,10 +87,23 @@ def confirm_mail():
 def contact():
     return render_template('contact.html')
 
-@BP_PublicRoutes.route('/dashboard/superuser/home', methods=["GET"])
+
+
+@BP_PublicRoutes.route('/dashboard/superuser/metrics', methods=["GET"])
 @super_protected
-def dashboard(cursor):
-    return render_template('dashboard.html')
+def metrics(cursor):
+    return render_template('superuser/metrics.html')
+
+@BP_PublicRoutes.route('/dashboard/superuser/register', methods=["GET"])
+@super_protected
+def register(cursor):
+    return render_template('superuser/register.html')
+
+@BP_PublicRoutes.route('/dashboard/superuser/settings', methods=["GET"])
+@super_protected
+def settings(cursor):
+    return render_template('superuser/settings.html')
+
 
 @BP_PublicRoutes.route("/send_code/<email>")
 def enviar_codigo(email):

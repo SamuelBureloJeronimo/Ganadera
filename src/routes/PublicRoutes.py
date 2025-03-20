@@ -1,12 +1,15 @@
 from collections import namedtuple
 import random
-from flask import Blueprint, jsonify, render_template, render_template_string, request, send_from_directory
+from flask import Blueprint, jsonify, make_response, render_template, render_template_string, request, send_from_directory
+from flask_jwt_extended import create_access_token, jwt_required
 from flask_mail import Message
 from sqlalchemy import func
 from database.db import *
 from config.mail_conf import mail
 import os
 from mysql.connector import Error
+
+from guards.SuperuserGuard import super_protected, with_session
 
 # Cargar variables desde el archivo .env
 load_dotenv()
@@ -15,7 +18,7 @@ BP_PublicRoutes = Blueprint('BP_PublicRoutes', __name__)
 
 @BP_PublicRoutes.route('/img/<path:filename>')
 def public_files(filename):
-    return send_from_directory(os.getenv("UPL_FOL_ROUTES"), filename)
+    return send_from_directory(os.getenv("URL_FOR_ROUTES"), filename)
 
 @BP_PublicRoutes.route('/')
 def index():
@@ -31,7 +34,8 @@ def sales():
     return render_template('sale.html')
 
 @BP_PublicRoutes.route('/login_user', methods=["GET", "POST"])
-def login_user():
+@with_session
+def login_user(cursor):
 
     required_fields = ["email", "password"]
     missing_fields = [field for field in required_fields if not request.form.get(field)]
@@ -45,14 +49,8 @@ def login_user():
     password = str(request.form.get("password"))
 
     try:
-        # Conectar a la base de datos
-        connection = connect_to_database()
-        if connection is None:
-            return jsonify({"error": "No se pudo conectar a la base de datos"}), 500
-        
-        cursor = connection.cursor()
-        insert_query =  '''
-                        SELECT personas.rfc, personas.correo
+        insert_query = '''
+                        SELECT personas.rfc, personas.correo, usuarios.rol
                         FROM personas JOIN usuarios ON usuarios.rfc = personas.rfc
                         WHERE personas.correo=%s AND usuarios.pass=%s;
                         '''
@@ -62,10 +60,15 @@ def login_user():
         if res1 == None:
             return jsonify({"message": "Credenciales invalidas"}), 400
         
-        cursor.close()
+        access_token = create_access_token(identity=str(email), additional_claims={"rol": res1[2]})
+        response = make_response(jsonify({"success": True, "message": "Inicio de sesión éxitoso", "token": access_token}), 200)
+        
+        response.set_cookie(
+            "token", access_token, httponly=True, secure=True, samesite="Lax"
+        )
 
         # Mostrar los datos en la página
-        return jsonify({"success": True, "message": "Inicio de sesión éxitoso"}), 200
+        return response
 
     except Error as e:
         return jsonify({"success": False, "message": str(e)}), 400
@@ -84,8 +87,9 @@ def confirm_mail():
 def contact():
     return render_template('contact.html')
 
-@BP_PublicRoutes.route('/dashboard')
-def dashboard():
+@BP_PublicRoutes.route('/dashboard/superuser/home', methods=["GET"])
+@super_protected
+def dashboard(cursor):
     return render_template('dashboard.html')
 
 @BP_PublicRoutes.route("/send_code/<email>")

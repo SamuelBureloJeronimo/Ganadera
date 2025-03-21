@@ -3,14 +3,14 @@ import os
 from dotenv import load_dotenv
 import jwt
 from mysql.connector import Error
-from flask import jsonify, request
+from flask import jsonify, redirect, request
 
 from database.db import connect_to_database
 
 # Cargar variables desde el archivo .env
 load_dotenv()
 
-def with_session(f):
+def with_transaction(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
@@ -33,6 +33,7 @@ def with_session(f):
             conn.commit()
             return response
         except Error as e:
+            print(str(e))
             # Revertir cambios si ocurre un error
             print("ROLLBACK aplicado");
             conn.rollback()
@@ -48,9 +49,7 @@ def with_session(f):
             print("Sesión Cerrada");
     return decorated_function
 
-
-
-def super_protected(f):
+def with_session(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
@@ -61,31 +60,13 @@ def super_protected(f):
             
             print("Sesión ABIERTA");
             
-            # Desactivar autocommit y crear el cursor
-            conn.autocommit = False
+            # Crear el cursor
             cursor = conn.cursor()
 
-            # Iniciar la transacción
-            conn.start_transaction()
-
-            try:
-                token = request.cookies.get("token")  # Leer token desde la cookie
-                decoded = jwt.decode(token, os.getenv("SECRET_KEY_JWT"), algorithms=["HS256"])
-                print(decoded)
-                if(decoded['rol'] != str(-1)):
-                    return jsonify({"error": "No tienes lo permisos para ingresar a esta URL"}), 401
-            except jwt.ExpiredSignatureError:
-                return jsonify({"error": "El token ha expirado"}), 401
-            except jwt.InvalidTokenError:
-                return jsonify({"error": "Token inválido"}), 401
-
             response = f(cursor, *args, **kwargs)  # Pasamos el cursor
-            print("Se confirmarón los CAMBIOS");
-            conn.commit()
             return response
         except Error as e:
-            # Revertir cambios si ocurre un error
-            conn.rollback()
+            print(str(e))
             return jsonify({"error": "Error de integridad en la base de datos.", "detalle": str(e)}), 400
         
         finally:
@@ -96,4 +77,48 @@ def super_protected(f):
                 conn.close()
 
             print("Sesión Cerrada");
+    return decorated_function
+
+
+def super_protected(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        try:
+            token = request.cookies.get("token")  # Leer token desde la cookie
+            decoded = jwt.decode(token, os.getenv("SECRET_KEY_JWT"), algorithms=["HS256"])
+            print(decoded)
+            if(decoded['rol'] != str(-1)):
+                return redirect('/')
+            
+            response = f(*args, **kwargs)
+            return response
+        
+        except jwt.ExpiredSignatureError:
+            return redirect('/')
+
+        except jwt.InvalidTokenError:
+            return redirect('/')
+
+    return decorated_function
+
+
+def super_protected_Route(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        try:
+            token = request.cookies.get("token")  # Leer token desde la cookie
+            decoded = jwt.decode(token, os.getenv("SECRET_KEY_JWT"), algorithms=["HS256"])
+            print(decoded)
+            if(decoded['rol'] != str(-1)):
+                return redirect('/')
+            
+            response = f(*args, **kwargs)
+            return response
+        
+        except jwt.ExpiredSignatureError:
+            return jsonify({"error": "Token expirado"}), 401  # Código 401 para indicar expiración
+
+        except jwt.InvalidTokenError:
+            return jsonify({"error": "Token inválido"}), 401  # También un 401 en caso de token no válido
+
     return decorated_function

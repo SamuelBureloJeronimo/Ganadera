@@ -1,0 +1,86 @@
+
+.sam-form-field {
+  position: relative;
+  font-family: Arial, sans-serif;
+  margin: 1%;
+  margin-top: 6%;
+  border-radius: 4px;
+  height: 10vh;
+}
+.input-container {
+  position: relative;
+}
+
+.sam-form-field input, select {
+  width: 100%;
+  padding: 12px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  outline: none;
+  color: black;
+  transition: all 0.3s ease-in-out;
+  background: rgba(60, 43, 33, 0.176);
+  margin-top: 0px;
+  height: 7vh;
+}
+
+.sam-form-field label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 52%; /* Por defecto, el label estará centrado */
+  left: 10px;
+  transform: translateY(-100%);
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.42);
+  padding: 0 1vh;
+  transition: all 0.3s ease-in-out;
+  pointer-events: none;
+  mat-icon {
+    transition: 0.3s;
+    color: #001c7a69;
+    margin-right: 5px;
+  }
+  svg {
+    fill: #00000069;
+    transition: 0.3s;
+    scale: 0.8;
+  }
+}
+
+/* Efecto cuando el input está enfocado o tiene texto */
+.sam-form-field input:focus + label,
+.sam-form-field input:not(:placeholder-shown) + label {
+  top: 0;
+  font-size: 12px;
+  color: #001D7A; /* Azul de Angular Material */
+
+  svg {
+    fill: #001D7A;
+    transition: 0.3s;
+    scale: 0.8;
+  }
+}
+
+/* Si el campo está vacío y el input ha sido desenfocado (blur), el label vuelve a la posición inicial */
+.sam-form-field input:invalid:focus:not(:placeholder-shown) + label,
+.sam-form-field input:invalid:blur:not(:placeholder-shown) + label {
+  top: 52%;  /* Vuelve a la posición original si el campo está vacío y no tiene texto */
+  font-size: 16px;
+}
+.sam-form-field input:focus, select:focus {
+  border: 2px solid #6a8e2368;
+}
+.sam-form-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Columnas automáticas */
+  width: 100%;
+}
+
+mat-error {
+  font-size: 10px;
+  color: rgb(174, 0, 0);
+  margin-top: 4px;  /* Asegura que el mat-error no interfiere con el label */
+}

@@ -2,9 +2,11 @@ from config.app import app
 
 bp = app
 
-#from routes.Dispositivo import BP_dispositivo
-from routes.UsersRoutes import BP_UsersRoutes
-from routes.PublicRoutes import BP_PublicRoutes
+from routes.AppRoutes import AppRoutes #Control de rutas para renderizar las plantillas html
+from routes.GeneralRoutes import GeneralRoutes #Rutas generales que cualquiera puede acceder
+bp.register_blueprint(AppRoutes)
+bp.register_blueprint(GeneralRoutes)
 
-bp.register_blueprint(BP_PublicRoutes)
-bp.register_blueprint(BP_UsersRoutes)
+#Registro de los BluePrints
+from routes.SuperUserRoutes import BP_SuperUserRoutes
+bp.register_blueprint(BP_SuperUserRoutes)

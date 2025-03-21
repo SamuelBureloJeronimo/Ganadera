@@ -1,7 +1,7 @@
 .content {
   color: white;
   background-color: #000000;
-  background-image: url("/img/fondo_black.jpg");
+  background-image: url("/fondo_black.jpg");
   background-repeat:no-repeat;
   background-size: contain;
   background-position-x: right;

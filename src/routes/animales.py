@@ -18,12 +18,12 @@ def public_file(filename):
     return send_from_directory(os.getenv("UPL_FOL_ROUTES"), filename)
 
 # Ruta para mostrar el formulario de registro de animales
-@BP_ani.route('/ranimal', methods=['GET'])
-def ranimal():
-    return render_template('ranimal.html')
+@BP_ani.route('/animal', methods=['GET'])
+def animal():
+    return render_template('animal.html')
 
 # Ruta para registrar un nuevo animal
-@BP_ani.route('/ranimal', methods=['POST'])
+@BP_ani.route('/animal', methods=['POST'])
 def register_animal():
     try:
         data = request.get_json()

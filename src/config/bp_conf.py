@@ -6,11 +6,11 @@ bp = app
 from routes.UsersRoutes import BP_UsersRoutes
 from routes.PublicRoutes import BP_PublicRoutes
 from routes.animales import BP_ani
-from routes.salud import BP_salud
+from routes.vacunas import BP_vacuna
 from routes.raza import BP_raza 
 
 bp.register_blueprint(BP_PublicRoutes)
 bp.register_blueprint(BP_UsersRoutes)
 bp.register_blueprint(BP_ani)
-bp.register_blueprint(BP_salud)
+bp.register_blueprint(BP_vacuna )
 bp.register_blueprint(BP_raza)

@@ -10,8 +10,8 @@ from mysql.connector import Error
 # Cargar variables de entorno
 load_dotenv()
 
-BP_salud = Blueprint('BP_salud',__name__)
+BP_vacuna = Blueprint('BP_vacuna',__name__)
 
-BP_salud.route('/')
-def salud ():
-    return render_template('salud.html') 
+@BP_vacuna.route('/')
+def vacuna ():
+    return render_template('vacuna.html') 

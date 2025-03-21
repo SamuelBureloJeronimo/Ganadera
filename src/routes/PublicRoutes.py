@@ -116,7 +116,3 @@ def convertToObject(cursor):
     object_data = [TABLE(*row) for row in response]
     # Retornar la respuesta como JSON con los nombres de las columnas y los datos
     return [object._asdict() for object in object_data]  # Convertir namedtuple a diccionario para JSON
-
-@BP_PublicRoutes.route('/animal')
-def animal():
-    return render_template('animal.html')

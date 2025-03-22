@@ -75,11 +75,12 @@
         <select id="municipios" name="municipios" required onchange="selectMunicipio()" hidden="true">
           <option value="" disabled selected>Selecciona el municipio</option>
         </select>
-        <div class="sam-form-field">
-          <select id="id_colonia" name="id_colonia" required hidden="true">
-            <option value="" disabled selected>Selecciona la colonia</option>
-          </select>
-        </div>
+      </div>
+      
+      <div class="sam-form-field">
+        <select id="id_colonia" name="id_colonia" required hidden="true">
+          <option value="" disabled selected>Selecciona la colonia</option>
+        </select>
       </div>
     </div>
 
@@ -206,6 +207,9 @@ fetch("/get-paises", { method: "GET" })
 
       fetch(endpoint, {
           method: "POST",
+          headers: {
+              "Authorization": "Bearer " + token
+          },
           body: formData
       })
       .then(response => {

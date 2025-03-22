@@ -10,39 +10,64 @@
     <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden md:hidden" style="z-index: 1000;"></div>
 
     <!-- Sidebar -->
-    <div id="sidebar" class="w-64 bg-[#1C1C1C] text-white p-5 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 md:translate-x-0 md:relative md:flex-shrink-0" style="z-index: 1000;">
-        <!-- Logo -->
-        <a class="text-2xl font-semibold flex items-center pb-4 justify-center gap-2">
-            <img src="/logo_herrado.png" alt="Logo" class="h-20">
-          </a>          
-        <nav>
-            <ul>
-                {% block sidenavbar %}
-                <li class="mb-4"><a href="#" class="block p-2 rounded hover:bg-blue-500">Inicio</a></li>
-                <li class="mb-4"><a href="#" class="block p-2 rounded hover:bg-blue-500">Reportes</a></li>
-                <li class="mb-4"><a href="#" class="block p-2 rounded hover:bg-blue-500">Ajustes</a></li>
-                {% endblock %}
-            </ul>
-        </nav>
+<div id="sidebar" class="w-64 bg-[#1C1C1C] text-white p-4 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 md:translate-x-0 md:relative md:flex-shrink-0" style="z-index: 1000;">
+    <!-- Logo -->
+    <a class="text-2xl font-semibold flex items-center pb-4 justify-center gap-2">
+        <img src="/logo_herrado.png" alt="Logo" class="h-20">
+    </a>          
+    <nav>
+        <ul>
+            {% block sidenavbar %}
+            <li class="mb-4"><a href="#" class="block p-2 rounded hover:bg-blue-500">Inicio</a></li>
 
-        <!-- Botón de cerrar sesión -->
-        <div class="absolute bottom-5 left-5 right-5">
-            <button onclick="logOut()" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-                Cerrar Sesión
-            </button>
-        </div>
+            <!-- Reportes con Submenú -->
+            <li class="mb-4">
+                <button onclick="toggleSubmenu('reportesSubmenu')" class="w-full text-left p-2 rounded hover:bg-blue-500 flex justify-between items-center">
+                    Reportes
+                    <span id="icon-reportes" class="transition-transform">▼</span>
+                </button>
+                <ul id="reportesSubmenu" class="ml-4 hidden">
+                    <li><a href="#" class="block p-2 rounded hover:bg-gray-700">Reporte 1</a></li>
+                    <li><a href="#" class="block p-2 rounded hover:bg-gray-700">Reporte 2</a></li>
+                </ul>
+            </li>
+
+            <!-- Ajustes con Submenú -->
+            <li class="mb-4">
+                <button onclick="toggleSubmenu('ajustesSubmenu')" class="w-full text-left p-2 rounded hover:bg-blue-500 flex justify-between items-center">
+                    Ajustes
+                    <span id="icon-ajustes" class="transition-transform">▼</span>
+                </button>
+                <ul id="ajustesSubmenu" class="ml-4 hidden">
+                    <li><a href="#" class="block p-2 rounded hover:bg-gray-700">Perfil</a></li>
+                    <li><a href="#" class="block p-2 rounded hover:bg-gray-700">Configuración</a></li>
+                </ul>
+            </li>
+            {% endblock %}
+        </ul>
+    </nav>
+
+    <!-- Botón de cerrar sesión -->
+    <div class="absolute bottom-5 left-5 right-5">
+        <button onclick="logOut()" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+            Cerrar Sesión
+        </button>
     </div>
+</div>
+
 
     <!-- Contenido Principal -->
     <div class="flex flex-col w-full h-full" style="z-index: 0;">
+        {% block headDash %}
         <!-- Barra Superior -->
-        <header class="bg-[#261c16] text-white shadow p-4 flex items-center">
+        <header class="bg-[#3B2F2F] text-white shadow p-4 flex items-center">
             <!-- Botón para abrir/cerrar sidebar en móviles -->
             <button id="toggleSidebar" class="md:hidden text-2xl">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>
             </button>
-            <h1 class="text-xl font-semibold" style="margin-left: 5vh;">{% block title_bar %} Panel de Control {% endblock %}</h1>
-        </header>        
+            <h1 class="text-xl font-semibold" style="margin-left: 5vh; display: flex;gap: 1vh; justify-content: center; align-items: center;">{% block title_bar %} Panel de Control {% endblock %}</h1>
+        </header>      
+        {% endblock %}  
 
         <!-- Contenido -->
         <main class="flex-grow p-6 w-full overflow-auto">
@@ -58,6 +83,19 @@
 
 <!-- Script para abrir/cerrar el menú en móviles -->
 <script>
+    function toggleSubmenu(id) {
+    let submenu = document.getElementById(id);
+    let icon = document.getElementById("icon-" + id.replace("Submenu", ""));
+    
+    if (submenu.classList.contains("hidden")) {
+        submenu.classList.remove("hidden");
+        icon.style.transform = "rotate(180deg)"; // Rota el icono
+    } else {
+        submenu.classList.add("hidden");
+        icon.style.transform = "rotate(0deg)";
+    }
+}
+
     document.getElementById("toggleSidebar").addEventListener("click", function () {
         let sidebar = document.getElementById("sidebar");
         let overlay = document.getElementById("overlay");
@@ -72,6 +110,7 @@
         this.classList.add("hidden");
     });
     function logOut(){
+        document.cookie = "timeRes=; path=/; expires=Tue, 1 Jan 2000 03:14:07 GMT";
         document.cookie = "token=; path=/; expires=Tue, 1 Jan 2000 03:14:07 GMT"
         window.location.href = "/";  // Redirige a otra página
     }

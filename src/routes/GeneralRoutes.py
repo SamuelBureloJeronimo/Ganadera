@@ -8,7 +8,7 @@ from config.mail_conf import mail
 import os
 from mysql.connector import Error
 
-from guards.SuperuserGuard import with_session
+from guards.RoutesGuards import with_session
 
 # Cargar variables desde el archivo .env
 load_dotenv()
@@ -44,7 +44,7 @@ def login_user(cursor):
 
     try:
         insert_query = '''
-                        SELECT personas.rfc, personas.correo, usuarios.rol
+                        SELECT personas.rfc, personas.correo, usuarios.rol, usuarios.rfc_comp
                         FROM personas JOIN usuarios ON usuarios.rfc = personas.rfc
                         WHERE personas.correo=%s AND usuarios.pass=%s;
                         '''
@@ -54,8 +54,20 @@ def login_user(cursor):
         if res1 == None:
             return jsonify({"message": "Credenciales invalidas"}), 400
         
-        access_token = create_access_token(identity=str(email), additional_claims={"rol": res1[2]})
-        response = make_response(jsonify({"success": True, "message": "Inicio de sesión éxitoso", "token": access_token}), 200)
+        url = "/dashboard/"
+        
+        if res1[2] == "-1":
+            url += "superuser/metrics"
+        if res1[2] == "0":
+            url += "owner/panel"
+
+        formData = {
+            "logo": "Logoruta"
+        }
+
+        
+        access_token = create_access_token(identity=str(email), additional_claims={"rol": res1[2], "rfc_comp": res1[3]})
+        response = make_response(jsonify({"success": True, "message": "Inicio de sesión éxitoso", "token": access_token, "url": url}), 200)
         
         response.set_cookie("token", access_token)
 

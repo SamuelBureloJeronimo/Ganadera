@@ -56,8 +56,8 @@
   </div>
   
 <script>
-    addSwalAlertLogin("loginForm", "/login_user", "/dashboard/superuser/metrics");
-    function addSwalAlertLogin(id, endpoint, url_redir){
+    addSwalAlertLogin("loginForm", "/login_user");
+    function addSwalAlertLogin(id, endpoint){
     document.getElementById(id).addEventListener("submit", function(event) {
       event.preventDefault();  // Evita que la página se recargue
 
@@ -69,8 +69,10 @@
       })
       .then(response => response.json())
       .then(data => {
+        console.log(data)
           if (data.success) {
-            window.location.href = url_redir; // Redirigir
+            document.cookie = "timeRes=1200; path=/;";
+            window.location.href = data.url;
           } else {
               Swal.fire({
                   title: "Usuario o contraseña incorrecto",

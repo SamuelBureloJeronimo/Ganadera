@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from database.db import *
 
-from guards.SuperuserGuard import super_protected
+from guards.RoutesGuards import owner_protected, super_protected
 
 # Cargar variables desde el archivo .env
 load_dotenv()
@@ -26,6 +26,7 @@ def sales():
 def contact():
     return render_template('contact.html')
 
+# RUTAS PARA EL SUPERUSUARIO
 
 @AppRoutes.route('/dashboard/superuser/metrics', methods=["GET"])
 @super_protected
@@ -41,3 +42,41 @@ def register():
 @super_protected
 def settings():
     return render_template('superuser/settings.html')
+
+# RUTAS PARA EL DUEÑO
+@AppRoutes.route('/dashboard/owner/panel', methods=["GET", "POST"])
+@owner_protected
+def panel(decoded):
+    return render_template('owner/panel.html')
+
+@AppRoutes.route('/dashboard/owner/register-ganado', methods=["GET", "POST"])
+@owner_protected
+def regis_ganado(decoded):
+    return render_template('owner/regis-ganados.html')
+
+@AppRoutes.route('/dashboard/owner/register-employee', methods=["GET", "POST"])
+@owner_protected
+def regis_employee(decoded):
+    return render_template('owner/regis-empleados.html')
+
+@AppRoutes.route('/dashboard/owner/register-finca', methods=["GET", "POST"])
+@owner_protected
+def regis_finca(decoded):
+    return render_template('owner/regis-fincas.html')
+
+
+
+@AppRoutes.route('/dashboard/owner/view-ganados', methods=["GET", "POST"])
+@owner_protected
+def view_ganados(decoded):
+    return render_template('owner/view-ganados.html')
+
+@AppRoutes.route('/dashboard/owner/view-fincas', methods=["GET", "POST"])
+@owner_protected
+def view_fincas(decoded):
+    return render_template('owner/view-fincas.html')
+
+@AppRoutes.route('/dashboard/owner/view-employees', methods=["GET", "POST"])
+@owner_protected
+def view_employees(decoded):
+    return render_template('owner/view-employees.html')

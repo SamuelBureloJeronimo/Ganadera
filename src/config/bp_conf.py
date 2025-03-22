@@ -9,4 +9,6 @@ bp.register_blueprint(GeneralRoutes)
 
 #Registro de los BluePrints
 from routes.SuperUserRoutes import BP_SuperUserRoutes
+from routes.OwnerRoutes import BP_Owner
 bp.register_blueprint(BP_SuperUserRoutes)
+bp.register_blueprint(BP_Owner)

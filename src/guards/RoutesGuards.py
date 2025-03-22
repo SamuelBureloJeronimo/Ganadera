@@ -101,24 +101,24 @@ def super_protected(f):
 
     return decorated_function
 
-
-def super_protected_Route(f):
+def owner_protected(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
             token = request.cookies.get("token")  # Leer token desde la cookie
             decoded = jwt.decode(token, os.getenv("SECRET_KEY_JWT"), algorithms=["HS256"])
             print(decoded)
-            if(decoded['rol'] != str(-1)):
+            if(decoded['rol'] != str(0)):
                 return redirect('/')
             
-            response = f(*args, **kwargs)
+            response = f(decoded, *args, **kwargs)
             return response
         
         except jwt.ExpiredSignatureError:
-            return jsonify({"error": "Token expirado"}), 401  # Código 401 para indicar expiración
+            return redirect('/')
 
         except jwt.InvalidTokenError:
-            return jsonify({"error": "Token inválido"}), 401  # También un 401 en caso de token no válido
+            return redirect('/')
 
     return decorated_function
+

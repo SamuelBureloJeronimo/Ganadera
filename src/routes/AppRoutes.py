@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request
 from database.db import *
-
 from guards.RoutesGuards import owner_protected, super_protected
 
 # Cargar variables desde el archivo .env
@@ -80,3 +79,8 @@ def view_fincas(decoded):
 @owner_protected
 def view_employees(decoded):
     return render_template('owner/vistas/view-employees.html')
+
+@AppRoutes.route("/dashboard/owner/animales",methods=["GET","POST"])
+@owner_protected
+def view_animal(decoded):
+    return render_template('owner/vistas/view-animal.html')

@@ -1,20 +1,41 @@
 {% extends 'dashboard.html' %}
 
 {% block sidenavbar %}
-<li class="mb-4"><a href="/dashboard/owner/panel" class="block p-2 rounded hover:bg-blue-500">INICIO</a></li>
+<li class="mb-4"><a href="/dashboard/owner/panel" class="bg-blue-500 block p-2 rounded hover:bg-blue-500">INICIO</a></li>
 <!-- Reportes con Submenú -->
 <li class="mb-4">
-    <button onclick="toggleSubmenu('reportesSubmenu')" class="w-full text-left p-2 rounded hover:bg-blue-500 flex justify-between items-center">
+    <button onclick="toggleSubmenu('gn')" class="w-full text-left p-2 rounded hover:bg-blue-500 flex justify-between items-center">
         Gestión de ganado
-        <span id="icon-reportes" class="transition-transform">▼</span>
+        <span id="icon-gn" class="transition-transform">▼</span>
     </button>
-    <ul id="reportesSubmenu" class="ml-4 hidden">
-        <li><a href="#" class="block p-2 rounded hover:bg-gray-700">Reporte 1</a></li>
-        <li><a href="#" class="block p-2 rounded hover:bg-gray-700">Reporte 2</a></li>
+    <ul id="gn" class="ml-4 hidden">
+        <li><a href="/dashboard/owner/register-ganado" class="block p-2 rounded hover:bg-gray-700">Registrar</a></li>
+        <li><a href="/dashboard/owner/view-ganados" class="block p-2 rounded hover:bg-gray-700">Vesualizar</a></li>
     </ul>
 </li>
-<li class="mb-4"><a href="/dashboard/owner/employees" class="block p-2 rounded hover:bg-blue-500">Control de empleados</a></li>
-<li class="mb-4"><a href="#" class="block p-2 rounded hover:bg-blue-500">Compras/Ventas</a></li>
+<!-- Reportes con Submenú -->
+<li class="mb-4">
+    <button onclick="toggleSubmenu('emp')" class="w-full text-left p-2 rounded hover:bg-blue-500 flex justify-between items-center">
+        Control de empleados
+        <span id="icon-emp" class="transition-transform">▼</span>
+    </button>
+    <ul id="emp" class="ml-4 hidden">
+        <li><a href="/dashboard/owner/register-employee" class="block p-2 rounded hover:bg-gray-700">Registrar</a></li>
+        <li><a href="/dashboard/owner/view-employees" class="block p-2 rounded hover:bg-gray-700">Vesualizar</a></li>
+    </ul>
+</li>
+<!-- Reportes con Submenú -->
+<li class="mb-4">
+    <button onclick="toggleSubmenu('c_v')" class="w-full text-left p-2 rounded hover:bg-blue-500 flex justify-between items-center">
+        Compras y ventas
+        <span id="icon-c_v" class="transition-transform">▼</span>
+    </button>
+    <ul id="c_v" class="ml-4 hidden">
+        <li><a href="#" class="block p-2 rounded hover:bg-gray-700">Balance general</a></li>
+        <li><a href="#" class="block p-2 rounded hover:bg-gray-700">Ver compras</a></li>
+        <li><a href="#" class="block p-2 rounded hover:bg-gray-700">Ver ventas</a></li>
+    </ul>
+</li>
 {% endblock %}
 
 {% block headDash %}

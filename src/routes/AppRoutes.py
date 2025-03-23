@@ -52,31 +52,31 @@ def panel(decoded):
 @AppRoutes.route('/dashboard/owner/register-ganado', methods=["GET", "POST"])
 @owner_protected
 def regis_ganado(decoded):
-    return render_template('owner/regis-ganados.html')
+    return render_template('owner/registros/regis-ganados.html')
 
 @AppRoutes.route('/dashboard/owner/register-employee', methods=["GET", "POST"])
 @owner_protected
 def regis_employee(decoded):
-    return render_template('owner/regis-empleados.html')
+    return render_template('owner/registros/regis-empleados.html')
 
 @AppRoutes.route('/dashboard/owner/register-finca', methods=["GET", "POST"])
 @owner_protected
 def regis_finca(decoded):
-    return render_template('owner/regis-fincas.html')
+    return render_template('owner/registros/regis-fincas.html')
 
 
 
 @AppRoutes.route('/dashboard/owner/view-ganados', methods=["GET", "POST"])
 @owner_protected
 def view_ganados(decoded):
-    return render_template('owner/view-ganados.html')
+    return render_template('owner/vistas/view-ganados.html')
 
 @AppRoutes.route('/dashboard/owner/view-fincas', methods=["GET", "POST"])
 @owner_protected
 def view_fincas(decoded):
-    return render_template('owner/view-fincas.html')
+    return render_template('owner/vistas/view-fincas.html')
 
 @AppRoutes.route('/dashboard/owner/view-employees', methods=["GET", "POST"])
 @owner_protected
 def view_employees(decoded):
-    return render_template('owner/view-employees.html')
+    return render_template('owner/vistas/view-employees.html')

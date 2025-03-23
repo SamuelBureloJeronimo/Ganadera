@@ -4,11 +4,15 @@ bp = app
 
 from routes.AppRoutes import AppRoutes #Control de rutas para renderizar las plantillas html
 from routes.GeneralRoutes import GeneralRoutes #Rutas generales que cualquiera puede acceder
+
+
 bp.register_blueprint(AppRoutes)
 bp.register_blueprint(GeneralRoutes)
 
 #Registro de los BluePrints
+from routes.animales import BP_ani 
 from routes.SuperUserRoutes import BP_SuperUserRoutes
 from routes.OwnerRoutes import BP_Owner
 bp.register_blueprint(BP_SuperUserRoutes)
 bp.register_blueprint(BP_Owner)
+bp.register_blueprint(BP_ani)

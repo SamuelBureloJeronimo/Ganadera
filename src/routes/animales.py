@@ -15,57 +15,67 @@ def public_file(filename):
 
 # Ruta para mostrar el formulario de registro de animales con opciones de raza y finca
 @BP_ani.route('/animal', methods=['GET'])
+@BP_ani.route('/animal', methods=['GET'])
 def animal():
-    connection = None  # Inicializar la variable
+    connection = None  # Inicializar la conexión
     try:
         connection = connect_to_database()
         cursor = connection.cursor(dictionary=True)
 
+        # Consulta para razas
         cursor.execute("SELECT id, nom FROM razas")
         razas = cursor.fetchall()
 
+        # Consulta para fincas
         cursor.execute("SELECT id, nombre FROM fincas")
         fincas = cursor.fetchall()
 
-        return render_template('animal.html', razas=razas, fincas=fincas)
+        # Imprimir los datos en la consola para verificar
+        print("Razas:", razas)
+        print("Fincas:", fincas)
+
+        return render_template('owner/registros/regis-ganados.html', razas=razas, fincas=fincas)
     except Error as e:
         return jsonify({"error": str(e)}), 500
     finally:
-        if connection:  # Verificar si la conexión fue establecida
+        if connection:
             cursor.close()
             connection.close()
 
+# Ruta para registrar un nuevo animal
 @BP_ani.route('/animal/registro', methods=['POST'])
 def register_animal():
-    connection = None  # Inicializar la variable
+    connection = None  # Inicializar la conexión
     try:
         data = request.form
 
-        required_fields = ["id","especie", "raza_id", "sexo", "finca_id", "fech", "estado", "externo"]
-        missing_fields = [field for field in required_fields if field not in data]
+        # Validar que todos los campos requeridos estén presentes
+        required_fields = ["id", "especie", "raza_id", "sexo", "finca_id", "fech", "estado", "externo"]
+        missing_fields = [field for field in required_fields if not data.get(field)]
 
         if missing_fields:
-            return jsonify({"error": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+            return redirect(url_for('BP_ani.animal', error=f"Faltan los siguientes campos: {', '.join(missing_fields)}"))
 
         connection = connect_to_database()
         cursor = connection.cursor()
 
+        # Insertar el nuevo registro en la tabla animales
         insert_query = """
-            INSERT INTO animales (id,especie, raza_id, sexo, finca_id, fech, estado, externo)
-            VALUES (%s,%s, %s, %s, %s, %s, %s, %s);
+            INSERT INTO animales (id, especie, raza_id, sexo, finca_id, fech, estado, externo)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         """
         cursor.execute(insert_query, (
-            data["id"],data["especie"], data["raza_id"], data["sexo"], 
+            data["id"], data["especie"], data["raza_id"], data["sexo"],
             data["finca_id"], data["fech"], data["estado"], data["externo"]
         ))
         connection.commit()
-         # Redirigir al formulario después del registro exitoso
-        return redirect(url_for('BP_ani.animal', success="Animal registrado exitosamente"))
+
+        # Redirigir al formulario con un mensaje de éxito
+        return redirect(url_for('BP_ani.animal', success="¡Animal registrado exitosamente!"))
     except Error as e:
-        # Enviar un mensaje de error al formulario en caso de excepción.
-        
-        return redirect(url_for('BP_ani.animal', error=str(e)))    
+        # Redirigir al formulario con un mensaje de error en caso de fallo
+        return redirect(url_for('BP_ani.animal', error=f"Error al registrar: {str(e)}"))
     finally:
-        if connection:  # Verificar si la conexión fue establecida
+        if connection:  # Cerrar la conexión si se estableció
             cursor.close()
             connection.close()

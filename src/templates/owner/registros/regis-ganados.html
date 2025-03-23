@@ -4,6 +4,101 @@
 
 {% block cont_dash %}
 
-Espacio
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Registro de Animales</h1>
+
+    <!-- Mensaje de éxito -->
+    {% if request.args.get('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ request.args.get('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endif %}
+
+    <!-- Mensaje de error -->
+    {% if request.args.get('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ request.args.get('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endif %}
+
+    <form id="registroForm" class="form-container" method="POST" action="{{ url_for('BP_ani.register_animal') }}" novalidate>
+        <div class="mb-3">
+            <label for="id" class="form-label">ID del Animal</label>
+            <input type="text" id="id" name="id" class="form-control" required>
+            <div class="invalid-feedback">El ID es obligatorio.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="especie" class="form-label">Especie</label>
+            <input type="text" id="especie" name="especie" class="form-control" required>
+            <div class="invalid-feedback">La especie es obligatoria.</div>
+        </div>            
+
+        <div class="mb-3">
+            <label for="raza_id" class="form-label">Raza</label>
+            <select id="raza_id" name="raza_id" class="form-select" required>
+                <option value="">Seleccione</option>
+                {% for raza in razas %}
+                    <option value="{{ raza.id }}">{{ raza.nom }}</option>
+                {% endfor %}
+            </select>
+            <div class="invalid-feedback">Seleccione la raza.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="sexo" class="form-label">Sexo</label>
+            <select id="sexo" name="sexo" class="form-select" required>
+                <option value="">Seleccione</option>
+                <option value="macho">Macho</option>
+                <option value="hembra">Hembra</option>
+            </select>
+            <div class="invalid-feedback">Seleccione el sexo.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="finca_id" class="form-label">Finca</label>
+            <select id="finca_id" name="finca_id" class="form-select" required>
+                <option value="">Seleccione</option>
+                {% for finca in fincas %}
+                    <option value="{{ finca.id }}">{{ finca.nombre }}</option>
+                {% endfor %}
+            </select>
+            <div class="invalid-feedback">Seleccione una finca.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="fech" class="form-label">Fecha de Nacimiento</label>
+            <input type="date" id="fech" name="fech" class="form-control" required>
+            <div class="invalid-feedback">Seleccione una fecha válida.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="estado" class="form-label">Estado</label>
+            <select id="estado" name="estado" class="form-select" required>
+                <option value="">Seleccione</option>
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+            </select>
+            <div class="invalid-feedback">Seleccione un estado.</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">¿Es Externo?</label>
+            <div class="form-check">
+                <input type="radio" id="externo_si" name="externo" value="1" class="form-check-input" required>
+                <label for="externo_si" class="form-check-label">Sí</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" id="externo_no" name="externo" value="0" class="form-check-input" required>
+                <label for="externo_no" class="form-check-label">No</label>
+            </div>
+            <div class="invalid-feedback">Seleccione una opción.</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Registrar</button>
+    </form>
+</div>
 
 {% endblock %}

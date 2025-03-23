@@ -19,10 +19,22 @@
   font-size: 16px;
   outline: none;
   color: black;
+  font-family: "Fira Sans", sans-serif;
   transition: all 0.3s ease-in-out;
   background: rgba(60, 43, 33, 0.176);
   margin-top: 0px;
   height: 7vh;
+}
+
+.sam-form-field select:disabled {
+  color: rgb(158, 158, 158);
+}
+.sam-form-field option {
+  font-family: "Fira Sans", sans-serif;
+}
+
+#especial select {
+  background: rgba(7, 164, 101, 0.176);
 }
 
 .sam-form-field label {

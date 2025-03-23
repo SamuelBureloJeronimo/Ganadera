@@ -1,11 +1,12 @@
 import secrets
 import string
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from database.db import *
 
 import os
 
-from guards.SuperuserGuard import super_protected, super_protected_Route, with_transaction
+from guards.RoutesGuards import with_transaction
 
 # Cargar variables desde el archivo .env
 load_dotenv()
@@ -13,7 +14,7 @@ load_dotenv()
 BP_SuperUserRoutes = Blueprint('BP_SuperUserRoutes', __name__)
 
 @BP_SuperUserRoutes.route('/create_owner', methods=["POST"])
-@super_protected_Route
+@jwt_required()
 @with_transaction
 def create_owner(cursor):
 

@@ -80,3 +80,11 @@ def view_fincas(decoded):
 @owner_protected
 def view_employees(decoded):
     return render_template('owner/vistas/view-employees.html')
+
+
+
+
+# RUTAS PARA EMPLEADOS
+@AppRoutes.route('/dashboard/empleoyes/panelEmpleados', methods=["GET", "POST"])
+def panelEmpleados():
+    return render_template('empleoyes/panel.html')

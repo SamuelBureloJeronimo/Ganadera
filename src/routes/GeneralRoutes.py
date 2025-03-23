@@ -1,6 +1,7 @@
 from collections import namedtuple
 import random
-from flask import Blueprint, jsonify, make_response, render_template_string, request, send_from_directory
+from flask import Blueprint, jsonify, make_response, render_template_string, request, send_from_directory,session
+from datetime import date
 from flask_jwt_extended import create_access_token
 from flask_mail import Message
 from database.db import *
@@ -34,6 +35,10 @@ def login_user(cursor):
     required_fields = ["email", "password"]
     missing_fields = [field for field in required_fields if not request.form.get(field)]
 
+    # Depuración: Imprimir los datos recibidos
+    print("Datos recibidos:", request.form)
+    print("Campos faltantes:", missing_fields)
+
     # Validar si falta algún campo
     if missing_fields:
         return jsonify({"error": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
@@ -44,12 +49,15 @@ def login_user(cursor):
 
     try:
         insert_query = '''
-                        SELECT personas.rfc, personas.correo, usuarios.rol, usuarios.rfc_comp
-                        FROM personas JOIN usuarios ON usuarios.rfc = personas.rfc
+                        SELECT personas.rfc, personas.correo, usuarios.rol, usuarios.rfc_comp, puestos.nombre, puestos.h_entrada, puestos.h_salida
+                        FROM personas 
+                        JOIN usuarios ON usuarios.rfc = personas.rfc
+                        JOIN puestos ON usuarios.rol = puestos.id
                         WHERE personas.correo=%s AND usuarios.pass=%s;
                         '''
         cursor.execute(insert_query, (email, password))
         res1 = cursor.fetchone()
+        #print("Resultado de la consulta SQL:", res1) 
 
         if res1 == None:
             return jsonify({"message": "Credenciales invalidas"}), 400
@@ -60,12 +68,27 @@ def login_user(cursor):
             url += "superuser/metrics"
         if res1[2] == "0":
             url += "owner/panel"
+        if res1[2] == "1":
+            url += "empleoyes/panelEmpleados"
+
+        print(f"Redirigiendo a: {url}")
 
         formData = {
             "logo": "Logoruta"
         }
 
-        
+
+        #Almacenar información del usuario en la sesión
+        session['rfc'] = res1[0]
+        session['correo'] = res1[1]
+        session['rol'] = res1[2]
+        session['rfc_comp'] = res1[3]
+        session['puesto_nombre'] = res1[4]
+        # Convertir h_entrada y h_salida a una representación serializable
+        session['h_entrada'] = str(res1[5])
+        session['h_salida'] = str(res1[6])
+        #print("Sesión guardada:", dict(session))  #Depuración
+
         access_token = create_access_token(identity=str(email), additional_claims={"rol": res1[2], "rfc_comp": res1[3]})
         response = make_response(jsonify({"success": True, "message": "Inicio de sesión éxitoso", "token": access_token, "url": url}), 200)
         
@@ -76,6 +99,41 @@ def login_user(cursor):
 
     except Error as e:
         return jsonify({"success": False, "message": str(e)}), 400
+    
+
+
+@GeneralRoutes.route('/registrar_asistencia', methods=["GET", "POST"])
+@with_session
+def registrar_asistencia(cursor):
+    if 'rfc' not in session:
+        return jsonify({"message": "Usuario no autenticado"}), 403
+
+    data = request.get_json()
+    tipo = data.get("tipo")  # Puede ser 'entrada' o 'salida'
+    rfc = session['rfc']
+    hoy = date.today()
+
+    # Verificar si ya registró la asistencia hoy
+    query_verificar = """
+        SELECT COUNT(*) FROM asistencias 
+        WHERE rfc = %s AND fecha = %s AND tipo = %s;
+    """
+    cursor.execute(query_verificar, (rfc, hoy, tipo))
+    resultado = cursor.fetchone()
+
+    if resultado[0] > 0:
+        return jsonify({"message": f"La asistencia de {tipo} ya fue registrada hoy"}), 400
+
+    # Registrar asistencia
+    query_insert = """
+        INSERT INTO asistencias (rfc, fecha, hora, tipo) VALUES (%s, %s, %s, %s);
+    """
+    cursor.execute(query_insert, (rfc, hoy, datetime.now().strftime("%H:%M:%S"), tipo))
+
+    return jsonify({"message": f"Asistencia de {tipo} registrada correctamente"}), 200
+
+
+
 
 @GeneralRoutes.route("/send_code/<email>")
 def enviar_codigo(email):
@@ -110,9 +168,6 @@ def convertToObject(cursor):
 @GeneralRoutes.route('/<path:filename>')
 def public_files(filename):
     return send_from_directory(os.getenv("URL_FOR_ROUTES"), filename)
-
-
-
 
 
 

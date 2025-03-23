@@ -1,0 +1,37 @@
+{% extends 'owner/panel.html' %}
+
+{% block title_bar %} REGISTRAR RAZAS {% endblock %}
+
+{% block cont_dash %}
+<form id="registroRaza" action="{{ url_for('BP_ani.register_raza') }}" method="POST" enctype="multipart/form-data" style="padding: 2%">
+
+    <div style="margin-top: 3vh; margin-bottom: 3vh">
+        <label>Datos de la Raza</label>
+        <hr />
+    </div>
+
+    <div class="sam-form-container">
+        <div class="sam-form-field">
+            <input type="text" id="nom" placeholder=" " name="nom" required />
+            <label class="itim-regular">Nombre de la Raza</label>
+        </div>
+
+        <div class="sam-form-field">
+            <textarea id="desc" name="desc" placeholder=" " rows="4" style="resize: none;"></textarea>
+            <label class="itim-regular">Descripción</label>
+        </div>
+
+        <div class="sam-form-field">
+            <input type="file" id="img" name="img" accept="image/*" />
+            <label class="itim-regular">Subir Imagen</label>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Registrar</button>
+</form>
+
+<script>
+    addSwalAlertCre("registroRaza", "/register_raza");
+</script>
+
+{% endblock %}

@@ -3,102 +3,128 @@
 {% block title_bar %} REGISTRAR GANADOS {% endblock %}
 
 {% block cont_dash %}
+<form id="regForm" action="{{ url_for('BP_ani.register_animal') }}" method="POST" style="padding: 2%">
 
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Registro de Animales</h1>
-
-    <!-- Mensaje de éxito -->
+    <div style="margin-top: 3vh; margin-bottom: 3vh">
+        <label>Datos del ganado</label>
+        <hr />
+    </div>
     {% if request.args.get('success') %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ request.args.get('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endif %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ request.args.get('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endif %}
 
-    <!-- Mensaje de error -->
-    {% if request.args.get('error') %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ request.args.get('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endif %}
+{% if request.args.get('error') %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ request.args.get('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endif %}
 
-    <form id="registroForm" class="form-container" method="POST" action="{{ url_for('BP_ani.register_animal') }}" novalidate>
-        <div class="mb-3">
-            <label for="id" class="form-label">ID del Animal</label>
-            <input type="text" id="id" name="id" class="form-control" required>
-            <div class="invalid-feedback">El ID es obligatorio.</div>
+    <div class="sam-form-container">
+        <div class="sam-form-field">
+            <input type="text" id="id" placeholder=" " name="id" required />
+            <label class="itim-regular"> ID del Animal</label>
         </div>
 
-        <div class="mb-3">
-            <label for="especie" class="form-label">Especie</label>
-            <input type="text" id="especie" name="especie" class="form-control" required>
-            <div class="invalid-feedback">La especie es obligatoria.</div>
-        </div>            
+        <div class="sam-form-field">
+            <input type="text" id="especie" placeholder=" " name="especie" required />
+            <label class="itim-regular">Especie</label>
+        </div>
 
-        <div class="mb-3">
-            <label for="raza_id" class="form-label">Raza</label>
-            <select id="raza_id" name="raza_id" class="form-select" required>
-                <option value="">Seleccione</option>
-                {% for raza in razas %}
-                    <option value="{{ raza.id }}">{{ raza.nom }}</option>
-                {% endfor %}
+        <div class="sam-form-field">
+            <select id="raza_id" name="raza_id" required>
+                <option value="" disabled selected>Seleccione la raza</option>
             </select>
-            <div class="invalid-feedback">Seleccione la raza.</div>
         </div>
 
-        <div class="mb-3">
-            <label for="sexo" class="form-label">Sexo</label>
-            <select id="sexo" name="sexo" class="form-select" required>
-                <option value="">Seleccione</option>
+        <div class="sam-form-field">
+            <select id="sexo" name="sexo" required>
+                <option value="" disabled selected>Seleccione el sexo</option>
                 <option value="macho">Macho</option>
                 <option value="hembra">Hembra</option>
             </select>
-            <div class="invalid-feedback">Seleccione el sexo.</div>
         </div>
+    </div>
 
-        <div class="mb-3">
-            <label for="finca_id" class="form-label">Finca</label>
-            <select id="finca_id" name="finca_id" class="form-select" required>
-                <option value="">Seleccione</option>
-                {% for finca in fincas %}
-                    <option value="{{ finca.id }}">{{ finca.nombre }}</option>
-                {% endfor %}
+    <div style="margin-top: 3vh; margin-bottom: 3vh">
+        <label>Ubicación y Finca</label>
+        <hr />
+    </div>
+
+    <div class="sam-form-container">
+        <div class="sam-form-field">
+            <select id="finca_id" name="finca_id" required>
+                <option value="" disabled selected>Seleccione la finca</option>
             </select>
-            <div class="invalid-feedback">Seleccione una finca.</div>
+        </div>
+    </div>
+
+    <div style="margin-top: 3vh; margin-bottom: 3vh">
+        <label>Detalles adicionales</label>
+        <hr />
+    </div>
+
+    <div class="sam-form-container">
+        <div class="sam-form-field">
+            <input type="date" id="fech" placeholder=" " name="fech" required />
+            <label class="itim-regular">Fecha de Nacimiento</label>
         </div>
 
-        <div class="mb-3">
-            <label for="fech" class="form-label">Fecha de Nacimiento</label>
-            <input type="date" id="fech" name="fech" class="form-control" required>
-            <div class="invalid-feedback">Seleccione una fecha válida.</div>
-        </div>
-
-        <div class="mb-3">
-            <label for="estado" class="form-label">Estado</label>
-            <select id="estado" name="estado" class="form-select" required>
-                <option value="">Seleccione</option>
-                <option value="activo">Activo</option>
-                <option value="inactivo">Inactivo</option>
+        <div class="sam-form-field">
+            <select id="estado" name="estado" required>
+                <option value="" disabled selected>Seleccione el estado</option>
+                <option value="1">Sano</option>
+                <option value="2">Vendido</option>
+                <option value="3">Muerto</option>
             </select>
-            <div class="invalid-feedback">Seleccione un estado.</div>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">¿Es Externo?</label>
+        <div class="sam-form-field">
             <div class="form-check">
-                <input type="radio" id="externo_si" name="externo" value="1" class="form-check-input" required>
-                <label for="externo_si" class="form-check-label">Sí</label>
+                <input type="radio" id="externo_si" name="externo" value="1" required />
+                <label for="externo_si">Sí</label>
             </div>
             <div class="form-check">
-                <input type="radio" id="externo_no" name="externo" value="0" class="form-check-input" required>
-                <label for="externo_no" class="form-check-label">No</label>
+                <input type="radio" id="externo_no" name="externo" value="0" required />
+                <label for="externo_no">No</label>
             </div>
-            <div class="invalid-feedback">Seleccione una opción.</div>
+            <label class="itim-regular">¿Es Externo?</label>
         </div>
+    </div>
 
-        <button type="submit" class="btn btn-primary w-100">Registrar</button>
-    </form>
-</div>
+    <button type="submit" class="btn btn-primary">Registrar</button>
+</form>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Cargar razas
+        fetch("/get-razas", { method: "GET" })
+            .then((response) => response.json())
+            .then((data) => {
+                let selectRaza = document.getElementById("raza_id");
+                data.forEach((raza) => {
+                    let option = document.createElement("option");
+                    option.value = raza.id;
+                    option.textContent = raza.nom;
+                    selectRaza.appendChild(option);
+                });
+            });
+
+        // Cargar fincas
+        fetch("/get-fincas", { method: "GET" })
+            .then((response) => response.json())
+            .then((data) => {
+                let selectFinca = document.getElementById("finca_id");
+                data.forEach((finca) => {
+                    let option = document.createElement("option");
+                    option.value = finca.id;
+                    option.textContent = finca.nombre;
+                    selectFinca.appendChild(option);
+                });
+            });
+    });
+</script>
 {% endblock %}

@@ -13,8 +13,7 @@ def public_file(filename):
         return jsonify({"error": "Ruta de imágenes no configurada"}), 500
     return send_from_directory(upload_folder, filename)
 
-# Ruta para mostrar el formulario de registro de animales con opciones de raza y finca
-@BP_ani.route('/animal', methods=['GET'])
+# Ruta para mostrar el formulario de registro de animales con opciones de razas y fincas
 @BP_ani.route('/animal', methods=['GET'])
 def animal():
     connection = None  # Inicializar la conexión
@@ -30,10 +29,7 @@ def animal():
         cursor.execute("SELECT id, nombre FROM fincas")
         fincas = cursor.fetchall()
 
-        # Imprimir los datos en la consola para verificar
-        print("Razas:", razas)
-        print("Fincas:", fincas)
-
+        # Renderizar el formulario con razas y fincas
         return render_template('owner/registros/regis-ganados.html', razas=razas, fincas=fincas)
     except Error as e:
         return jsonify({"error": str(e)}), 500
@@ -43,6 +39,7 @@ def animal():
             connection.close()
 
 # Ruta para registrar un nuevo animal
+@BP_ani.route('/animal/registro', methods=['POST'])
 @BP_ani.route('/animal/registro', methods=['POST'])
 def register_animal():
     connection = None  # Inicializar la conexión
@@ -66,7 +63,7 @@ def register_animal():
         """
         cursor.execute(insert_query, (
             data["id"], data["especie"], data["raza_id"], data["sexo"],
-            data["finca_id"], data["fech"], data["estado"], data["externo"]
+            data["finca_id"], data["fech"], int(data["estado"]), data["externo"]
         ))
         connection.commit()
 
@@ -76,6 +73,44 @@ def register_animal():
         # Redirigir al formulario con un mensaje de error en caso de fallo
         return redirect(url_for('BP_ani.animal', error=f"Error al registrar: {str(e)}"))
     finally:
-        if connection:  # Cerrar la conexión si se estableció
+        if connection:
+            cursor.close()
+            connection.close()
+            
+# Ruta para obtener razas en formato JSON
+@BP_ani.route('/get-razas', methods=['GET'])
+def get_razas():
+    try:
+        connection = connect_to_database()
+        cursor = connection.cursor(dictionary=True)
+
+        # Consulta para obtener todas las razas
+        cursor.execute("SELECT id, nom FROM razas")
+        razas = cursor.fetchall()
+
+        return jsonify(razas), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+# Ruta para obtener fincas en formato JSON
+@BP_ani.route('/get-fincas', methods=['GET'])
+def get_fincas():
+    try:
+        connection = connect_to_database()
+        cursor = connection.cursor(dictionary=True)
+
+        # Consulta para obtener todas las fincas
+        cursor.execute("SELECT id, nombre FROM fincas")
+        fincas = cursor.fetchall()
+
+        return jsonify(fincas), 200
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if connection:
             cursor.close()
             connection.close()

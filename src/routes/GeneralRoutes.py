@@ -31,49 +31,117 @@ def confirm_mail():
 @GeneralRoutes.route('/login_user', methods=["GET", "POST"])
 @with_session
 def login_user(cursor):
-
     required_fields = ["email", "password"]
     missing_fields = [field for field in required_fields if not request.form.get(field)]
 
     # Validar si falta algún campo
     if missing_fields:
         return jsonify({"error": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
-    
 
     email = str(request.form.get("email"))
     password = str(request.form.get("password"))
 
     try:
-        insert_query = '''
-                        SELECT personas.rfc, personas.correo, usuarios.rol, usuarios.rfc_comp
-                        FROM personas JOIN usuarios ON usuarios.rfc = personas.rfc
-                        WHERE personas.correo=%s AND usuarios.pass=%s;
-                        '''
-        cursor.execute(insert_query, (email, password))
+        # Consulta para obtener la información del usuario y su puesto
+        query = '''
+            SELECT personas.rfc, personas.correo, usuarios.rol, usuarios.rfc_comp,
+                   puestos.id, puestos.nombre, puestos.h_ent, puestos.h_sal
+            FROM personas 
+            JOIN usuarios ON usuarios.rfc = personas.rfc
+            LEFT JOIN puestos ON usuarios.rol = puestos.id
+            WHERE personas.correo=%s AND usuarios.pass=%s;
+        '''
+        cursor.execute(query, (email, password))
         res1 = cursor.fetchone()
 
-        if res1 == None:
-            return jsonify({"message": "Credenciales invalidas"}), 400
-        
+        if res1 is None:
+            return jsonify({"message": "Credenciales inválidas"}), 400
+
+        rol_usuario = res1[2]  
         url = "/dashboard/"
-        
-        if res1[2] == "-1":
+
+        if rol_usuario == "-1":
             url += "superuser/metrics"
-        elif res1[2] == "0":
+        elif rol_usuario == "0":
             url += "owner/panel"
-        elif res1[2] == "1":
+        elif rol_usuario in ["1", "2", "3", "4", "5"]:  # Solo empleados
             url += "empleoyes/panelEmpleados"
+
+            # Guardar información en la sesión
+            session['rfc'] = res1[0]
+            session['correo'] = res1[1]
+            session['rol'] = rol_usuario
+            session['rfc_comp'] = res1[3]
+            session['puesto_id'] = res1[4]
+            session['puesto_nombre'] = res1[5]
+            session['h_entrada'] = str(res1[6])
+            session['h_salida'] = str(res1[7])
+
+            print("Sesión guardada:", dict(session))  # Debug
+
+        # Generar token JWT
+        access_token = create_access_token(identity=str(email), additional_claims={"rol": rol_usuario, "rfc_comp": res1[3]})
+        response = make_response(jsonify({"success": True, "message": "Inicio de sesión exitoso", "token": access_token, "url": url}), 200)
         
-        access_token = create_access_token(identity=str(email), additional_claims={"rol": res1[2], "rfc_comp": res1[3]})
-        response = make_response(jsonify({"success": True, "message": "Inicio de sesión éxitoso", "token": access_token, "url": url}), 200)
-        
+        # Guardar el token en una cookie
         response.set_cookie("token", access_token)
 
-        # Mostrar los datos en la página
         return response
 
     except Error as e:
         return jsonify({"success": False, "message": str(e)}), 400
+
+
+# Registrar asistencia
+@GeneralRoutes.route('/registrar_asistencia', methods=["POST"])
+@with_session
+def registrar_asistencia(cursor):
+    if 'rfc' not in session:
+        return jsonify({"message": "Usuario no autenticado"}), 403
+
+    data = request.get_json()
+    tipo = data.get("tipo")  # Puede ser 'entrada' o 'salida'
+    rfc = session['rfc']
+    hoy = date.today()
+
+    try:
+        if tipo == "entrada":
+            # Verificar si ya hay una entrada registrada hoy
+            cursor.execute("SELECT COUNT(*) FROM asistencias WHERE rfc_emp = %s AND fechentra = %s", (rfc, hoy))
+            if cursor.fetchone()[0] > 0:
+                return jsonify({"message": "Ya registraste tu entrada hoy"}), 400
+
+            # Insertar la nueva entrada
+            cursor.execute("INSERT INTO asistencias (rfc_emp, fechentra, hora_entrada, estado) VALUES (%s, %s, NOW(), 1)", (rfc, hoy))
+            cursor._connection.commit()  # Corregimos el commit
+
+            if cursor.rowcount > 0:
+                return jsonify({"message": "Entrada registrada correctamente"}), 200
+            else:
+                return jsonify({"message": "Error al registrar entrada"}), 500
+
+        elif tipo == "salida":
+            # Verificar que exista una entrada antes de permitir registrar la salida
+            cursor.execute("SELECT COUNT(*) FROM asistencias WHERE rfc_emp = %s AND fechentra = %s", (rfc, hoy))
+            if cursor.fetchone()[0] == 0:
+                return jsonify({"message": "No puedes registrar salida sin haber registrado entrada"}), 400
+
+            # Actualizar la salida
+            cursor.execute("UPDATE asistencias SET fecsalida = %s, hora_salida = NOW() WHERE rfc_emp = %s AND fechentra = %s", (hoy, rfc, hoy))
+            cursor._connection.commit()  # Corregimos el commit
+
+            if cursor.rowcount > 0:
+                return jsonify({"message": "Salida registrada correctamente"}), 200
+            else:
+                return jsonify({"message": "Error al registrar salida"}), 500
+
+        else:
+            return jsonify({"message": "Tipo de asistencia inválido"}), 400
+
+    except Exception as e:
+        return jsonify({"message": f"Error en la base de datos: {str(e)}"}), 500
+
+
 
 @GeneralRoutes.route("/send_code/<email>")
 def enviar_codigo(email):
@@ -158,35 +226,3 @@ def get_colonias(cursor, id_municipio):
 
     return jsonify(data), 200
 
-@GeneralRoutes.route('/registrar_asistencia', methods=["GET", "POST"])
-@jwt_required()
-@with_session
-def registrar_asistencia(cursor):
-
-    jwt_data = get_jwt()
-
-    rfc = jwt_data.get("rfc")
-
-    data = request.get_json()
-    tipo = data.get("tipo")  # Puede ser 'entrada' o 'salida'
-    rfc = session['rfc']
-    hoy = date.today()
-
-    # Verificar si ya registró la asistencia hoy
-    query_verificar = """
-        SELECT COUNT(*) FROM asistencias 
-        WHERE rfc = %s AND fecha = %s AND tipo = %s;
-    """
-    cursor.execute(query_verificar, (rfc, hoy, tipo))
-    resultado = cursor.fetchone()
-
-    if resultado[0] > 0:
-        return jsonify({"message": f"La asistencia de {tipo} ya fue registrada hoy"}), 400
-
-    # Registrar asistencia
-    query_insert = """
-        INSERT INTO asistencias (rfc, fecha, hora, tipo) VALUES (%s, %s, %s, %s);
-    """
-    cursor.execute(query_insert, (rfc, hoy, datetime.now().strftime("%H:%M:%S"), tipo))
-
-    return jsonify({"message": f"Asistencia de {tipo} registrada correctamente"}), 200

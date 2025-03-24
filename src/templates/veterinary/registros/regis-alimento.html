@@ -1,0 +1,139 @@
+{% extends 'owner/panel.html' %} {% block title_bar %} REGISTRAR EMPLEADOS {%
+endblock %} {% block cont_dash %}
+<form
+  id="regForm"
+  action="{{ url_for('BP_Veterinary.registro_alimento') }}"
+  method="POST"
+  style="padding: 2%"
+>
+  <div style="margin-bottom: 3vh">
+    <label>Datos del Alimento</label>
+    <hr />
+  </div>
+  <!-- DATOS IMPORTANTES DE MEDICAMENTO -->
+
+  <div class="sam-form-container">
+    <div class="sam-form-field">
+      <input type="number" id="id" placeholder="" name="id" required />
+      <label class="itim-regular">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#000000"
+        ></svg>
+        Codigo de barra</label
+      >
+    </div>
+
+    <div class="sam-form-field">
+      <input type="text" id="nombre" placeholder="" name="nombre" required />
+      <label class="itim-regular">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#000000"
+        ></svg>
+        Nombre del alimento</label
+      >
+    </div>
+
+    <div class="sam-form-field">
+      <input type="text" id="tipo" placeholder=" " name="tipo" required />
+      <label class="itim-regular">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#000000"
+        ></svg>
+        Tipo:</label
+      >
+    </div>
+
+    <!--here-->
+    <div class="sam-form-field">
+      <input
+        type="number"
+        id="calorias"
+        placeholder=" "
+        name="calorias"
+        required
+      />
+      <label class="itim-regular">Calorias</label>
+    </div>
+    <div class="sam-form-field">
+      <input
+        type="number"
+        id="costo_kg_lt"
+        placeholder=" "
+        name="costo_kg_lt"
+        required
+      />
+      <label class="itim-regular">Costo por kg</label>
+    </div>
+  </div>
+  <button class="btn btn-primary" color="primary" type="submit">
+    Registrar
+  </button>
+</form>
+
+<script>
+  addSwalAlertCre("regForm", "/registro_alimento");
+  function addSwalAlertCre(id, endpoint, url_redir) {
+    document.getElementById(id).addEventListener("submit", function (event) {
+      event.preventDefault(); // Evita que la página se recargue
+
+      let formData = new FormData(this);
+
+      fetch(endpoint, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+        .then((response) => {
+          if (response.status === 401) {
+            // Si el token ha expirado
+            return response.json().then((data) => {
+              Swal.fire({
+                title: "Sesión expirada",
+                text: data.error,
+                icon: "info",
+                confirmButtonText: "Aceptar",
+              }).then(() => {
+                window.location.href = "/"; // Redirige después del alert
+              });
+            });
+          } else if (response.status === 400) {
+            // Si es 400
+            return response.json().then((data) => {
+              Swal.fire({
+                title: "Un error a ocurrido",
+                text: data.error,
+                icon: "warning",
+                confirmButtonText: "Aceptar",
+              });
+            });
+          } else if (response.status === 200) {
+            // Si es 400
+            return response.json().then((data) => {
+              document.getElementById("regForm").reset();
+              Swal.fire({
+                title: "Medicamento registrado",
+                text: data.msg,
+                icon: "success",
+              });
+            });
+          }
+        })
+        .then((data) => {});
+    });
+  }
+</script>
+{% endblock %}

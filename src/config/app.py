@@ -5,8 +5,13 @@ from flask_cors import CORS
 
 app = Flask(__name__,template_folder='../templates', static_folder='../../static')
 
-# Cargar variables desde el archivo .env
+# Cargar variables de entorno
 load_dotenv()
+""
+# Configurar la clave secreta desde las variables de entorno
+app.secret_key = os.getenv('SECRET_KEY_JWT')
+
+# Cargar variables desde el archivo .env'load_dotenv()
 if not os.path.exists(os.getenv("URL_FOR_ROUTES")):
     os.makedirs(os.getenv("URL_FOR_ROUTES"))
     

@@ -1,6 +1,7 @@
 
 
 from collections import namedtuple
+from datetime import datetime, timedelta
 import secrets
 import string
 from flask import Blueprint, jsonify, request
@@ -20,7 +21,7 @@ def create_employee(cursor):
 
     rfc_comp = jwt_data.get("rfc_comp")
     
-    required_fields = ["rol", "rfc", "nombre", "correo", "app", "apm", "fech_nac", "sex", "tel", "id_colonia"]
+    required_fields = ["rol", "rfc", "nombre", "correo", "app", "apm", "fech_nac", "sex", "tel", "id_colonia", "finca_id"]
     missing_fields = [field for field in required_fields if not request.form.get(field)]
 
     # Validar si falta algún campo
@@ -36,6 +37,7 @@ def create_employee(cursor):
     sex = request.form.get("sex")
     tel = request.form.get("tel")
     rol = request.form.get("rol")
+    turno = request.form.get("turno")
     id_colonia = request.form.get("id_colonia")
 
     query = "INSERT INTO personas (rfc, nombre, correo, app, apm, fech_nac, sex, tel, id_colonia) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
@@ -43,6 +45,11 @@ def create_employee(cursor):
 
     query = "INSERT INTO usuarios (rfc, pass, rol, rfc_comp) VALUES (%s, %s, %s, %s);"
     cursor.execute(query, (rfc, gn_pass(7), rol, rfc_comp))
+
+    finca_id = request.form.get("finca_id")
+
+    query = "INSERT INTO empleados (rfc, puesto_id, finca_id, turno) VALUES (%s, %s, %s, %s);"
+    cursor.execute(query, (rfc, rol, finca_id, turno))
     
     return jsonify({"success": True, "msg": "Usuario creado correctamente"}), 200
 
@@ -93,15 +100,64 @@ def get_fincas(cursor):
 
     return jsonify(data), 200
 
+@BP_Owner.route("/get-all-puestos", methods=["GET"])
+@jwt_required()
+@with_session
+def get_puestos(cursor):
+
+    jwt_data = get_jwt()
+
+    rfc_comp = jwt_data.get("rfc_comp")
+
+    query = "SELECT * FROM puestos;"
+    cursor.execute(query)
+
+    data = convertToObject(cursor)
+
+    return jsonify(data), 200
+
+@BP_Owner.route("/update-puesto", methods=["PUT"])
+@jwt_required()
+@with_transaction
+def update_puesto(cursor):
+
+    required_fields = ["id", "descripcion", "salario_base", "h_ent", "h_sal", "dias_lab"]
+    missing_fields = [field for field in required_fields if not request.form.get(field)]
+
+    # Validar si falta algún campo
+    if missing_fields:
+        return jsonify({"error": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+    
+    _id = request.form.get("id")
+    descripcion = request.form.get("descripcion")
+    salario_base = request.form.get("salario_base")
+    h_ent = request.form.get("h_ent")
+    h_sal = request.form.get("h_sal")
+    dias_lab = request.form.get("dias_lab")
+
+    query = "UPDATE puestos SET descripcion=%s, salario_base=%s, dias_lab=%s, h_ent=%s, h_sal=%s WHERE id=%s;"
+    cursor.execute(query, (descripcion, salario_base, dias_lab, h_ent, h_sal, _id))
+
+    return jsonify("El puesto fue actualizado correctamente."), 200
+
 
 def convertToObject(cursor):
-    columnas = [column[0] for column in cursor.description]  # Obtiene los nombres de las columnas
-    # Usar namedtuple para tratar las filas como objetos
-    TABLE = namedtuple('TABLE', columnas)  # Crear una clase con los nombres de las columnas como atributos
+    columnas = [column[0] for column in cursor.description]  # Obtener nombres de columnas
+    TABLE = namedtuple('TABLE', columnas)  # Crear namedtuple
     response = cursor.fetchall()
 
-    # Crear una lista de objetos Pais
-    object_data = [TABLE(*row) for row in response]
-    # Retornar la respuesta como JSON con los nombres de las columnas y los datos
-    return [object._asdict() for object in object_data]  # Convertir namedtuple a diccionario para JSON
+    object_data = [TABLE(*row) for row in response]  # Convertir filas en objetos
+
+    def serialize_value(value):
+        """Convierte valores no serializables a formatos compatibles con JSON"""
+        if isinstance(value, timedelta):  # Si es un TIME de MySQL (timedelta)
+            # Convertir timedelta a horas y minutos en formato 24H (HH:MM)
+            total_seconds = value.total_seconds()
+            hours = int(total_seconds // 3600)  # Horas
+            minutes = int((total_seconds % 3600) // 60)  # Minutos
+            return f"{hours:02d}:{minutes:02d}"  # Formato HH:MM (24H)
+
+        return value  # Devolver el valor normal si no es timedelta
+
+    return [{key: serialize_value(value) for key, value in obj._asdict().items()} for obj in object_data]
 

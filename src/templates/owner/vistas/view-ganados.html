@@ -1,8 +1,63 @@
 {% extends 'owner/panel.html' %}
 
-
-{% block title_bar %}Ganados{% endblock %}  
+{% block title_bar %} BÚSQUEDA DE ANIMALES {% endblock %}
 
 {% block cont_dash %}
-Ganados
-{% endblock %}  
+<div class="container mt-5">
+    <!-- Mensaje de error -->
+    {% if request.args.get('error') %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ request.args.get('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <!-- Formulario de Búsqueda -->
+    <form id="buscarAnimal" action="{{ url_for('BP_buscar.buscar') }}" method="GET" class="card p-4 shadow-lg">
+        <div style="margin-top: 3vh; margin-bottom: 3vh">
+            <label>Buscar Animal</label>
+            <hr />
+        </div>
+        <div class="sam-form-container">
+            <!-- Campo: Número de Arete -->
+            <div class="sam-form-field">
+                <input type="number" id="id" name="id" class="form-control" placeholder="" required>
+                <label class="itim-regular">Número de Arete</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 mt-4">Buscar</button>
+    </form>
+
+    <!-- Resultados de la Búsqueda -->
+    {% if animal %}
+    <div class="mt-5">
+        <div style="margin-top: 3vh; margin-bottom: 3vh">
+            <label>Resultados</label>
+            <hr />
+        </div>
+        <table class="table table-bordered table-striped shadow-lg">
+            <thead class="bg-light">
+                <tr>
+                    <th>Especie</th>
+                    <th>Nombre de la Raza</th>
+                    <th>Finca</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Estado</th>
+                    <th>Externo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ animal.especie }}</td>
+                    <td>{{ animal.raza }}</td>
+                    <td>{{ animal.finca }}</td>
+                    <td>{{ animal.fech }}</td>
+                    <td>{{ animal.estado }}</td>
+                    <td>{{ "Sí" if animal.externo else "No" }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

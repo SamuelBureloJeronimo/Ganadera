@@ -62,6 +62,7 @@ def gn_pass(longitud=12):
 @BP_Owner.route("/create_finca", methods=["POST"])
 @jwt_required()
 @with_transaction
+
 def create_finca(cursor):
 
     jwt_data = get_jwt()
@@ -161,3 +162,4 @@ def convertToObject(cursor):
         return value  # Devolver el valor normal si no es timedelta
 
     return [{key: serialize_value(value) for key, value in obj._asdict().items()} for obj in object_data]
+

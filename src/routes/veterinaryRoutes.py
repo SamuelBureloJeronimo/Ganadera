@@ -23,7 +23,7 @@ def registro_medicamento(cursor):
     if missing_fields:
         return jsonify({"error": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
       
-    id = request.form.get("id")
+    _id = int(request.form.get("id"))
     rfc_prov = request.form.get("rfc_prov")
     nom = request.form.get("nom")
     enf_id = request.form.get("enf_id")
@@ -41,7 +41,7 @@ def registro_medicamento(cursor):
     """
     
     # Ejecutar la consulta con los valores
-    cursor.execute(query, (id, rfc_prov, nom, enf_id, marca, dur, unid, cont, via_adm, desc))
+    cursor.execute(query, (_id, rfc_prov, nom, enf_id, marca, dur, unid, cont, via_adm, desc))
     
     return jsonify({"success": True, "msg": "Medicamento registrado"}), 200
 
@@ -84,7 +84,7 @@ def registro_insumo(cursor):
     wt_data = get_jwt()
     
     
-    required_fields = ["id", "comp_id", "rfc_prov", "fech", "cantidad","precio_u","estatus","observ"]
+    required_fields = ["id", "tipo", "rfc_prov", "fech", "cantidad","precio_u","estatus","observ"]
     missing_fields = [field for field in required_fields if not request.form.get(field)]
 
     # Validar si falta algún campo
@@ -93,7 +93,7 @@ def registro_insumo(cursor):
       
     
     id = request.form.get("id")
-    comp_id=request.form.get("comp_id")
+    tipo=request.form.get("tipo")
     rfc_prov=request.form.get("rfc_prov")
     fech=request.form.get("fech")
     cantidad=request.form.get("cantidad")
@@ -103,11 +103,11 @@ def registro_insumo(cursor):
     
     # Consulta SQL corregida
     query = """
-    INSERT INTO compras_insumos (id, comp_id,rfc_prov,fech,cantidad,precio_u,estatus,observ)
+    INSERT INTO compras_insumos (id, tipo,rfc_prov,fech,cantidad,precio_u,estatus,observ)
     VALUES (%s, %s, %s, %s,%s, %s, %s, %s);
     """
     
     # Ejecutar la consulta con los valores
-    cursor.execute(query, (id, comp_id,rfc_prov,fech,cantidad,precio_u,estatus,observ))
+    cursor.execute(query, (id, tipo,rfc_prov,fech,cantidad,precio_u,estatus,observ))
     
     return jsonify({"success": True, "msg": "Alimento registrado"}), 200

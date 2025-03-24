@@ -38,8 +38,6 @@ def create_employee(cursor):
     tel = request.form.get("tel")
     rol = request.form.get("rol")
     turno = request.form.get("turno")
-    he = request.form.get("he")
-    hs = request.form.get("hs")
     id_colonia = request.form.get("id_colonia")
 
     query = "INSERT INTO personas (rfc, nombre, correo, app, apm, fech_nac, sex, tel, id_colonia) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
@@ -50,8 +48,8 @@ def create_employee(cursor):
 
     finca_id = request.form.get("finca_id")
 
-    query = "INSERT INTO empleados (rfc, puesto_id, finca_id, turno, h_ent, h_sal) VALUES (%s, %s, %s, %s, %s, %s);"
-    cursor.execute(query, (rfc, rol, finca_id, turno, he, hs))
+    query = "INSERT INTO empleados (rfc, puesto_id, finca_id, turno) VALUES (%s, %s, %s, %s);"
+    cursor.execute(query, (rfc, rol, finca_id, turno))
     
     return jsonify({"success": True, "msg": "Usuario creado correctamente"}), 200
 

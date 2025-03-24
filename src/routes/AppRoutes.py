@@ -111,3 +111,8 @@ def view_employees(decoded):
 @owner_protected
 def view_animal(decoded):
     return render_template('owner/vistas/view-animal.html')
+
+# RUTAS PARA EMPLEADOS
+@AppRoutes.route('/dashboard/empleoyes/panelEmpleados', methods=["GET", "POST"])
+def panelEmpleados():
+    return render_template('contability/panel.html')

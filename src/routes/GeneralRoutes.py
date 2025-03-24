@@ -1,7 +1,8 @@
 from collections import namedtuple
+from datetime import date, datetime
 import random
-from flask import Blueprint, jsonify, make_response, render_template_string, request, send_from_directory
-from flask_jwt_extended import create_access_token
+from flask import Blueprint, jsonify, make_response, render_template_string, request, send_from_directory, session
+from flask_jwt_extended import create_access_token, get_jwt, jwt_required
 from flask_mail import Message
 from database.db import *
 from config.mail_conf import mail
@@ -58,13 +59,10 @@ def login_user(cursor):
         
         if res1[2] == "-1":
             url += "superuser/metrics"
-        if res1[2] == "0":
+        elif res1[2] == "0":
             url += "owner/panel"
-
-        formData = {
-            "logo": "Logoruta"
-        }
-
+        elif res1[2] == "1":
+            url += "empleoyes/panelEmpleados"
         
         access_token = create_access_token(identity=str(email), additional_claims={"rol": res1[2], "rfc_comp": res1[3]})
         response = make_response(jsonify({"success": True, "message": "Inicio de sesión éxitoso", "token": access_token, "url": url}), 200)
@@ -159,3 +157,36 @@ def get_colonias(cursor, id_municipio):
     data = convertToObject(cursor)
 
     return jsonify(data), 200
+
+@GeneralRoutes.route('/registrar_asistencia', methods=["GET", "POST"])
+@jwt_required()
+@with_session
+def registrar_asistencia(cursor):
+
+    jwt_data = get_jwt()
+
+    rfc = jwt_data.get("rfc")
+
+    data = request.get_json()
+    tipo = data.get("tipo")  # Puede ser 'entrada' o 'salida'
+    rfc = session['rfc']
+    hoy = date.today()
+
+    # Verificar si ya registró la asistencia hoy
+    query_verificar = """
+        SELECT COUNT(*) FROM asistencias 
+        WHERE rfc = %s AND fecha = %s AND tipo = %s;
+    """
+    cursor.execute(query_verificar, (rfc, hoy, tipo))
+    resultado = cursor.fetchone()
+
+    if resultado[0] > 0:
+        return jsonify({"message": f"La asistencia de {tipo} ya fue registrada hoy"}), 400
+
+    # Registrar asistencia
+    query_insert = """
+        INSERT INTO asistencias (rfc, fecha, hora, tipo) VALUES (%s, %s, %s, %s);
+    """
+    cursor.execute(query_insert, (rfc, hoy, datetime.now().strftime("%H:%M:%S"), tipo))
+
+    return jsonify({"message": f"Asistencia de {tipo} registrada correctamente"}), 200

@@ -1,0 +1,55 @@
+{% extends 'owner/panel.html' %}
+
+{% block title_bar %} BÚSQUEDA DE ANIMALES {% endblock %}
+
+{% block cont_dash %}
+<div class="container mt-5">
+    <!-- Mensaje de error -->
+    {% if request.args.get('error') %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ request.args.get('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <!-- Formulario de Búsqueda -->
+    <form id="buscarAnimal" action="{{ url_for('BP_animal.buscar') }}" method="GET" class="card p-4 shadow-lg">
+        <div class="mb-3">
+            <label for="id" class="form-label">Número de Arete</label>
+            <input type="number" id="id" name="id" class="form-control" placeholder="Ingrese el número de arete" required>
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Buscar Animal</button>
+        </div>
+    </form>
+
+    <!-- Tabla de Resultados -->
+    {% if animal %}
+    <div class="mt-5">
+        <h5 class="text-center">Resultados de la Búsqueda</h5>
+        <table class="table table-bordered table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>Especie</th>
+                    <th>Nombre de la Raza</th>
+                    <th>Finca</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Estado</th>
+                    <th>Externo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ animal.especie }}</td>
+                    <td>{{ animal.raza }}</td>
+                    <td>{{ animal.finca }}</td>
+                    <td>{{ animal.fech }}</td>
+                    <td>{{ animal.estado }}</td>
+                    <td>{{ "Sí" if animal.externo else "No" }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -64,7 +64,7 @@ def login_user(cursor):
             url += "superuser/metrics"
         elif rol_usuario == "0":
             url += "owner/panel"
-        elif rol_usuario in ["1", "2", "3", "4", "5"]:  # Solo empleados
+        elif rol_usuario in ["1", "2", "3", "4"]:  # Solo empleados
             url += "empleoyes/panelEmpleados"
 
             # Guardar información en la sesión

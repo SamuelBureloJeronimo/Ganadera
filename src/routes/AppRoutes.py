@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request
 from database.db import *
-
 from guards.RoutesGuards import owner_protected, super_protected
 
 # Cargar variables desde el archivo .env
@@ -42,6 +41,28 @@ def register():
 @super_protected
 def settings():
     return render_template('superuser/settings.html')
+  
+#RUTAS PARA EL VETERINARIO
+@AppRoutes.route('/dashboard/veterinary/panel', methods=["GET", "POST"])
+@owner_protected
+def panel_veterinary(decoded):
+    return render_template('veterinary/panel.html')
+
+@AppRoutes.route('/dashboard/veterinary/register-medicamento',methods=["GET", "POST"])
+@owner_protected
+def regis_medicamentos(decoded):
+    return render_template('veterinary/registros/regis-medicamento.html')
+  
+@AppRoutes.route('/dashboard/veterinary/register-alimento',methods=["GET","POST"])
+@owner_protected
+def regis_alimentos(decoded):
+    return render_template('veterinary/registros/regis-alimento.html')
+
+@AppRoutes.route('/dashboard/veterinary/register-insumo',methods=["GET","POST"])
+@owner_protected
+def regis_insumos(decoded):
+  return render_template('veterinary/registros/regis-insumo.html')
+  
 
 # RUTAS PARA EL DUEÑO
 @AppRoutes.route('/dashboard/owner/panel', methods=["GET", "POST"])
@@ -64,6 +85,11 @@ def regis_employee(decoded):
 def regis_finca(decoded):
     return render_template('owner/registros/regis-fincas.html')
 
+@AppRoutes.route('/dashboard/owner/conf-puestos', methods=["GET", "POST"])
+@owner_protected
+def conf_puestos(decoded):
+    return render_template('owner/registros/conf-puestos.html')
+
 
 
 @AppRoutes.route('/dashboard/owner/view-ganados', methods=["GET", "POST"])
@@ -80,3 +106,8 @@ def view_fincas(decoded):
 @owner_protected
 def view_employees(decoded):
     return render_template('owner/vistas/view-employees.html')
+  
+@AppRoutes.route("/dashboard/owner/animales",methods=["GET","POST"])
+@owner_protected
+def view_animal(decoded):
+    return render_template('owner/vistas/view-animal.html')

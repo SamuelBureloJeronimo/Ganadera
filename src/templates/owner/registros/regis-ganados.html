@@ -3,7 +3,128 @@
 {% block title_bar %} REGISTRAR GANADOS {% endblock %}
 
 {% block cont_dash %}
+<form id="regForm" action="{{ url_for('BP_ani.register_animal') }}" method="POST" style="padding: 2%">
 
-Espacio
+    <div style="margin-top: 3vh; margin-bottom: 3vh">
+        <label>Datos del ganado</label>
+        <hr />
+    </div>
+    {% if request.args.get('success') %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ request.args.get('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endif %}
 
+{% if request.args.get('error') %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ request.args.get('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endif %}
+
+    <div class="sam-form-container">
+        <div class="sam-form-field">
+            <input type="text" id="id" placeholder=" " name="id" required />
+            <label class="itim-regular"> Numero del Arete</label>
+        </div>
+
+        <div class="sam-form-field">
+            <input type="text" id="especie" placeholder=" " name="especie" required />
+            <label class="itim-regular">Especie</label>
+        </div>
+
+        <div class="sam-form-field">
+            <select id="raza_id" name="raza_id" required>
+                <option value="" disabled selected>Seleccione la raza</option>
+            </select>
+        </div>
+
+        <div class="sam-form-field">
+            <select id="sexo" name="sexo" required>
+                <option value="" disabled selected>Seleccione el sexo</option>
+                <option value="macho">Macho</option>
+                <option value="hembra">Hembra</option>
+            </select>
+        </div>
+    </div>
+
+    <div style="margin-top: 3vh; margin-bottom: 3vh">
+        <label>Ubicación y Finca</label>
+        <hr />
+    </div>
+
+    <div class="sam-form-container">
+        <div class="sam-form-field">
+            <select id="finca_id" name="finca_id" required>
+                <option value="" disabled selected>Seleccione la finca</option>
+            </select>
+        </div>
+    </div>
+
+    <div style="margin-top: 3vh; margin-bottom: 3vh">
+        <label>Detalles adicionales</label>
+        <hr />
+    </div>
+
+    <div class="sam-form-container">
+        <div class="sam-form-field">
+            <input type="date" id="fech" placeholder=" " name="fech" required />
+            <label class="itim-regular">Fecha de Nacimiento</label>
+        </div>
+
+        <div class="sam-form-field">
+            <select id="estado" name="estado" required>
+                <option value="" disabled selected>Seleccione el estado</option>
+                <option value="1">Sano</option>
+                <option value="2">Vendido</option>
+                <option value="3">Muerto</option>
+            </select>
+        </div>
+
+        <div class="sam-form-field">
+            <div class="form-check">
+                <input type="radio" id="externo_si" name="externo" value="1" required />
+                <label for="externo_si">Sí</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" id="externo_no" name="externo" value="0" required />
+                <label for="externo_no">No</label>
+            </div>
+            <label class="itim-regular">¿Es Externo?</label>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Registrar</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Cargar razas
+        fetch("/get-razas", { method: "GET" })
+            .then((response) => response.json())
+            .then((data) => {
+                let selectRaza = document.getElementById("raza_id");
+                data.forEach((raza) => {
+                    let option = document.createElement("option");
+                    option.value = raza.id;
+                    option.textContent = raza.nom;
+                    selectRaza.appendChild(option);
+                });
+            });
+
+        // Cargar fincas
+        fetch("/get-fincas", { method: "GET" })
+            .then((response) => response.json())
+            .then((data) => {
+                let selectFinca = document.getElementById("finca_id");
+                data.forEach((finca) => {
+                    let option = document.createElement("option");
+                    option.value = finca.id;
+                    option.textContent = finca.nombre;
+                    selectFinca.appendChild(option);
+                });
+            });
+    });
+</script>
 {% endblock %}

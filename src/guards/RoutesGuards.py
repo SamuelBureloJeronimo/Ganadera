@@ -76,7 +76,7 @@ def with_session(f):
             if conn:
                 conn.close()
 
-            print("Sesión Cerrada");
+            print("Sesión Cerrada")
     return decorated_function
 
 

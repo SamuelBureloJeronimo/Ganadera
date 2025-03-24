@@ -12,8 +12,7 @@ load_dotenv()
 app.secret_key = os.getenv('SECRET_KEY_JWT')
 
 # Cargar variables desde el archivo .env'load_dotenv()
-if not os.path.exists(os.getenv("URL_FOR_ROUTES")):
-    os.makedirs(os.getenv("URL_FOR_ROUTES"))
+
     
 from config.jwt_conf import jwt
 from config.bp_conf import bp

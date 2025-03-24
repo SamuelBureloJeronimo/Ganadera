@@ -1,0 +1,285 @@
+{% extends 'owner/panel.html' %}
+
+{% block title_bar %} FINCAS {% endblock %}
+
+{% block cont_dash %}
+
+<form id="regForm" action="{{ url_for('BP_Owner.update_puesto') }}" method="PUT">
+<div class="sam-form-container">
+    <div class="sam-form-field" id="especial">
+        <select id="puestos" name="puestos" required onchange="selectPuesto()">
+            <option value="" selected disabled>Selecciona el puesto</option>
+            <option value="1">Contabilidad</option>
+            <option value="2">Capataz</option>
+            <option value="3">Jornalero</option>
+            <option value="4">Veterinario</option>
+        </select>
+    </div>
+</div>
+
+<div id="contHidd" hidden="true">
+    
+<div class="sam-form-container">
+    <div class="sam-form-field">
+        <input type="text" id="descripcion" placeholder=" " name="descripcion" />
+        <label class="itim-regular">[Opcional] Descripción</label>
+    </div>
+    <div class="sam-form-field">
+        <input type="number" id="salario_base" placeholder=" " name="salario_base" required/>
+        <label class="itim-regular">Salario base [SEMANAL]</label>
+    </div>
+</div>
+
+<div class="sam-form-container">
+    <div class="sam-form-field">
+        <input type="time" id="h_ent" step="60" placeholder=" " name="h_ent" required />
+        <label class="itim-regular">Hora de entrada</label>
+        <spam class="itim-regular mat-error" id="errorMsg">La Hora de entrada debe ser MENOR</spam>
+    </div>
+    <div class="sam-form-field">
+        <input type="time" id="h_sal" step="60" placeholder=" " name="h_sal" required />
+        <label class="itim-regular">Hora de salida</label>
+        <spam class="itim-regular mat-error" id="errorMsg">La Hora de salida debe ser MAYOR</spam>
+    </div>
+</div>
+
+<div style="margin-bottom: 3vh">
+    <label>Dias laborables</label>
+    <hr />
+</div>
+
+<div class="grid grid-cols-2 gap-2">
+    <label class="flex items-center space-x-2 p-2 rounded-lg cursor-pointer hover:bg-gray-200">
+        <input type="checkbox" id="lunes" name="dias" value="1" class="w-5 h-5 text-blue-500">
+        <span>Lunes</span>
+    </label>
+    <label class="flex items-center space-x-2 p-2 rounded-lg cursor-pointer hover:bg-gray-200">
+        <input type="checkbox" id="martes" name="dias" value="2" class="w-5 h-5 text-blue-500">
+        <span>Martes</span>
+    </label>
+    <label class="flex items-center space-x-2 p-2 rounded-lg cursor-pointer hover:bg-gray-200">
+        <input type="checkbox" id="miercoles" name="dias" value="3" class="w-5 h-5 text-blue-500">
+        <span>Miércoles</span>
+    </label>
+    <label class="flex items-center space-x-2 p-2 rounded-lg cursor-pointer hover:bg-gray-200">
+        <input type="checkbox" id="jueves" name="dias" value="4" class="w-5 h-5 text-blue-500">
+        <span>Jueves</span>
+    </label>
+    <label class="flex items-center space-x-2 p-2 rounded-lg cursor-pointer hover:bg-gray-200">
+        <input type="checkbox" id="viernes" name="dias" value="5" class="w-5 h-5 text-blue-500">
+        <span>Viernes</span>
+    </label>
+    <label class="flex items-center space-x-2 p-2 rounded-lg cursor-pointer hover:bg-gray-200">
+        <input type="checkbox" id="sabado" name="dias" value="6" class="w-5 h-5 text-blue-500">
+        <span>Sábado</span>
+    </label>
+    <label class="flex items-center space-x-2 col-span-2 p-2 rounded-lg cursor-pointer hover:bg-gray-200">
+        <input type="checkbox" id="domingo" name="dias" value="7" class="w-5 h-5 text-blue-500">
+        <span>Domingo</span>
+    </label>
+</div>
+<button type="submit" id="submitBtn" class="mt-4 w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600">
+    Guardar
+</button>
+</div>
+</form>
+<script>
+    let puestos = [];
+    fetch("/get-all-puestos",{ 
+            method: "GET",
+            headers: { "Authorization": "Bearer " + token }
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            data.forEach(element => {
+                element.dias_lab = convertirDias(element.dias_lab)
+                puestos.push(element);
+            });
+
+            console.log(puestos)
+            /*
+            let selectPais = document.getElementById("paises");
+            data.forEach((estado) => {
+                let option = document.createElement("option");
+                option.value = estado.id;
+                option.textContent = estado.nom;
+                selectPais.appendChild(option);
+            });*/
+        });
+
+function selectPuesto() {
+    let contHidd = document.getElementById("contHidd");
+    contHidd.hidden = false;
+
+    let selectElement = document.getElementById("puestos");
+    let descripcion = document.getElementById("descripcion");
+    let salario_base = document.getElementById("salario_base");
+
+    let h_ent = document.getElementById("h_ent");
+    let h_sal = document.getElementById("h_sal");
+
+    let puesto = selectElement.value;
+    puesto = puestos[puesto-1];
+
+    descripcion.value = puesto.descripcion
+    salario_base.value = puesto.salario_base
+    h_ent.value = puesto.h_ent;
+    h_sal.value = puesto.h_sal;
+    selectDias(puesto.dias_lab)
+}
+
+function selectDias(dias) {
+    let diasSemana = [
+        { "dia": "lunes" },
+        { "dia": "martes"},
+        { "dia": "miercoles"},
+        { "dia": "jueves"},
+        { "dia": "viernes"},
+        { "dia": "sabado"},
+        { "dia": "domingo"}
+    ];
+
+    diasSemana.forEach(element => {
+        let checkbox1 = document.getElementById(element.dia);
+        checkbox1.checked = false;
+    });
+
+    dias.forEach(element => {
+        let checkbox = document.getElementById(element);
+        checkbox.checked = true;
+    });
+}
+
+function convertirDias(campo) {
+    // Mapeo de números a días de la semana
+    const diasSemana = {
+        1: "lunes",
+        2: "martes",
+        3: "miercoles",
+        4: "jueves",
+        5: "viernes",
+        6: "sabado",
+        7: "domingo"
+    };
+
+    // Convertimos el string "1,2,3" en un array de números
+    return campo.split(",").map(num => diasSemana[num.trim()] || "Desconocido");
+}
+// Añadir el evento input a ambos inputs para validar en tiempo real
+document.getElementById("h_ent").addEventListener("input", validarHoras);
+document.getElementById("h_sal").addEventListener("input", validarHoras);
+
+function obtenerDiasSeleccionados() {
+    // Mapeo de días a números
+    const diasSemana = {
+        "lunes": 1,
+        "martes": 2,
+        "miercoles": 3,
+        "jueves": 4,
+        "viernes": 5,
+        "sabado": 6,
+        "domingo": 7
+    };
+
+    // Obtener los checkboxes marcados
+    let seleccionados = Object.keys(diasSemana).filter(dia => {
+        let checkbox = document.getElementById(dia);
+        return checkbox && checkbox.checked;
+    }).map(dia => diasSemana[dia]); // Convertir a número
+
+    // Unir en un string separado por comas
+    return seleccionados.join(",");
+}
+addSwalAlertCre("regForm", "/update-puesto");
+    function addSwalAlertCre(id, endpoint) {
+        document.getElementById(id).addEventListener("submit", function (event) {
+            event.preventDefault(); // Evita que la página se recargue
+            let dias_selected = obtenerDiasSeleccionados();
+
+            if(dias_selected === ""){
+                Swal.fire({
+                    title: "Selecciona un día",
+                    text: "Debes de seleccionar al menos un días laborable.",
+                    icon: "info",
+                    confirmButtonText: "Aceptar",
+                })
+                return;
+            }
+
+            let formData = new FormData();
+                    
+            formData.append("id", document.getElementById("puestos").value);
+            formData.append("descripcion", document.getElementById("descripcion").value);
+            formData.append("salario_base", document.getElementById("salario_base").value);
+            formData.append("h_ent", document.getElementById("h_ent").value);
+            formData.append("h_sal", document.getElementById("h_sal").value);
+            formData.append("dias_lab", dias_selected);
+
+            fetch(endpoint, {
+                method: "PUT",
+                body: formData,
+                headers: {
+                    Authorization: "Bearer " + token,
+                },
+            })
+                .then((response) => {
+                    if (response.status === 401) {
+                        // Si el token ha expirado
+                        return response.json().then((data) => {
+                            Swal.fire({
+                                title: "Sesión expirada",
+                                text: data.error,
+                                icon: "info",
+                                confirmButtonText: "Aceptar",
+                            }).then(() => {
+                                window.location.href = "/"; // Redirige después del alert
+                            });
+                        });
+                    } else if (response.status === 400) {
+                        // Si es 400
+                        return response.json().then((data) => {
+                            Swal.fire({
+                                title: "Un error a ocurrido",
+                                text: data.error,
+                                icon: "warning",
+                                confirmButtonText: "Aceptar",
+                            });
+                        });
+                    } else if (response.status === 200) {
+                        // Si es 400
+                        return response.json().then((data) => {
+                            
+                            Swal.fire({
+                                title: "¡Datos actualizados!",
+                                text: data,
+                                icon: "success",
+                            });
+
+                            i_puesto = document.getElementById("puestos").value-1;
+                            
+                            puestos[i_puesto].descripcion = document.getElementById("descripcion").value;
+                            puestos[i_puesto].salario_base = document.getElementById("salario_base").value;
+                            puestos[i_puesto].h_ent = document.getElementById("h_ent").value;
+                            puestos[i_puesto].h_sal = document.getElementById("h_sal").value;
+                            puestos[i_puesto].dias_lab = convertirDias(obtenerDiasSeleccionados());
+
+                        });
+                    }
+                })
+                .then((data) => { });
+        });
+    }
+    function validarHoras() {
+    let h_ent = document.getElementById("h_ent").value;
+    let h_sal = document.getElementById("h_sal").value;
+
+    // Validar si la hora de entrada es mayor o igual a la hora de salida
+    if (h_ent && h_sal && h_ent >= h_sal) {
+        document.getElementById("errorMsg").style.display = "block"; // Mostrar mensaje de error
+    } else {
+        document.getElementById("errorMsg").style.display = "none"; // Ocultar mensaje de error
+    }
+}
+
+</script>
+{% endblock %}

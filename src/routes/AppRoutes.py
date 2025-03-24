@@ -64,6 +64,11 @@ def regis_employee(decoded):
 def regis_finca(decoded):
     return render_template('owner/registros/regis-fincas.html')
 
+@AppRoutes.route('/dashboard/owner/conf-puestos', methods=["GET", "POST"])
+@owner_protected
+def conf_puestos(decoded):
+    return render_template('owner/registros/conf-puestos.html')
+
 
 
 @AppRoutes.route('/dashboard/owner/view-ganados', methods=["GET", "POST"])

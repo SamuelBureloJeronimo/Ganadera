@@ -3,35 +3,91 @@
 {% block title_bar %} REGISTRAR RAZAS {% endblock %}
 
 {% block cont_dash %}
-<form id="registroRaza" action="{{ url_for('BP_ani.register_raza') }}" method="POST" enctype="multipart/form-data" style="padding: 2%">
-
-    <div style="margin-top: 3vh; margin-bottom: 3vh">
-        <label>Datos de la Raza</label>
-        <hr />
+<div class="container mt-5">
+    <!-- Mensaje de éxito -->
+    {% if request.args.get('success') %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ request.args.get('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    {% endif %}
 
-    <div class="sam-form-container">
-        <div class="sam-form-field">
-            <input type="text" id="nom" placeholder=" " name="nom" required />
-            <label class="itim-regular">Nombre de la Raza</label>
-        </div>
-
-        <div class="sam-form-field">
-            <textarea id="desc" name="desc" placeholder=" " rows="4" style="resize: none;"></textarea>
-            <label class="itim-regular">Descripción</label>
-        </div>
-
-        <div class="sam-form-field">
-            <input type="file" id="img" name="img" accept="image/*" />
-            <label class="itim-regular">Subir Imagen</label>
-        </div>
+    <!-- Mensaje de error -->
+    {% if request.args.get('error') %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ request.args.get('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    {% endif %}
 
-    <button type="submit" class="btn btn-primary w-100">Registrar</button>
-</form>
+    <!-- Formulario de Registro de Raza -->
+    <form id="registroRaza" action="{{ url_for('BP_raza.register_raza') }}" method="POST" enctype="multipart/form-data" style="padding: 2%">
+        <div style="margin-top: 3vh; margin-bottom: 3vh">
+            <label>Datos de la Raza</label>
+            <hr />
+        </div>
 
+        <!-- Campos principales del formulario -->
+        <div class="sam-form-container">
+            <!-- ID de la Raza -->
+            <div class="sam-form-field">
+                <input type="number" id="id" name="id" class="form-control" placeholder="" required>
+                <label class="itim-regular">ID de la Raza</label>
+            </div>
+
+            <!-- Nombre de la Raza -->
+            <div class="sam-form-field">
+                <input type="text" id="nom" placeholder=" " name="nom" required />
+                <label class="itim-regular">Nombre de la Raza</label>
+            </div>
+
+            <!-- Descripción -->
+            <div class="sam-form-field">
+                <input id="desc" name="desc" placeholder=" " style="resize: none;">
+                <label class="itim-regular">Descripción (Opcional)</label>
+            </div>
+
+            <!-- Subir Imagen -->
+            <div class="sam-form-field">
+                <input type="file" id="img" name="img" accept="image/*" onchange="previewImage(event)" />
+                <label class="itim-regular">Subir Imagen</label>
+            </div>
+        </div>
+
+        <!-- Vista previa de la imagen seleccionada -->
+        <div class="text-center mt-4 mb-4">
+            <label class="text-muted">Vista previa de la imagen:</label>
+            <div style="max-width: 250px; margin: auto;">
+                <img id="imagePreview" src="#" alt="Vista previa de la imagen"
+                    style="max-width: 100%; height: auto; display: none; border: 1px solid #ddd; border-radius: 5px;" />
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary w-100">Registrar</button>
+        </div>
+    </form>
+</div>
+
+<!-- Script para mostrar la imagen seleccionada -->
 <script>
-    addSwalAlertCre("registroRaza", "/register_raza");
-</script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('imagePreview');
 
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;  // Actualizar la fuente (src) con la imagen seleccionada
+                preview.style.display = 'block';  // Mostrar el elemento img
+            };
+
+            reader.readAsDataURL(input.files[0]);  // Leer la imagen seleccionada como URL de datos
+        } else {
+            preview.src = '#';
+            preview.style.display = 'none';  // Ocultar la imagen si no hay archivo seleccionado
+        }
+    }
+</script>
 {% endblock %}

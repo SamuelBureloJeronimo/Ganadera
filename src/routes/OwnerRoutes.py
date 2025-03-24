@@ -53,6 +53,7 @@ def gn_pass(longitud=12):
 @BP_Owner.route("/create_finca", methods=["POST"])
 @jwt_required()
 @with_transaction
+
 def create_finca(cursor):
 
     jwt_data = get_jwt()
@@ -103,3 +104,4 @@ def convertToObject(cursor):
     object_data = [TABLE(*row) for row in response]
     # Retornar la respuesta como JSON con los nombres de las columnas y los datos
     return [object._asdict() for object in object_data]  # Convertir namedtuple a diccionario para JSON
+

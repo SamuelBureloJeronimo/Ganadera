@@ -4,6 +4,7 @@ from database.db import connect_to_database
 import os
 from mysql.connector import Error
 
+# Crear el Blueprint para razas
 BP_raza = Blueprint('BP_raza', __name__)
 
 # Configuración de la carpeta de subida de imágenes
@@ -18,7 +19,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Ruta para mostrar el formulario de registro de razas
-@BP_raza.route('/raza', methods=['GET'])
+@BP_raza.route('/dashboard/owner/register_raza', methods=['GET'])
 def raza_form():
     return render_template('owner/registros/regis-raza.html')
 
@@ -32,7 +33,7 @@ def register_raza():
 
         # Validar que el campo 'nom' esté presente
         if not data.get("nom"):
-            return redirect(url_for('BP_ani.raza_form', error="El nombre de la raza es obligatorio."))
+            return redirect(url_for('BP_raza.raza_form', error="El nombre de la raza es obligatorio."))
 
         # Manejar la subida de la imagen
         if file and allowed_file(file.filename):
@@ -44,21 +45,26 @@ def register_raza():
             ruta_imagen = None  # No se subió ninguna imagen
 
         connection = connect_to_database()
-        cursor = connection.cursor()
+        cursor = connection.cursor(dictionary=True)  # Configurar el cursor como diccionario
+
+        # Obtener el siguiente ID único basado en los registros existentes
+        cursor.execute("SELECT MAX(id) + 1 AS next_id FROM razas")
+        result = cursor.fetchone()  # El resultado es un diccionario
+        next_id = result['next_id'] if result and result['next_id'] else 1  # Calcular el siguiente ID
 
         # Insertar el nuevo registro en la tabla de razas
         insert_query = """
-            INSERT INTO razas (nom, img, descrip)
-            VALUES (%s, %s, %s);
+            INSERT INTO razas (id, nom, img, `desc`)
+            VALUES (%s, %s, %s, %s);
         """
-        cursor.execute(insert_query, (data["nom"], ruta_imagen, data.get("desc", "")))
+        cursor.execute(insert_query, (next_id, data["nom"], ruta_imagen, data.get("desc", "")))
         connection.commit()
 
         # Redirigir al formulario con un mensaje de éxito
-        return redirect(url_for('BP_ani.raza_form', success="¡Raza registrada exitosamente!"))
+        return redirect(url_for('BP_raza.raza_form', success="¡Raza registrada exitosamente!"))
     except Error as e:
         # Redirigir al formulario con un mensaje de error
-        return redirect(url_for('BP_ani.raza_form', error=f"Error al registrar: {str(e)}"))
+        return redirect(url_for('BP_raza.raza_form', error=f"Error al registrar: {str(e)}"))
     finally:
         if connection:
             cursor.close()

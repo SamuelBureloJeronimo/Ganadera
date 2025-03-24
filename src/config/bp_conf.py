@@ -13,6 +13,9 @@ bp.register_blueprint(GeneralRoutes)
 from routes.animales import BP_ani 
 from routes.SuperUserRoutes import BP_SuperUserRoutes
 from routes.OwnerRoutes import BP_Owner
+from routes.raza import BP_raza
+
 bp.register_blueprint(BP_SuperUserRoutes)
 bp.register_blueprint(BP_Owner)
 bp.register_blueprint(BP_ani)
+bp.register_blueprint(BP_raza)

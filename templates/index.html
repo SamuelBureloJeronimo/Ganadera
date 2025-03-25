@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ganadería</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/finanzas">Finanzas</a></li>
+            <li><a href="/costos">Costos</a></li>
+            <li><a href="/compras">Compras</a></li>
+            <li><a href="/ventas">Ventas</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h1>Bienvenido al Sistema de Ganadería</h1>
+        <p>Selecciona una opción en el menú para continuar.</p>
+    </div>
+
+    <!-- Página Finanzas -->
+    <div id="finanzas" class="container">
+        <h2>Administración de Finanzas y Costos</h2>
+        <p>Contenido de finanzas...</p>
+    </div>
+
+    <!-- Página Costos -->
+    <div id="costos" class="container">
+        <h2>Registro y Análisis de Costos</h2>
+        <p>Contenido de costos...</p>
+    </div>
+
+    <!-- Página Compras -->
+    <div id="compras" class="container">
+        <h2>Solicitud de Compra de Alimentos y Consumo</h2>
+        <p>Contenido de compras...</p>
+    </div>
+
+    <!-- Página Ventas -->
+    <div id="ventas" class="container">
+        <h2>Ventas de Ganado y Compra</h2>
+        <p>Contenido de ventas...</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/finanzas">Finanzas</a></li>
+            <li><a href="/costos">Costos</a></li>
+            <li><a href="/compras">Compras</a></li>
+            <li><a href="/ventas">Ventas</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <h1>Ventas de Ganado y Compra</h1>
+        <form action="/ventas" method="post">
+            <label for="tipo">Tipo de Ganado:</label>
+            <input type="text" id="tipo" name="tipo" required>
+            
+            <label for="precio">Precio:</label>
+            <input type="number" id="precio" name="precio" required>
+            
+            <button type="submit">Registrar Venta</button>
+        </form>
+    </div>
+</body>
+</html>

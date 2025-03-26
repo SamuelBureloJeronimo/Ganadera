@@ -54,13 +54,13 @@
         </a>
     
         <!-- Botón de Menú (Móvil) -->
-        <button id="menuButton" class="md:hidden focus:outline-none" style="width: fit-content;">
+        <button id="menuButton" class="md:hidden focus:outline-none" style="width: fit-content;" onclick="toggleNav()">
           <i class="material-icons">menu</i>
         </button>
       </div>
     
       <!-- Menú Desplegable (Móvil) -->
-      <div class="md:hidden transition-all duration-300 ease-in-out bg-gray-800 hidden z-50">
+      <div id="mobileMenu" class="md:hidden transition-all duration-300 ease-in-out bg-gray-800 hidden z-50">
         <nav class="flex flex-col items-center py-4 space-y-4 z-50">
           <a href="/" class="text-white hover:text-yellow-400" onclick="hideNav()">Inicio</a>
           <a href="#precios" class="text-white hover:text-yellow-400" onclick="hideNav()">Precios</a>
@@ -129,21 +129,15 @@
       {% endblock %} 
       <!-- Script para abrir/cerrar el menú en móviles -->
       <script>
-        function hideNav(){
-          const menuMobile = document.getElementById("menuMobile");
-          menuMobile.classList.toggle("hidden");
-        }
-        // Espera a que el DOM esté listo
-        document.addEventListener("DOMContentLoaded", function() {
-          const menuButton = document.getElementById("menuButton");
-          const menuMobile = document.getElementById("menuMobile");
-      
-          // Agrega un evento de clic al botón del menú
-          menuButton.addEventListener("click", function() {
-            // Alterna la clase 'hidden' en el menú móvil
-            menuMobile.classList.toggle("hidden");
-          });
-        });
+          function toggleNav() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenu.classList.toggle('hidden');
+  }
+
+  function hideNav() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenu.classList.add('hidden');
+  }
       </script>
       
   </div>

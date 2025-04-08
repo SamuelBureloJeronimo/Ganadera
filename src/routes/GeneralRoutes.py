@@ -63,6 +63,8 @@ def login_user(cursor):
             url += "owner/panel"
         elif res1[2] == "1":
             url += "empleoyes/panelEmpleados"
+        elif res1[2] == "4":
+            url += "veterinary/panel"
         
         access_token = create_access_token(identity=str(email), additional_claims={"rol": res1[2], "rfc_comp": res1[3]})
         response = make_response(jsonify({"success": True, "message": "Inicio de sesión éxitoso", "token": access_token, "url": url}), 200)

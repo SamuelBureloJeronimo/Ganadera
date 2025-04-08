@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, redirect, render_template, request, url_for
+from flask_jwt_extended import get_jwt, jwt_required
 from werkzeug.utils import secure_filename
 from database.db import connect_to_database
 import os
@@ -8,7 +9,7 @@ from mysql.connector import Error
 BP_raza = Blueprint('BP_raza', __name__)
 
 # Configuración de la carpeta de subida de imágenes
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = os.getenv("URL_FOR_ROUTES")
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 # Asegúrate de que exista la carpeta de uploads
@@ -25,47 +26,24 @@ def raza_form():
 
 # Ruta para registrar una nueva raza
 @BP_raza.route('/register_raza', methods=['POST'])
+@jwt_required()
 def register_raza():
-    connection = None  # Inicializar la conexión
-    try:
-        data = request.form
-        file = request.files.get('img')
+    jwt_data = get_jwt()
+    rfc_comp = jwt_data.get("rfc_comp")
+    
+    required_fields = ["nom", "desc"]
+    missing_fields = [field for field in required_fields if not request.form.get(field)]
 
-        # Validar que el campo 'nom' esté presente
-        if not data.get("nom"):
-            return redirect(url_for('BP_raza.raza_form', error="El nombre de la raza es obligatorio."))
+    # Validar si falta algún campo
+    if missing_fields:
+        return jsonify({"error": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
 
-        # Manejar la subida de la imagen
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            image_path = os.path.join(UPLOAD_FOLDER, filename)
-            file.save(image_path)  # Guardar la imagen en la carpeta de uploads
-            ruta_imagen = image_path  # Ruta que se guardará en la base de datos
-        else:
-            ruta_imagen = None  # No se subió ninguna imagen
+    nombre = request.form.get("nombre")
+    capacidad = request.form.get("capacidad")
+    descrip = request.form.get("descrip")
+    id_colonia = request.form.get("id_colonia")
 
-        connection = connect_to_database()
-        cursor = connection.cursor(dictionary=True)  # Configurar el cursor como diccionario
+    query = "INSERT INTO fincas (nombre, capacidad, descrip, id_colonia, rfc_comp) VALUES (%s, %s, %s, %s, %s);"
+    cursor.execute(query, (nombre, capacidad, descrip, id_colonia, rfc_comp))
 
-        # Obtener el siguiente ID único basado en los registros existentes
-        cursor.execute("SELECT MAX(id) + 1 AS next_id FROM razas")
-        result = cursor.fetchone()  # El resultado es un diccionario
-        next_id = result['next_id'] if result and result['next_id'] else 1  # Calcular el siguiente ID
-
-        # Insertar el nuevo registro en la tabla de razas
-        insert_query = """
-            INSERT INTO razas (id, nom, img, `desc`)
-            VALUES (%s, %s, %s, %s);
-        """
-        cursor.execute(insert_query, (next_id, data["nom"], ruta_imagen, data.get("desc", "")))
-        connection.commit()
-
-        # Redirigir al formulario con un mensaje de éxito
-        return redirect(url_for('BP_raza.raza_form', success="¡Raza registrada exitosamente!"))
-    except Error as e:
-        # Redirigir al formulario con un mensaje de error
-        return redirect(url_for('BP_raza.raza_form', error=f"Error al registrar: {str(e)}"))
-    finally:
-        if connection:
-            cursor.close()
-            connection.close()
+    return jsonify({"success": True, "msg": "Finca registrada correctamente"}), 200

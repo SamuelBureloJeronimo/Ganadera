@@ -1,0 +1,127 @@
+{% extends 'owner/panel.html' %}
+
+
+{% block title_bar %}
+<div class="d-flex align-items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m438-338 226-226-57-57-169 169-84-84-57 57 141 141Zm42 258q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z"/></svg>
+    <label style="margin-left: 2vh;">Salud General</label>
+</div>
+{% endblock %}  
+
+{% block cont_dash %}
+
+<div class="sam-form-container">
+    <div class="sam-form-field" style="margin-top: 0px;">
+        <select id="finca" name="finca" required>
+            {% for finca in fincas %}
+            <option value="{{finca.id}}">{{finca.nombre}}</option>
+            {% endfor %}  
+        </select>
+    </div>
+</div>
+
+<!-- CABECERA CON LAS MÉTRICAS GENERALES -->
+<div class="container text-center" style="margin-bottom: 5vh;">
+    <div style="display: flex; width: 100%; flex-direction: row; justify-content: center; gap: 3vh; flex-wrap: wrap;">
+
+    <!-- VISITAS AL SITIO -->
+    <div class="tar_cont">
+    <div class="tar_center">
+    <div class="bg_s_enferm tar_row">
+        <div class="tar_row_left">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M440-494ZM87-560q-4-15-5.5-30T80-621q0-94 63-156.5T300-840q51 0 98.5 22t81.5 62q34-40 81-62t99-22q94 0 157 62.5T880-621v2q-19-17-41-29.5T792-669q-14-41-50-66t-82-25q-43 0-83 25.5T503-660h-46q-33-48-74-74t-83-26q-59 0-99.5 40.5T160-621q0 16 3 30.5t9 30.5H87Zm393 440L353-234q-27-25-50-46t-43-40h117q23 20 48.5 43t54.5 49q17-14 31.5-27t28.5-26q14 15 29.5 27.5T603-231L480-120Zm240-160q-17 0-28.5-11.5T680-320q0-17 11.5-28.5T720-360q17 0 28.5 11.5T760-320q0 17-11.5 28.5T720-280Zm-40-120v-200h80v200h-80Zm-640 0v-80h178l70-103q6-9 14.5-13t18.5-4q10 0 18.5 4.5T354-582l68 102h62q-2 10-3 19.5t-1 20.5q0 11 1 20.5t3 19.5h-84q-10 0-19-5t-14-13l-47-70-47 70q-5 8-14 13t-19 5H40Z"/></svg>
+            <label class="poppins-light">Animales enfermos</label>
+        </div>
+        <div class="tar_row_right">
+        <label class="poppins-light">32</label>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <!-- USUARIOS ÚNICOS -->
+    <div class="tar_cont">
+        <div class="tar_center">
+        <div class="bg_s_obv tar_row">
+        <div class="tar_row_left">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M540-80q-108 0-184-76t-76-184v-23q-86-14-143-80.5T80-600v-240h120v-40h80v160h-80v-40h-40v160q0 66 47 113t113 47q66 0 113-47t47-113v-160h-40v40h-80v-160h80v40h120v240q0 90-57 156.5T360-363v23q0 75 52.5 127.5T540-160q75 0 127.5-52.5T720-340v-67q-35-12-57.5-43T640-520q0-50 35-85t85-35q50 0 85 35t35 85q0 39-22.5 70T800-407v67q0 108-76 184T540-80Zm220-400q17 0 28.5-11.5T800-520q0-17-11.5-28.5T760-560q-17 0-28.5 11.5T720-520q0 17 11.5 28.5T760-480Zm0-40Z"/></svg>
+            <label class="poppins-light">Animales en observación</label>
+        </div>
+        <div class="tar_row_right">
+            <label class="poppins-light">12</label>
+        </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- TASA DE REBOTE -->
+    <div class="tar_cont">
+        <div class="tar_center">
+        <div class="bg_s_sanos tar_row">
+        <div class="tar_row_left">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m438-338 226-226-57-57-169 169-84-84-57 57 141 141Zm42 258q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z"/></svg>
+            <label class="poppins-light">Animales sanos</label>
+        </div>
+        <div class="tar_row_right">
+            <label class="poppins-light">23</label>
+        </div>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<div class="graf_enfer">
+    <div class="grafica">
+        <div class="d-flex" style="width: 100%; justify-content: center;">
+            <label style="width: 80%; display: flex; justify-content: end; align-items: center;">Historial de enfermedades</label>
+            <label class="filtrar_label" style="width: 80%; display: flex; justify-content: end; align-items: center;">Filtrar por:</label>
+            <div class="sam-form-field" style="display: flex; text-align: end; margin-top: 0px; width: 220px; height: 32px;">
+                <select id="filtrar" name="filtrar" required style="height: 40px;">
+                    <option value="aa">Año actual</option>
+                    <option value="sem">Año pasado</option>
+                </select>
+            </div>
+        </div>
+        <canvas id="myChart"></canvas>
+    </div>
+    <div class="alertas">
+        <label>🚨 ALERTAS ACTIVAS</label>
+        <hr/>
+        <ul>
+            <li>Corral #4 - Posible brote de mastitis (5 casos) <hr/></li>
+            <li>Ternerero #12 - Fiebre persistente (39.5°C) <hr/></li>
+            <li>23 vacunas vencidas (principalmente antiparasitarias) <hr/></li>
+            <li>Corral #4 - Posible brote de mastitis (5 casos) <hr/></li>
+            <li>Ternerero #12 - Fiebre persistente (39.5°C) <hr/></li>
+            <li>23 vacunas vencidas (principalmente antiparasitarias) <hr/></li>
+            <li>Corral #4 - Posible brote de mastitis (5 casos) <hr/></li>
+            <li>Ternerero #12 - Fiebre persistente (39.5°C) <hr/></li>
+        </ul>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('myChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        datasets: [{
+            data: [0, 1, 0, 2, 3, 0, 1, 2, 0, 1, 2, 0],
+            backgroundColor: ['red']
+        }]
+    },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false // Esto oculta toda la leyenda
+          }
+        }
+      }
+});
+</script>
+
+{% endblock %}  

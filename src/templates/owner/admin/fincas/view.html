@@ -1,0 +1,345 @@
+{% extends 'owner/panel.html' %}
+
+
+{% block title_bar %}
+<div class="d-flex align-items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M200-200h80v-80h-80v80Zm160 0h80v-80h-80v80Zm160 0h80v-80h-80v80Zm160 0h80v-80h-80v80ZM200-680h80v-80h-80v80Zm0 160h80v-80h-80v80Zm0 160h80v-80h-80v80Zm160-320h80v-80h-80v80Zm0 160h80v-80h-80v80Zm0 160h80v-80h-80v80Zm160-320h80v-80h-80v80Zm0 160h80v-80h-80v80Zm0 160h80v-80h-80v80Zm160-320h80v-80h-80v80Zm0 160h80v-80h-80v80Zm0 160h80v-80h-80v80ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Z"/></svg>
+    <label style="margin-left: 2vh;">Fincas</label>
+</div>
+{% endblock %}
+
+{% block cont_dash %}
+
+<style>
+    .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .card {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+        font-size: 1.4em;
+        color: #34495e;
+        display: flex;
+        margin-bottom: 10px;
+    }
+
+    .card-capacidad {
+        font-size: 1em;
+        color: #27ae60;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .card-desc {
+        font-size: 0.95em;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+    .card-direccion {
+        font-size: 0.9em;
+        color: #7f8c8d;
+    }
+    .sam-form-field {
+        height: fit-content;
+    }
+    .sam-form-field input{
+        font-size: 14px;
+        height: fit-content;
+    }
+    input, textarea {
+        border: 2px solid rgba(122, 112, 86, 0.309);
+        border-radius: 5px;
+        font-weight: 600;
+    }
+    input:disabled, textarea:disabled{
+        background-color: white;
+        border: 2px solid rgb(255, 255, 255);
+    }
+
+    .change {
+        font-size: 10px;
+        font-weight: 600;
+        display: none;
+    }
+
+    @media (max-width: 600px) {
+        .card-title {
+            font-size: 1.2em;
+        }
+
+        .card-capacidad {
+            font-size: 0.95em;
+        }
+    }
+</style>
+
+<script>
+    function redirect(ruta) {
+        window.location.href = ruta;
+    }
+
+    function addSwalAlert(id, endpoint) {
+    document.getElementById("regForm_"+id).addEventListener("submit", function (event) {
+    event.preventDefault(); // Evita que la página se recargue
+
+    let formData = new FormData(this);
+
+    fetch(endpoint, {
+        method: "PUT",
+        body: formData,
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    })
+    .then((response) => {
+        if (response.status === 401) {
+            // Si el token ha expirado
+            return response.json().then((data) => {
+                Swal.fire({
+                    title: "Sesión expirada",
+                    text: data.error,
+                    icon: "info",
+                    confirmButtonText: "Aceptar",
+                }).then(() => {
+                    window.location.href = "/"; // Redirige después del alert
+                });
+            });
+        } else if (response.status === 400) {
+            // Si es 400
+            return response.json().then((data) => {
+                Swal.fire({
+                    title: "Un error a ocurrido",
+                    text: data.error,
+                    icon: "warning",
+                    confirmButtonText: "Aceptar",
+                });
+            });
+        } else if (response.status === 200) {
+            // Si es 200
+            return response.json().then((data) => {
+                Swal.fire({
+                    title: "Actualizado",
+                    text: data.msg,
+                    icon: "success",
+                });
+                let EDIT = document.getElementById("edit_"+id);
+                let SAVE = document.getElementById("save_"+id);
+                let btn_cp = document.getElementById("btn_cp_"+id);
+
+                EDIT.style.display = 'block';
+                SAVE.style.display = 'none';
+                btn_cp.style.display = 'none';
+
+
+                // Selecciona todos los elementos con la clase "ocultar-label"
+                const input_edit = document.querySelectorAll('.i_edit_'+id);
+
+                // Recorre la lista y muestra cada uno
+                input_edit.forEach(inpt => {
+                    inpt.setAttribute('disabled', true);
+                });
+            });
+        }
+    })
+    .then((data) => { });
+});
+}
+
+
+</script>
+
+<div style="padding: 20px; padding-top: 0px;" onclick="redirect('/dashboard/owner/register-finca')">
+    <button class="btn btn-info w-full" style="padding: 15px; font-weight: 600; font-family:Arial, Helvetica, sans-serif;">Registrar nueva finca</button>
+</div>
+<div class="container">
+    {% for finca in fincas %}
+    <div class="card">
+        <form id="regForm_{{ finca.id }}">
+            <input style="display: none;" type="number" id="id" name="id"  value="{{finca.id}}">
+            <input style="display: none;" type="number" id="id_colonia_{{finca.id}}" name="id_colonia"  value="{{finca.id_colonia.id}}">
+            <div class="card-title">
+                <div style="width: 100%;">
+                    <input class="i_edit_{{ finca.id }}" type="text" id="nombre" placeholder=" " name="nombre" disabled required value="{{ finca.nombre }}"/>
+                </div>
+            </div>
+            <div class="card-capacidad">
+                <label class="l_input_{{ finca.id }}" style="color: #34495e;">
+                    Capacidad MAX: 
+                    <input class="i_edit_{{ finca.id }}" type="number" id="capacidad" placeholder=" " name="capacidad" disabled required value="{{ finca.capacidad }}"  style="width: 80px;"/>
+                    </label>
+                <label for="">Ganados en finca: 12</label><br/>
+                <label for="">Disponible: 12</label>
+            </div>
+            <div class="card-desc">
+                <textarea class="i_edit_{{ finca.id }}" name="descrip" id="descrip" disabled style="width: 100%;" required>{{ finca.descrip }}</textarea>
+                </div>
+            <div class="card-direccion">
+                <label class="l_input_{{ finca.id }}" id="direct_{{ finca.id }}">{{ finca.id_colonia.name }}</label> <button class="change btn btn-warning" id="btn_cp_{{ finca.id }}" onclick="change('{{finca.id}}')" type="button">Buscar por Código Postal</button>
+            </div>
+            <button class="btn btn-warning" type="button" style="margin-top: 20px; width: 100%; min-width: 50px;" onclick="edit('{{finca.id}}')" id="edit_{{finca.id}}">Editar</button>
+            <div id="save_{{finca.id}}" style="display: none; width: 100%; justify-content: center; gap: 1vh; margin-top: 20px;">
+                <button class="btn btn-success w-full" type="submit">Guardar</button>
+                <button class="btn btn-danger w-full" type="button" onclick="cancel('{{finca.id}}')">Cancelar</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        addSwalAlert("{{ finca.id }}", "/update_finca/{{finca.id}}");
+    </script>
+    {% endfor %}
+</div>
+<script>
+
+function edit(id) {    
+    console.log("Entro",id);
+    let EDIT = document.getElementById("edit_"+id);
+    let SAVE = document.getElementById("save_"+id);
+    let btn_cp = document.getElementById("btn_cp_"+id);
+
+    EDIT.style.display = 'none';
+    SAVE.style.display = 'flex';
+    btn_cp.style.display = 'flex';
+
+    // Selecciona todos los elementos con la clase "ocultar-label"
+    const input_edit = document.querySelectorAll('.i_edit_'+id);
+
+    // Recorre la lista y muestra cada uno
+    input_edit.forEach(inpt => {
+        inpt.removeAttribute('disabled');
+    });
+}
+
+function cancel(id) {    
+    console.log("Entro",id);
+    let EDIT = document.getElementById("edit_"+id);
+    let SAVE = document.getElementById("save_"+id);
+    let btn_cp = document.getElementById("btn_cp_"+id);
+
+    EDIT.style.display = 'block';
+    SAVE.style.display = 'none';
+    btn_cp.style.display = 'none';
+
+    // Selecciona todos los elementos con la clase "ocultar-label"
+    const input_edit = document.querySelectorAll('.i_edit_'+id);
+
+    // Recorre la lista y muestra cada uno
+    input_edit.forEach(inpt => {
+        inpt.setAttribute('disabled', true);
+    });
+}
+
+function change(id) {
+    let dirComplt = "";
+    Swal.fire({
+  title: "Buscar por código postal",
+  input: "number",
+  inputAttributes: {
+    autocapitalize: "off"
+  },
+  showCancelButton: true,
+  confirmButtonText: "Buscar",
+  showLoaderOnConfirm: true,
+  preConfirm: async (cp) => {
+    try {
+      const url = `/get-col-by-cp/${cp}`;
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        return Swal.showValidationMessage(`${JSON.stringify(await response.json())}`);
+      }
+      
+      let res = await response.json();
+      dirComplt = res.mun +", "+res.est+". CP: "+cp+". "
+      console.log("GET-COL",res);
+      return res;
+    } catch (error) {
+      Swal.showValidationMessage(`Request failed: ${error}`);
+    }
+  },
+  allowOutsideClick: () => !Swal.isLoading()
+}).then((result) => {
+  if (result.isConfirmed) {
+    let colonias = result.value.colonias;
+    let htmlbody = `
+  <div class="sam-form-container">
+    <div class="sam-form-field">
+        <input type="text" id="estado" placeholder=" " name="estado" disabled required value='${result.value.est}' />
+        <label class="itim-regular">Estado</label>
+    </div>
+
+    <div class="sam-form-field">
+        <input type="text" id="mun" placeholder=" " name="mun" disabled required value='${result.value.mun}' />
+        <label class="itim-regular">Municipio</label>
+    </div>
+            <div class="sam-form-field">
+                <select id="select_col" required onchange="selectDirect()">`;
+    colonias.forEach(element => {
+        htmlbody += "<option value='"+element.id+"|"+element.nom+"'>"+element.nom+"</option>"
+    });
+    
+    htmlbody += `</select></div></div>`
+
+    name_change_col = colonias[0].nom;
+    id_change_col = colonias[0].id;
+
+    console.log("ID_COL:", id_change_col, "NOM_COL", name_change_col)
+
+
+    Swal.fire({
+        title: "<strong>Verifica y completa el domicilio.</strong>",
+        html: htmlbody,
+        showCloseButton: true,
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: `
+            <i class="fa fa-thumbs-up"></i> Listo
+        `,
+        confirmButtonAriaLabel: "Thumbs up, great!",
+        cancelButtonText: `
+            <i class="fa fa-thumbs-down">Cancelar</i>
+        `,
+        cancelButtonAriaLabel: "Thumbs down"
+    }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            console.log("Confirmo")
+            let id_colonia = document.getElementById("id_colonia_"+id);
+            id_colonia.value = id_change_col;
+            dirComplt += name_change_col+".";
+            let element = document.getElementById("direct_"+id);
+            element.innerText = dirComplt;
+            console.log("RESULTADO: ", dirComplt)
+        }
+    });
+  }
+});
+}
+
+let id_change_col;
+let name_change_col;
+
+function selectDirect(){
+    let selectElement = document.getElementById("select_col");
+    const partes = selectElement.value.split('|');
+    id_change_col = partes[0];
+    name_change_col = partes[1];
+}
+</script>
+{% endblock %}

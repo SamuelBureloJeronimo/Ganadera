@@ -1,0 +1,48 @@
+{% extends 'owner/panel.html' %}
+
+{% block title_bar %}
+<div class="d-flex align-items-center">
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF">
+    <path
+      d="m438-338 226-226-57-57-169 169-84-84-57 57 141 141Zm42 258q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z" />
+  </svg>
+  <label style="margin-left: 2vh;">Administración</label>
+</div>
+{% endblock %}
+
+{% block cont_dash %}
+
+<div class="container panel-container">
+
+  <button class="btn btn-secondary" onclick="redirect('/dashboard/owner/razas')">
+    <svg xmlns="htt://www.w3.org/2000/svg" height="24px" viewbox="0 -960 960 960" width="24px" fill="#75FBFD">
+      <path
+        d="M480-80q-73-9-145-39.5T206.5-207Q150-264 115-351T80-560v-40h40q51 0 105 13t101 39q12-86 54.5-176.5T480-880q57 65 99.5 155.5T634-548q47-26 101-39t105-13h40v40q0 122-35 209t-91.5 144q-56.5 57-128 87.5T480-80Zm-2-82q-11-166-98.5-251T162-518q11 171 101.5 255T478-162Zm2-254q15-22 36.5-45.5T558-502q-2-57-22.5-119T480-742q-35 59-55.5 121T402-502q20 17 42 40.5t36 45.5Zm78 236q37-12 77-35t74.5-62.5q34.5-39.5 59-98.5T798-518q-94 14-165 62.5T524-332q12 32 20.5 70t13.5 82Zm-78-236Zm78 236Zm-80 18Zm46-170ZM480-80Z" />
+    </svg>
+    Razas de ganados disponibles
+  </button>
+
+  <button class="btn btn-info" onclick="redirect('/dashboard/owner/view-fincas')"
+    style="background-image: url('/finca.png'); background-size: cover; border: 0px;">
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#75FBFD">
+      <path
+        d="M600-120q-33 0-56.5-23.5T520-200v-560q0-33 23.5-56.5T600-840h160q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H600Zm-400 0q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h160q33 0 56.5 23.5T440-760v560q0 33-23.5 56.5T360-120H200Zm0-640v560h160v-560H200Z" />
+    </svg>
+    Mis Fincas
+  </button>
+
+
+  <button class="btn btn-success" onclick="redirect('/dashboard/owner/config-puestos')">
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF">
+      <path
+        d="M160-200v-440 440-15 15Zm0 80q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720h160v-80q0-33 23.5-56.5T400-880h160q33 0 56.5 23.5T640-800v80h160q33 0 56.5 23.5T880-640v171q-18-13-38-22.5T800-508v-132H160v440h283q3 21 9 41t15 39H160Zm240-600h160v-80H400v80ZM720-40q-83 0-141.5-58.5T520-240q0-83 58.5-141.5T720-440q83 0 141.5 58.5T920-240q0 83-58.5 141.5T720-40Zm20-208v-112h-40v128l86 86 28-28-74-74Z" />
+    </svg>
+    Puestos de trabajo y salarios
+  </button>
+</div>
+<script>
+  function redirect(ruta) {
+    window.location.href = ruta;
+  }
+</script>
+{% endblock %}

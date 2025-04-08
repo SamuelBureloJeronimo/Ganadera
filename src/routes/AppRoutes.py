@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request
 from database.db import *
-from guards.RoutesGuards import owner_protected, super_protected
+from guards.RoutesGuards import owner_protected, super_protected, with_session
+from routes.GeneralRoutes import convertToObject
 
 # Cargar variables desde el archivo .env
 load_dotenv()
@@ -65,30 +66,57 @@ def regis_insumos(decoded):
   
 
 # RUTAS PARA EL DUEÑO
-@AppRoutes.route('/dashboard/owner/panel', methods=["GET", "POST"])
+@AppRoutes.route('/dashboard/owner/salud-general', methods=["GET", "POST"])
 @owner_protected
-def panel(decoded):
-    return render_template('owner/panel.html')
+@with_session
+def panel(cursor, decoded):
+    query = "SELECT id, nombre FROM fincas WHERE rfc_comp=%s;"
+    cursor.execute(query, (decoded['rfc_comp'],))
+    fincas = convertToObject(cursor)
+    print(fincas)
+    return render_template('owner/salud_general/salud_general.html', fincas=fincas)
+
+@AppRoutes.route('/dashboard/owner/contabilidad', methods=["GET", "POST"])
+@owner_protected
+def conta_own(decoded):
+    return render_template('owner/contabilidad/contabilidad.html')
+
+@AppRoutes.route('/dashboard/owner/administracion', methods=["GET", "POST"])
+@owner_protected
+def admin_own(decoded):
+    return render_template('owner/admin/admin.html')
 
 @AppRoutes.route('/dashboard/owner/register-ganado', methods=["GET", "POST"])
 @owner_protected
 def regis_ganado(decoded):
     return render_template('owner/registros/regis-ganados.html')
 
-@AppRoutes.route('/dashboard/owner/register-employee', methods=["GET", "POST"])
-@owner_protected
-def regis_employee(decoded):
-    return render_template('owner/registros/regis-empleados.html')
+
 
 @AppRoutes.route('/dashboard/owner/register-finca', methods=["GET", "POST"])
 @owner_protected
 def regis_finca(decoded):
+    return render_template('owner/admin/fincas/regis.html')
+
+@AppRoutes.route('/dashboard/owner/register-razas', methods=["GET", "POST"])
+@owner_protected
+def regis_razas(decoded):
     return render_template('owner/registros/regis-fincas.html')
 
-@AppRoutes.route('/dashboard/owner/conf-puestos', methods=["GET", "POST"])
+@AppRoutes.route('/dashboard/owner/regis-razas', methods=["GET", "POST"])
 @owner_protected
 def conf_puestos(decoded):
-    return render_template('owner/registros/conf-puestos.html')
+    return render_template('owner/admin/razas/regis.html')
+
+@AppRoutes.route('/dashboard/owner/razas', methods=["GET", "POST"])
+@with_session
+def razas(cursor):
+
+    query = "SELECT * FROM razas;"
+    cursor.execute(query)
+    razas = convertToObject(cursor)
+
+    return render_template('owner/admin/razas/view.html', razas=razas)
 
 
 
@@ -99,14 +127,58 @@ def view_ganados(decoded):
 
 @AppRoutes.route('/dashboard/owner/view-fincas', methods=["GET", "POST"])
 @owner_protected
-def view_fincas(decoded):
-    return render_template('owner/vistas/view-fincas.html')
+@with_session
+def view_fincas(cursor, decoded):
+    query = "SELECT * FROM fincas WHERE rfc_comp=%s;"
+    cursor.execute(query, (decoded['rfc_comp'],))
+    fincas = convertToObject(cursor)
+    for finca in fincas:
+        query = "SELECT nom, mun_id, cp FROM colonias WHERE id=%s;"
+        cursor.execute(query, (finca["id_colonia"],))
+        colonia = cursor.fetchone()
+        
+        query = "SELECT nom, est_id FROM municipios WHERE id=%s;"
+        cursor.execute(query, (colonia[1],))
+        mun = cursor.fetchone()
+
+        query = "SELECT nom FROM estados WHERE id=%s;"
+        cursor.execute(query, (mun[1],))
+        estado = cursor.fetchone()
+
+        direccion = mun[0] + ", " + estado[0] + ". CP: " + str(colonia[2]) + ". "+ colonia[0] +"."
+
+        finca["id_colonia"] = {"name": direccion, "id": finca["id_colonia"]}
+    print(fincas)
+    return render_template('owner/admin/fincas/view.html', fincas=fincas)
+
+
+
+
+
+
+@AppRoutes.route('/dashboard/owner/config-puestos', methods=["GET","POST"])
+@owner_protected
+def config_puestos(decoded):
+    return render_template('owner/admin/puestosYsalarios/conf-puestos.html')
+
+@AppRoutes.route('/dashboard/owner/panel_empleados', methods=["GET","POST"])
+@owner_protected
+def panel_empleados(decoded):
+    return render_template('owner/trabajadores/trab.html')
 
 @AppRoutes.route('/dashboard/owner/view-employees', methods=["GET", "POST"])
 @owner_protected
 def view_employees(decoded):
-    return render_template('owner/vistas/view-employees.html')
-  
+    return render_template('owner/trabajadores/listar/view-employees.html')
+
+@AppRoutes.route('/dashboard/owner/register-employee', methods=["GET", "POST"])
+@owner_protected
+def regis_employee(decoded):
+    return render_template('owner/trabajadores/regis/regis-empleados.html')
+
+
+
+
 @AppRoutes.route("/dashboard/owner/animales",methods=["GET","POST"])
 @owner_protected
 def view_animal(decoded):

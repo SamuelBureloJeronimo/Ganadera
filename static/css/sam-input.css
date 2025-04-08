@@ -11,7 +11,7 @@
   position: relative;
 }
 
-.sam-form-field input, select {
+.sam-form-field input, select, textarea {
   width: 100%;
   padding: 12px 10px;
   border: 1px solid #ccc;
@@ -64,6 +64,8 @@
 
 /* Efecto cuando el input está enfocado o tiene texto */
 .sam-form-field input:focus + label,
+.sam-form-field textarea:focus + label,
+.sam-form-field textarea:not(:placeholder-shown) + label,
 .sam-form-field input:not(:placeholder-shown) + label {
   top: 0;
   font-size: 12px;

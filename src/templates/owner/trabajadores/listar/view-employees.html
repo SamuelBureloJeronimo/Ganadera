@@ -1,0 +1,235 @@
+{% extends 'owner/panel.html' %}
+
+
+{% block title_bar %}Empleados{% endblock %}  
+
+{% block cont_dash %}
+<style>
+    /* Contenedor de la tabla */
+.table-container {
+  margin: 3%;
+  padding: 3vh;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+.details {
+  height: 0px;
+  overflow: hidden;
+  transition: 1s;
+}
+.row {
+  border-bottom: 1px solid rgba(0, 63, 92, 0.217);
+  border-radius: 1vh;
+  margin-bottom: 2vh;
+}
+
+.col {
+  height: min-content;
+}
+.rfc {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  height: fit-content;
+  font-weight: 700;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+}
+
+.rfc .role-chip{
+  margin-left: 1vh;
+}
+.name {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+/* Contenedor de los chips de roles */
+.role-chip-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+/* Chips de roles ocupando toda la celda */
+.role-chip {
+  display: flex;
+  padding: 1vh;
+  padding-left: 2vh;
+  padding-right: 2vh;
+  width: fit-content;
+  border-radius: 20px;
+  font-size: 8px;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+/* Colores para los diferentes roles */
+#Contabilidad { background-color: #ce007c; color: #fff; }  /* Técnico - Azul */
+#Capataz { background-color: #006ace; color: #fff; }  /* Técnico - Azul */
+#Jornalero { background-color: #a80000; color: #fff; }  /* Técnico - Azul */
+#Veterinario { background-color: #00a800; color: #fff; }  /* Técnico - Azul */
+
+.role-details { background-color: #F59E0B; color: #ffffff; }  /* Administrador - Rojo */
+
+.role-details:active {
+  background-color: #1e88e5;
+}
+.role-details {
+  margin: 0px;
+}
+
+.sam-form-field {
+  margin: 0px;
+  height: fit-content;
+  input {
+    height: 5vh;
+  }
+}
+.sam-form-field label {
+  top: 80%; /* Por defecto, el label estará centrado */
+  color: #001c7a;
+}
+
+.sam-form-field input, select {
+  border-color: #1e88e51a;
+  background: #9de2ea18;
+}
+.cuerpoSV {
+    margin-left: 2vh;
+}
+.cuerpoSV label {
+    font-weight: 400;
+}
+</style>
+
+<div class="table-container" id="userList"></div>
+
+<script>
+  const users = [
+    {
+      rfc: "ABC123456789",
+      nombre: "Juan",
+      app: "Pérez",
+      apm: "Gómez",
+      rol: "2",
+      correo: "juan@example.com",
+      sex: "M",
+      fech_nac: "1990-05-15",
+      fech_created: "2023-01-01",
+      last_session: "2023-11-01"
+    },
+    {
+      rfc: "XYZ987654321",
+      nombre: "Ana",
+      app: "López",
+      apm: "Ruiz",
+      rol: "3",
+      correo: "ana@example.com",
+      sex: "F",
+      fech_nac: "1985-08-20",
+      fech_created: "2023-02-15",
+      last_session: null
+    },
+    {
+      rfc: "XYZ987654321",
+      nombre: "Ana",
+      app: "López",
+      apm: "Ruiz",
+      rol: "4",
+      correo: "ana@example.com",
+      sex: "F",
+      fech_nac: "1985-08-20",
+      fech_created: "2023-02-15",
+      last_session: null
+    },
+    {
+      rfc: "XYZ987654321",
+      nombre: "Ana",
+      app: "López",
+      apm: "Ruiz",
+      rol: "5",
+      correo: "ana@example.com",
+      sex: "F",
+      fech_nac: "1985-08-20",
+      fech_created: "2023-02-15",
+      last_session: null
+    }
+  ];
+
+  function rolDef(rol) {
+    if(rol == 1)
+        return "Dueño"
+    else if(rol == 2)
+        return "Contabilidad"
+    else if(rol == 3)
+        return "Capataz"
+    else if(rol == 4)
+        return "Jornalero"
+    else if(rol == 5)
+        return "Veterinario"
+  }
+
+  function calcularEdad(fechaNacimiento) {
+    const hoy = new Date();
+    const fechaNac = new Date(fechaNacimiento);
+    let edad = hoy.getFullYear() - fechaNac.getFullYear();
+    const mes = hoy.getMonth() - fechaNac.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) edad--;
+    return edad;
+  }
+
+  function expandDetails(rfc) {
+    document.querySelectorAll(".details").forEach(detail => {
+      detail.style.height = "0";
+    });
+    const details = document.getElementById(`details_${rfc}`);
+    if (details) details.style.height = "max-content";
+  }
+
+  function renderUsers() {
+    const container = document.getElementById("userList");
+    users.forEach(user => {
+      container.innerHTML += `
+        <div class="row">
+          <div class="col">
+            <label class="rfc">
+              ${user.rfc}
+              <span class="role-chip" id="${rolDef(user.rol)}">
+                <label>${rolDef(user.rol)}</label>
+              </span>
+            </label>
+            <div class='cuerpoSV'>
+                <label class="name">${user.nombre} ${user.app} ${user.apm}</label><br/>
+                <label class="name">${user.correo}</label><br/>
+                <label class="name">${rolDef(user.rol)}</label><br/>
+            </div>
+          </div>
+        </div>
+
+        <div class="details" id="details_${user.rfc}">
+          <div class="row">
+            <div class="col text-center">
+              <div class="sam-form-field">
+                <label>${user.email}</label>
+              </div>
+              <div class="sam-form-field">
+                <label>${user.sex === 'M' ? 'Masculino' : 'Femenino'}, ${calcularEdad(user.fech_nac)} años.</label>
+              </div>
+              <div class="sam-form-field">
+                <label>Registrado: ${new Date(user.fech_created).toLocaleDateString()}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function newContract(rfc) {
+    alert(`Redirigiendo a nuevo contrato para: ${rfc}`);
+  }
+
+  document.addEventListener("DOMContentLoaded", renderUsers);
+</script>
+{% endblock %}  

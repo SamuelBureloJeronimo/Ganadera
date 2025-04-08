@@ -40,7 +40,6 @@ def animal():
 
 # Ruta para registrar un nuevo animal
 @BP_ani.route('/animal/registro', methods=['POST'])
-@BP_ani.route('/animal/registro', methods=['POST'])
 def register_animal():
     connection = None  # Inicializar la conexión
     try:

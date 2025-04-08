@@ -53,6 +53,16 @@ label {
   .bg-5 {
     background-color: #0bd09b;
   }
+
+  .bg_s_enferm {
+    background-color: #cb0606;
+  }
+  .bg_s_obv {
+    background-color: #0ad0d5;
+  }
+  .bg_s_sanos {
+    background-color: #0bd018;
+  }
   
   .tar_row_left {
     flex-direction: column;

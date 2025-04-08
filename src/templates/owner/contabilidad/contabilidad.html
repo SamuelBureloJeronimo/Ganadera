@@ -1,0 +1,268 @@
+
+{% extends 'owner/panel.html' %}
+
+{% block title_bar %}
+<div class="d-flex align-items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m438-338 226-226-57-57-169 169-84-84-57 57 141 141Zm42 258q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z"/></svg>
+    <label style="margin-left: 2vh;">Contabilidad</label>
+</div>
+{% endblock %}  
+
+{% block cont_dash %}
+
+<style>
+    
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    /* Encabezado */
+    .header {
+        background: #2c3e50;
+        color: white;
+        padding: 25px;
+        text-align: center;
+    }
+    
+    .header h1 {
+        margin: 0;
+        font-size: 28px;
+    }
+    
+    .header p {
+        margin: 5px 0 0;
+        opacity: 0.9;
+    }
+    
+    /* Periodo */
+    .periodo {
+        background: #3498db;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        font-weight: bold;
+    }
+    
+    /* Tabla de balance */
+    .balance-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .balance-table th {
+        background: #ecf0f1;
+        text-align: left;
+        padding: 12px 15px;
+        font-weight: 600;
+    }
+    
+    .balance-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .balance-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .section-title {
+        background: #2980b9;
+        color: white;
+        font-weight: bold;
+        padding: 8px 15px;
+    }
+    
+    .subtotal {
+        font-weight: bold;
+        background-color: #f8f9fa;
+    }
+    
+    .total {
+        font-weight: bold;
+        font-size: 1.1em;
+        background-color: #2c3e50;
+        color: white;
+    }
+    
+    .text-right {
+        text-align: right;
+    }
+    
+    /* Resumen */
+    .resumen {
+        display: flex;
+        justify-content: space-around;
+        padding: 20px;
+        background: #f8f9fa;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .resumen-item {
+        text-align: center;
+    }
+    
+    .resumen-item h3 {
+        margin: 0;
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+    
+    .resumen-item p {
+        margin: 5px 0 0;
+        font-size: 24px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    
+    .positivo {
+        color: #27ae60 !important;
+    }
+    
+    .negativo {
+        color: #e74c3c !important;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .resumen {
+            flex-direction: column;
+        }
+        
+        .resumen-item {
+            margin-bottom: 15px;
+        }
+        
+        .balance-table {
+            display: block;
+            overflow-x: auto;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="header">
+        <h1>GANADERÍA XYZ S.A. DE C.V.</h1>
+        <p>Balance General</p>
+    </div>
+    
+    <div class="periodo">
+        Al 31 de Diciembre de 2023
+    </div>
+    
+    <table class="balance-table">
+        <thead>
+            <tr>
+                <th>Cuenta</th>
+                <th class="text-right">Monto ($)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Activos -->
+            <tr>
+                <td colspan="2" class="section-title">ACTIVOS</td>
+            </tr>
+            <tr>
+                <td style="padding-left: 20px;">Efectivo y equivalentes</td>
+                <td class="text-right">1,250,000.00</td>
+            </tr>
+            <tr>
+                <td style="padding-left: 20px;">Cuentas por cobrar</td>
+                <td class="text-right">750,000.00</td>
+            </tr>
+            <tr>
+                <td style="padding-left: 20px;">Inventario de ganado</td>
+                <td class="text-right">3,500,000.00</td>
+            </tr>
+            <tr>
+                <td style="padding-left: 20px;">Alimentos y medicinas</td>
+                <td class="text-right">450,000.00</td>
+            </tr>
+            <tr>
+                <td style="padding-left: 20px;">Propiedades y equipo</td>
+                <td class="text-right">2,800,000.00</td>
+            </tr>
+            <tr>
+                <td style="padding-left: 20px;">Depreciación acumulada</td>
+                <td class="text-right">(1,200,000.00)</td>
+            </tr>
+            <tr class="subtotal">
+                <td>Total Activos</td>
+                <td class="text-right">7,550,000.00</td>
+            </tr>
+            
+            <!-- Pasivos -->
+            <tr>
+                <td colspan="2" class="section-title">PASIVOS</td>
+            </tr>
+            <tr>
+                <td style="padding-left: 20px;">Proveedores por pagar</td>
+                <td class="text-right">850,000.00</td>
+            </tr>
+            <tr>
+                <td style="padding-left: 20px;">Préstamos a corto plazo</td>
+                <td class="text-right">1,200,000.00</td>
+            </tr>
+            <tr>
+                <td style="padding-left: 20px;">Hipotecas por pagar</td>
+                <td class="text-right">1,500,000.00</td>
+            </tr>
+            <tr class="subtotal">
+                <td>Total Pasivos</td>
+                <td class="text-right">3,550,000.00</td>
+            </tr>
+            
+            <!-- Patrimonio -->
+            <tr>
+                <td colspan="2" class="section-title">PATRIMONIO</td>
+            </tr>
+            <tr>
+                <td style="padding-left: 20px;">Capital social</td>
+                <td class="text-right">2,500,000.00</td>
+            </tr>
+            <tr>
+                <td style="padding-left: 20px;">Utilidades retenidas</td>
+                <td class="text-right">1,350,000.00</td>
+            </tr>
+            <tr>
+                <td style="padding-left: 20px;">Resultado del ejercicio</td>
+                <td class="text-right">150,000.00</td>
+            </tr>
+            <tr class="subtotal">
+                <td>Total Patrimonio</td>
+                <td class="text-right">4,000,000.00</td>
+            </tr>
+            
+            <!-- Total general -->
+            <tr class="total">
+                <td>TOTAL (Activos = Pasivos + Patrimonio)</td>
+                <td class="text-right">7,550,000.00</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="resumen">
+        <div class="resumen-item">
+            <h3>Activos Totales</h3>
+            <p>$7,550,000.00</p>
+        </div>
+        <div class="resumen-item">
+            <h3>Pasivos Totales</h3>
+            <p>$3,550,000.00</p>
+        </div>
+        <div class="resumen-item">
+            <h3>Patrimonio Neto</h3>
+            <p class="positivo">$4,000,000.00</p>
+        </div>
+        <div class="resumen-item">
+            <h3>Liquidez Corriente</h3>
+            <p class="positivo">2.15:1</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}  

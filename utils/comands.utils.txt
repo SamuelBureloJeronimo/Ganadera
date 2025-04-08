@@ -1,2 +1,4 @@
 pip freeze > requirements.txt
 pip install -r requirements.txt
+
+db2dbml mysql 'mysql://sparta:1415@localhost:3306/okox_pruebas' -o ./utils/database.dbml

@@ -1,3 +1,4 @@
+from datetime import date, datetime, time
 import secrets
 import string
 from flask import Blueprint, request, jsonify
@@ -41,11 +42,19 @@ def create_owner(cursor):
     tel = request.form.get("tel")
     id_colonia = request.form.get("id_colonia")
 
+    
     query = "INSERT INTO personas (rfc, nombre, correo, app, apm, fech_nac, sex, tel, id_colonia) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
     cursor.execute(query, (rfc, nombre, correo, app, apm, fech_nac, sex, tel, id_colonia))
 
     query = "INSERT INTO usuarios (rfc, pass, rol, rfc_comp) VALUES (%s, %s, %s, %s);"
     cursor.execute(query, (rfc, gn_pass(7), 0, rfc_comp))
+    
+    hora = datetime.now().time()
+    query = "INSERT INTO config_puestos (id_puesto, salario_base, dias_lab, h_ent, h_sal, rfc_comp) VALUES (%s, %s, %s, %s, %s, %s);"
+    cursor.execute(query, (1, 0, "", hora, hora, rfc_comp))
+    cursor.execute(query, (2, 0, "", hora, hora, rfc_comp))
+    cursor.execute(query, (3, 0, "", hora, hora, rfc_comp))
+    cursor.execute(query, (4, 0, "", hora, hora, rfc_comp))
     
     return jsonify({"success": True, "msg": "Usuario creado correctamente"}), 200
 

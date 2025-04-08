@@ -1,15 +1,14 @@
 from collections import namedtuple
 from datetime import date, datetime
-import random
-from flask import Blueprint, jsonify, make_response, render_template_string, request, send_from_directory, session
-from flask_jwt_extended import create_access_token, get_jwt, jwt_required
+from flask import Blueprint, jsonify, make_response, request, send_from_directory, session
+from flask_jwt_extended import create_access_token
 from flask_mail import Message
-from database.db import *
 from config.mail_conf import mail
+from database.db import *
 import os
 from mysql.connector import Error
 
-from guards.RoutesGuards import with_session
+from guards.RoutesGuards import with_session, with_transaction
 
 # Cargar variables desde el archivo .env
 load_dotenv()
@@ -29,7 +28,7 @@ def confirm_mail():
 
 
 @GeneralRoutes.route('/login_user', methods=["GET", "POST"])
-@with_session
+@with_transaction
 def login_user(cursor):
     required_fields = ["email", "password"]
     missing_fields = [field for field in required_fields if not request.form.get(field)]
@@ -44,11 +43,9 @@ def login_user(cursor):
     try:
         # Consulta para obtener la información del usuario y su puesto
         query = '''
-            SELECT personas.rfc, personas.correo, usuarios.rol, usuarios.rfc_comp,
-                   puestos.id, puestos.nombre, puestos.h_ent, puestos.h_sal
+            SELECT personas.rfc, personas.correo, usuarios.rol, usuarios.rfc_comp
             FROM personas 
             JOIN usuarios ON usuarios.rfc = personas.rfc
-            LEFT JOIN puestos ON usuarios.rol = puestos.id
             WHERE personas.correo=%s AND usuarios.pass=%s;
         '''
         cursor.execute(query, (email, password))
@@ -63,21 +60,9 @@ def login_user(cursor):
         if rol_usuario == "-1":
             url += "superuser/metrics"
         elif rol_usuario == "0":
-            url += "owner/panel"
+            url += "owner/salud-general"
         elif rol_usuario in ["1", "2", "3", "4"]:  # Solo empleados
             url += "empleoyes/panelEmpleados"
-
-            # Guardar información en la sesión
-            session['rfc'] = res1[0]
-            session['correo'] = res1[1]
-            session['rol'] = rol_usuario
-            session['rfc_comp'] = res1[3]
-            session['puesto_id'] = res1[4]
-            session['puesto_nombre'] = res1[5]
-            session['h_entrada'] = str(res1[6])
-            session['h_salida'] = str(res1[7])
-
-            print("Sesión guardada:", dict(session))  # Debug
 
         # Generar token JWT
         access_token = create_access_token(identity=str(email), additional_claims={"rol": rol_usuario, "rfc_comp": res1[3]})
@@ -85,6 +70,10 @@ def login_user(cursor):
         
         # Guardar el token en una cookie
         response.set_cookie("token", access_token)
+
+
+        query1 = "UPDATE usuarios SET last_session=%s WHERE RFC=%s;"
+        cursor.execute(query1, (datetime.now(), res1[0]));
 
         return response
 
@@ -142,22 +131,23 @@ def registrar_asistencia(cursor):
         return jsonify({"message": f"Error en la base de datos: {str(e)}"}), 500
 
 
-
-@GeneralRoutes.route("/send_code/<email>")
-def enviar_codigo(email):
-    nombre_usuario = "Juan Pérez"
-    codigo_verificacion = str(random.randint(100000, 999999))
+@GeneralRoutes.route("/send_account", methods=['POST'])
+def enviar_codigo():
+    correo = request.form.get("correo");
+    password = request.form.get("password");
     
-    # Cargar la plantilla HTML para el correo
-    html_content = render_template_string(open('send_code.html').read(), nombre_usuario=nombre_usuario, codigo_verificacion=codigo_verificacion)
+    # Cargar la plantilla y reemplazar valores
+    with open("email_template.html", "r", encoding="utf-8") as file:
+        html_content = file.read()
 
-    # Crear el mensaje
-    msg = Message("Verificación de Cuenta - El Herrado", recipients=[email])
+    html_content = html_content.format(
+        correo=correo,
+        password=password
+    )
+
+    msg = Message("Tu cuenta ha sido creada", recipients=[correo])
     msg.html = html_content
-    msg.charset = 'utf-8'  # Establecer la codificación para asegurar que los acentos se manejen correctamente
-    msg.content_type = 'text/html; charset=utf-8'
 
-    # Enviar el mensaje
     mail.send(msg)
 
     return jsonify("Correo enviado con éxito."), 200
@@ -176,9 +166,6 @@ def convertToObject(cursor):
 @GeneralRoutes.route('/<path:filename>')
 def public_files(filename):
     return send_from_directory(os.getenv("URL_FOR_ROUTES"), filename)
-
-
-
 
 
 
@@ -226,3 +213,20 @@ def get_colonias(cursor, id_municipio):
 
     return jsonify(data), 200
 
+@GeneralRoutes.route('/get-col-by-cp/<cp>', methods=['GET'])
+@with_session
+def get_colonias_by_cp(cursor, cp):
+    
+    insert_query = "SELECT id, nom, mun_id FROM colonias WHERE cp=%s;"
+    cursor.execute(insert_query, (cp,))
+    colonias = convertToObject(cursor)
+    
+    insert_query = "SELECT nom, est_id FROM municipios WHERE id=%s;"
+    cursor.execute(insert_query, (colonias[0]['mun_id'],))
+    mun = convertToObject(cursor)
+
+    insert_query = "SELECT nom FROM estados WHERE id=%s;"
+    cursor.execute(insert_query, (mun[0]['est_id'],))
+    esta = convertToObject(cursor)
+
+    return jsonify({"colonias": colonias, "mun": mun[0]['nom'], "est": esta[0]['nom']}), 200

@@ -1,7 +1,7 @@
 {% extends 'dashboard.html' %} {% block sidenavbar %}
 <li class="mb-4">
   <a
-    href="/dashboard/owner/panel"
+    href="/dashboard/veterinary/panel"
     class="bg-blue-500 block p-2 rounded hover:bg-blue-500"
     >INICIO</a
   >
@@ -12,22 +12,22 @@
     onclick="toggleSubmenu('gn')"
     class="w-full text-left p-2 rounded hover:bg-blue-500 flex justify-between items-center"
   >
-    Gestión de ganado
+    Registros
     <span id="icon-gn" class="transition-transform">▼</span>
   </button>
   <ul id="gn" class="ml-4 hidden">
     <li>
       <a
-        href="/dashboard/owner/register-ganado"
+        href="/dashboard/veterinary/register-medicamento"
         class="block p-2 rounded hover:bg-gray-700"
-        >Registrar</a
+        >Medicamentos</a
       >
     </li>
     <li>
       <a
         href="/dashboard/owner/view-ganados"
         class="block p-2 rounded hover:bg-gray-700"
-        >Visualizar</a
+        >Tratamientos</a
       >
     </li>
     <!--<li><a href="/dashboard/owner/register-raza" class="block p-2 rounded hover:bg-gray-700">Registrar razas</a></li>-->
@@ -39,7 +39,7 @@
     onclick="toggleSubmenu('emp')"
     class="w-full text-left p-2 rounded hover:bg-blue-500 flex justify-between items-center"
   >
-    Control de empleados
+    Reportes
     <span id="icon-emp" class="transition-transform">▼</span>
   </button>
   <ul id="emp" class="ml-4 hidden">
@@ -47,48 +47,46 @@
       <a
         href="/dashboard/owner/conf-puestos"
         class="block p-2 rounded hover:bg-gray-700"
-        >Configurar puestos</a
-      >
-    </li>
-    <li>
-      <a
-        href="/dashboard/owner/register-employee"
-        class="block p-2 rounded hover:bg-gray-700"
-        >Registrar</a
-      >
-    </li>
-    <li>
-      <a
-        href="/dashboard/owner/view-employees"
-        class="block p-2 rounded hover:bg-gray-700"
-        >Vesualizar</a
+        >Salud del ganado</a
       >
     </li>
   </ul>
 </li>
-<!-- Reportes con Submenú -->
+<!--Monitoreo-->
 <li class="mb-4">
   <button
     onclick="toggleSubmenu('c_v')"
     class="w-full text-left p-2 rounded hover:bg-blue-500 flex justify-between items-center"
   >
-    Compras y ventas
+    Monitoreo
     <span id="icon-c_v" class="transition-transform">▼</span>
   </button>
   <ul id="c_v" class="ml-4 hidden">
     <li>
       <a href="#" class="block p-2 rounded hover:bg-gray-700"
-        >Balance general</a
+        >Chequedo veterinario</a
       >
-    </li>
-    <li>
-      <a href="#" class="block p-2 rounded hover:bg-gray-700">Ver compras</a>
-    </li>
-    <li>
-      <a href="#" class="block p-2 rounded hover:bg-gray-700">Ver ventas</a>
     </li>
   </ul>
 </li>
+
+<!-- Reportes con Submenú -->
+
+<li class="mb-4">
+  <button
+    onclick="toggleSubmenu('c_v')"
+    class="w-full text-left p-2 rounded hover:bg-blue-500 flex justify-between items-center"
+  >
+    Solicitudes
+    <span id="icon-c_v" class="transition-transform">▼</span>
+  </button>
+  <ul id="c_v" class="ml-4 hidden">
+    <li>
+      <a href="#" class="block p-2 rounded hover:bg-gray-700">Medicamentos</a>
+    </li>
+  </ul>
+</li>
+
 {% endblock %} {% block headDash %}
 <!-- Barra Superior -->
 <header class="bg-[#261c16] text-white shadow p-4 flex items-center">

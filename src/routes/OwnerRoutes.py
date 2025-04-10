@@ -53,20 +53,6 @@ def create_employee(cursor):
 
     query = "INSERT INTO empleados (rfc, puesto_id, finca_id, turno) VALUES (%s, %s, %s, %s);"
     cursor.execute(query, (rfc, rol, finca_id, turno))
-
-    # Cargar la plantilla y reemplazar valores
-    with open("email_template.html", "r", encoding="utf-8") as file:
-        html_content = file.read()
-
-    html_content = html_content.format(
-        correo=correo,
-        password=password
-    )
-
-    msg = Message("Tu cuenta ha sido creada", recipients=[correo])
-    msg.html = html_content
-
-    mail.send(msg)
     
     return jsonify({"success": True, "msg": "Usuario creado correctamente"}), 200
 

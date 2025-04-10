@@ -111,3 +111,33 @@ def registro_insumo(cursor):
     cursor.execute(query, (id, tipo,rfc_prov,fech,cantidad,precio_u,estatus,observ))
     
     return jsonify({"success": True, "msg": "Alimento registrado"}), 200
+  
+@BP_Veterinary.route('/registro_tratamiento',methods=["GET","POST"])
+@jwt_required()
+@with_transaction
+def registro_tratamiento(cursor):
+    wt_data=get_jwt()
+    required_fields = ["id", "nombre", "instrucciones", "duracion", "observaciones"]
+    missing_fields = [field for field in required_fields if not request.form.get(field)]
+
+    # Validar si falta algún campo
+    if missing_fields:
+        return jsonify({"error": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+      
+    
+    id = request.form.get("id")
+    nombre=request.form.get("nombre")
+    instrucciones=request.form.get("instrucciones")
+    duracion=request.form.get("duracion")
+    observaciones=request.form.get("observaciones")
+    
+    # Consulta SQL corregida
+    query = """
+    INSERT INTO tratamientos (id,nombre,instrucciones,duracion,observaciones)
+    VALUES (%s, %s, %s, %s,%s);
+    """
+    
+    # Ejecutar la consulta con los valores
+    cursor.execute(query, (id,nombre,instrucciones,duracion,observaciones))
+    
+    return jsonify({"success": True, "msg": "Tratamiento registrado"}), 200

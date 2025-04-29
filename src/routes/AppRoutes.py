@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import Blueprint, render_template, request
 from database.db import *
-from guards.RoutesGuards import owner_protected, super_protected, with_session, veterinary_protected, veterinary_protected
+from guards.RoutesGuards import capataz_protected, owner_protected, super_protected, with_session, veterinary_protected, veterinary_protected
 from routes.GeneralRoutes import convertToObject
 
 # Cargar variables desde el archivo .env

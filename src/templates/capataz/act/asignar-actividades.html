@@ -1,0 +1,77 @@
+{% extends 'index.html' %}
+
+{% block title %}Asignar Actividad{% endblock %}
+{% block header %}{% endblock %}
+
+{% block content %}
+<div class="flex h-screen w-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-64 bg-[#1C1C1C] text-white p-4 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 md:translate-x-0 md:relative md:flex-shrink-0" style="z-index: 1000;">
+        <a class="text-2xl font-semibold flex items-center pb-4 justify-center gap-2">
+            <img src="/logo_herrado.png" alt="Logo" class="h-20">
+        </a>
+        <nav>
+            <ul>
+                {% block sidenavbar %}
+                <li class="mb-4"><a href="{{ url_for('BP_capataz.listar_actividades') }}" class="block p-2 rounded hover:bg-blue-500">Ver Actividades</a></li>
+                <li class="mb-4"><a href="{{ url_for('BP_capataz.crear_actividad') }}" class="block p-2 rounded hover:bg-blue-500">Crear Actividades</a></li>
+                {% endblock %}
+            </ul>
+        </nav>
+
+        <div class="absolute bottom-5 left-5 right-5">
+            <button onclick="logOut()" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                Cerrar Sesión
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="flex flex-col w-full h-full">
+        <header class="bg-[#3B2F2F] text-white shadow p-4 flex items-center">
+            <h1 class="text-xl font-semibold mx-4">Asignar Actividades</h1>
+        </header>
+
+        <main class="flex-grow p-6">
+            <!-- Mensajes flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="p-4 mb-4 text-sm {% if category == 'success' %}text-green-700 bg-green-100{% else %}text-red-700 bg-red-100{% endif %} rounded-lg" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <h2 class="text-center mb-6 text-2xl font-bold">Asignar Trabajador a Actividad</h2>
+
+            <form action="{{ url_for('BP_capataz.asignar_empleado') }}" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">ID de la Actividad</label>
+                    <input type="number" name="actividad_id" min="1" placeholder="Ingrese el ID de la actividad" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required />
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Seleccionar Trabajador</label>
+                    <select name="rfc_jor" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required>
+                        <option value="" disabled selected>Seleccione un trabajador</option>
+                        {% for trabajador in trabajadores %}
+                            <option value="{{ trabajador.rfc }}">{{ trabajador.nombre }} ({{ trabajador.rfc }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <input type="hidden" name="finca_id" value="{{ finca_id }}" />
+
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-6 rounded">
+                        Asignar Actividad
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
+
+<script>

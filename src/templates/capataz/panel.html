@@ -1,0 +1,107 @@
+{% extends 'index.html' %}
+
+{% block title %}Panel del Capataz{% endblock %}
+{% block header %}{% endblock %}
+
+{% block content %}
+<div class="flex h-screen w-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-64 bg-[#1C1C1C] text-white p-4 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 md:translate-x-0 md:relative md:flex-shrink-0" style="z-index: 1000;">
+        <a class="text-2xl font-semibold flex items-center pb-4 justify-center gap-2">
+            <img src="/logo_herrado.png" alt="Logo" class="h-20">
+        </a>
+        <nav>
+            <ul>
+                {% block sidenavbar %}
+                <li class="mb-4"><a href="{{ url_for('BP_capataz.listar_actividades') }}" class="block p-2 rounded hover:bg-blue-500">Ver Actividades</a></li>
+                <li class="mb-4"><a href="{{ url_for('BP_capataz.crear_actividad') }}" class="block p-2 rounded hover:bg-blue-500">Crear Actividades</a></li>
+                <li class="mb-4"><a href="{{ url_for('BP_capataz.asignar_empleado') }}" class="block p-2 rounded hover:bg-blue-500">Asignar Actividades</a></li>
+                <li class="mb-4">
+                    <button onclick="toggleSubmenu('ajustesSubmenu')" class="w-full text-left p-2 rounded hover:bg-blue-500 flex justify-between items-center">
+                        Ajustes
+                        <span id="icon-ajustes" class="transition-transform">▼</span>
+                    </button>
+                    <ul id="ajustesSubmenu" class="ml-4 hidden">
+                        <!-- Menú en construcción -->
+                        <li><a href="#" class="block p-2 rounded hover:bg-gray-700">Perfil (próximamente)</a></li>
+                        <li><a href="#" class="block p-2 rounded hover:bg-gray-700">Configuración (próximamente)</a></li>
+                    </ul>
+                </li>
+                {% endblock %}
+            </ul>
+        </nav>
+
+        <div class="absolute bottom-5 left-5 right-5">
+            <button onclick="logOut()" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                Cerrar Sesión
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="flex flex-col w-full h-full">
+        <header class="bg-[#3B2F2F] text-white shadow p-4 flex items-center">
+            <h1 class="text-xl font-semibold mx-4">Panel del Capataz</h1>
+        </header>
+
+        <main class="flex-grow p-6 w-full">
+            <!-- Mensajes Flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="p-4 mb-4 text-sm {% if category == 'success' %}text-green-700 bg-green-100{% else %}text-red-700 bg-red-100{% endif %} rounded-lg" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <h2 class="text-center mb-6 text-2xl font-bold">Gestión de Actividades</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Crear actividades -->
+                <a href="{{ url_for('BP_capataz.crear_actividad') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-6 rounded shadow text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="white" class="inline-block mb-2">
+                        <path d="M480-120q-142 0-241-99T140-460q0-142 99-241t241-99q142 0 241 99t99 241q0 142-99 241t-241 99ZM441-321h78v-240h-78v240Zm0-320h78v-80h-78v80Z"/>
+                    </svg>
+                    Crear Actividades
+                </a>
+
+                <!-- Ver actividades -->
+                <a href="{{ url_for('BP_capataz.listar_actividades') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded shadow text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="white" class="inline-block mb-2">
+                        <path d="M360-280h480v-60H360v60Zm-240-80h60v-300h120v300h60v-360H120v360Zm240-160h480v-60H360v60Zm0-160h480v-60H360v60Z"/>
+                    </svg>
+                    Ver Actividades
+                </a>
+
+                <!-- Asignar actividades -->
+                <a href="{{ url_for('BP_capataz.asignar_empleado') }}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-4 px-6 rounded shadow text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="white" class="inline-block mb-2">
+                        <path d="M12 2q2.075 0 3.938.788 1.862.787 3.262 2.187Q20.6 6.375 21.3 8.312 22 10.25 22 12q0 2.075-.7 3.962-.7 1.888-2.1 3.288-1.4 1.4-3.288 2.1Q14.075 22 12 22q-1.75 0-3.688-.7-1.937-.7-3.337-2.1Q3.875 17.8 3.088 15.938 2.3 14.075 2.3 12q0-1.75.788-3.688T5.275 5.05 7.338 3.188 9.3 2.5Q11.25 2 12 2Z"/>
+                    </svg>
+                    Asignar Actividades
+                </a>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    function toggleSubmenu(id) {
+        const submenu = document.getElementById(id);
+        const icon = document.getElementById("icon-ajustes");
+
+        submenu.classList.toggle('hidden');
+        icon.style.transform = submenu.classList.contains('hidden') ? "rotate(0deg)" : "rotate(180deg)";
+    }
+
+    function logOut() {
+        document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+        setTimeout(() => {
+            alert("Sesión cerrada exitosamente.");
+            window.location.href = "/";
+        }, 300);
+    }
+</script>
+{% endblock %}

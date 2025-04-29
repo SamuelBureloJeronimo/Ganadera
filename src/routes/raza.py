@@ -12,8 +12,10 @@ BP_raza = Blueprint('BP_raza', __name__)
 UPLOAD_FOLDER = os.getenv("URL_FOR_ROUTES")
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
+'''
 # Asegúrate de que exista la carpeta de uploads
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+'''
 
 # Validar extensión de archivos
 def allowed_file(filename):

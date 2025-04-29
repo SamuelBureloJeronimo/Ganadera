@@ -153,6 +153,10 @@ def get_puestos(cursor):
             '''
     cursor.execute(query)
 
+    puestos = cursor.fetchall()
+    print(puestos)
+    
+
     puestos = convertToObject(cursor);
 
 

@@ -54,8 +54,6 @@ def create_employee(cursor):
     query = "INSERT INTO empleados (rfc, puesto_id, finca_id, turno) VALUES (%s, %s, %s, %s);"
     cursor.execute(query, (rfc, rol, finca_id, turno))
 
-    
-    
     return jsonify({"success": True, "msg": "Usuario creado correctamente"}), 200
 
 def gn_pass(longitud=12):
@@ -154,6 +152,10 @@ def get_puestos(cursor):
         JOIN config_puestos ON config_puestos.id_puesto = puestos.id;
             '''
     cursor.execute(query)
+
+    puestos = cursor.fetchall()
+    print(puestos)
+    
 
     puestos = convertToObject(cursor);
 

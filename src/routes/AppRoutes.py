@@ -27,7 +27,6 @@ def contact():
     return render_template('contact.html')
 
 # RUTAS PARA EL SUPERUSUARIO
-
 @AppRoutes.route('/dashboard/superuser/metrics', methods=["GET"])
 @super_protected
 def metrics():
@@ -197,3 +196,9 @@ def view_animal(decoded):
 @AppRoutes.route('/dashboard/empleoyes/panelEmpleados', methods=["GET", "POST"])
 def panelEmpleados():
     return render_template('contability/panel.html')
+
+
+#RUTAS PARA JORNALERO
+@AppRoutes.route('/dashboard/jornalero/actividades', methods=["GET", "POST"])
+def actividades():
+    return render_template('jornalero/activities.html')

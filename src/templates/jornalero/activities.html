@@ -1,0 +1,197 @@
+{% extends 'dashboard.html' %}
+
+{% block sidenavbar %}
+<li class="mb-4">
+    <a href="/dashboard/owner/register-employee" class="bg-blue-500 block p-2 rounded hover:bg-blue-500">
+        <i class="fas fa-home me-2"></i>INICIO
+    </a>
+</li>
+{% endblock %}
+
+{% block title_bar %}Mis Actividades{% endblock %}
+
+{% block cont_dash %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --warning-color: #ffc107;
+        --info-color: #17a2b8;
+        --negro-color: #000;
+    }
+
+    .activity-card {
+        border-left: 5px solid var(--info-color);
+        transition: transform 0.2s;
+    }
+
+    .activity-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .completed {
+        border-left-color: var(--success-color);
+        opacity: 0.85;
+    }
+
+    .reviewed {
+        border-left-color: var(--warning-color);
+    }
+
+    .expired {
+        border-left-color: var(--danger-color);
+    }
+
+    .badge-status {
+        font-size: 0.8rem;
+    }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-tasks me-2"></i>Mis Actividades
+        </a>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- Formulario para Crear Actividad (solo capataz) -->
+    {% if es_capataz %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="card-title"><i class="fas fa-plus me-2"></i>Nueva Actividad</h4>
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="titulo" class="form-label">Título</label>
+                    <input type="text" class="form-control" id="titulo" name="titulo" required>
+                </div>
+                <div class="mb-3">
+                    <label for="observ" class="form-label">Observaciones</label>
+                    <textarea class="form-control" id="observ" name="observ"></textarea>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="fech_in" class="form-label">Fecha de inicio</label>
+                        <input type="date" class="form-control" id="fech_in" name="fech_in" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="fech_fi" class="form-label">Fecha de fin</label>
+                        <input type="date" class="form-control" id="fech_fi" name="fech_fi" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="rfc_jor" class="form-label">Asignar a (RFC)</label>
+                    <input type="text" class="form-control" id="rfc_jor" name="rfc_jor" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Guardar Actividad
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Filtros y Lista de Actividades -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2>
+                <i class="fas fa-clipboard-list me-2"></i>
+                {% if es_capataz %}Actividades Asignadas{% else %}Mis Actividades{% endif %}
+            </h2>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <div class="btn-group">
+                <a href="?filter=all" class="btn btn-outline-secondary {% if filter == 'all' %}active{% endif %}">
+                    Todas
+                </a>
+                <a href="?filter=pending" class="btn btn-outline-secondary {% if filter == 'pending' %}active{% endif %}">
+                    Pendientes
+                </a>
+                <a href="?filter=completed" class="btn btn-outline-secondary {% if filter == 'completed' %}active{% endif %}">
+                    Realizadas
+                </a>
+                {% if es_capataz %}
+                <a href="?filter=reviewed" class="btn btn-outline-secondary {% if filter == 'reviewed' %}active{% endif %}">
+                    Revisadas
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {% if actividades %}
+        {% for act in actividades %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card activity-card 
+                {% if act.estado == 'completada' %}completed{% endif %} 
+                {% if act.estado == 'revisada' %}reviewed{% endif %}
+                {% if act.fech_fi < hoy and act.estado != 'completada' %}expired{% endif %}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title">{{ act.titulo }}</h5>
+                        <span class="badge rounded-pill 
+                            {% if act.estado == 'completada' %}bg-success{% endif %}
+                            {% if act.estado == 'pendiente' %}bg-warning text-dark{% endif %}
+                            {% if act.estado == 'revisada' %}bg-info text-white{% endif %} badge-status">
+                            {{ act.estado|upper }}
+                        </span>
+                    </div>
+
+                    <!-- Mostrar observaciones en lugar de descripción -->
+                    <p class="card-text text-muted">{{ act.observ or 'Sin observaciones' }}</p>
+
+                    <div class="d-flex justify-content-between small mb-2">
+                        <span><i class="far fa-calendar me-1"></i> Inicio: {{ act.fech_in.strftime('%d/%m/%Y') }}</span>
+                        <span class="{% if act.fech_fi < hoy and act.estado != 'completada' %}text-danger{% endif %}">
+                            <i class="far fa-calendar-check me-1"></i> Fin: {{ act.fech_fi.strftime('%d/%m/%Y') }}
+                        </span>
+                    </div>
+
+                    <div class="small mb-3">
+                        <span class="text-muted">
+                            <i class="fas fa-user-tie me-1"></i>
+                            {% if es_capataz %}Asignado a: {{ act.rfc_jor }}{% else %}Asignado por: {{ act.rfc_cap }}{% endif %}
+                        </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">ID: {{ act.id }}</small>
+                        <div>
+                            {% if not es_capataz and act.estado == 'pendiente' %}
+                            <form action="/actividades/{{ act.id }}/completar" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="fas fa-check"></i> Marcar como realizada
+                                </button>
+                            </form>
+                            {% endif %}
+
+                            {% if es_capataz and act.estado == 'completada' %}
+                            <form action="/actividades/{{ act.id }}/revisar" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-check-double"></i> Marcar como revisada
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-tasks fa-3x mb-3"></i>
+                <h3>No hay actividades {% if filter == 'all' %}asignadas{% else %}{{ filter }}{% endif %}</h3>
+                <p class="mb-0">
+                    {% if filter == 'pending' %}¡Buen trabajo! No tienes actividades pendientes.{% else %}No se encontraron actividades con este filtro.{% endif %}
+                </p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

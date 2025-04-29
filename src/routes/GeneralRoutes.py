@@ -55,17 +55,18 @@ def login_user(cursor):
             return jsonify({"message": "Credenciales inválidas"}), 400
 
         rol_usuario = res1[2]  
-        url = "/dashboard/"
+        url = "/dashboard/" 
 
         if rol_usuario == "-1":
             url += "superuser/metrics"
         elif rol_usuario == "0":
             url += "owner/salud-general"
+        elif rol_usuario in "2":
+            url += "capataz/panel"
         elif rol_usuario == "3":
             url += "jornalero/actividades"
         elif rol_usuario == "4":
             url += "veterinary/panel"
-            
 
         # Generar token JWT
         access_token = create_access_token(identity=str(email), additional_claims={"rol": rol_usuario, "rfc_comp": res1[3]})

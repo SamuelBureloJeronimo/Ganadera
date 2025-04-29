@@ -1,0 +1,91 @@
+{% extends 'index.html' %}
+
+{% block title %}Lista de Actividades{% endblock %}
+{% block header %}{% endblock %}
+
+{% block content %}
+<div class="flex h-screen w-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-64 bg-[#1C1C1C] text-white p-4 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 md:translate-x-0 md:relative md:flex-shrink-0" style="z-index: 1000;">
+        <a class="text-2xl font-semibold flex items-center pb-4 justify-center gap-2">
+            <img src="/logo_herrado.png" alt="Logo" class="h-20">
+        </a>
+        <nav>
+            <ul>
+                {% block sidenavbar %}
+                <li class="mb-4"><a href="{{ url_for('BP_capataz.crear_actividad') }}" class="block p-2 rounded hover:bg-blue-500">Crear Actividad</a></li>
+                <li class="mb-4"><a href="{{ url_for('BP_capataz.asignar_empleado') }}" class="block p-2 rounded hover:bg-blue-500">Asignar Actividades</a></li>
+                {% endblock %}
+            </ul>
+        </nav>
+        <div class="absolute bottom-5 left-5 right-5">
+            <button onclick="logOut()" class="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="flex flex-col w-full h-full">
+        <header class="bg-[#3B2F2F] text-white shadow p-4 flex items-center">
+            <h1 class="text-xl font-semibold mx-4">Lista de Actividades</h1>
+        </header>
+
+        <main class="flex-grow p-6">
+            <!-- Mostrar mensajes flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="p-4 mb-4 text-sm {% if category == 'success' %}text-green-700 bg-green-100{% else %}text-red-700 bg-red-100{% endif %} rounded-lg" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+                    <thead class="bg-gray-200 text-gray-700 text-sm uppercase">
+                        <tr>
+                            <th class="py-3 px-6">Título</th>
+                            <th class="py-3 px-6">Descripción</th>
+                            <th class="py-3 px-6">Inicio</th>
+                            <th class="py-3 px-6">Finalización</th>
+                            <th class="py-3 px-6">Estado</th>
+                            <th class="py-3 px-6">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm divide-y divide-gray-200">
+                        {% for actividad in actividades %}
+                        <tr>
+                            <td class="py-4 px-6">{{ actividad.titulo }}</td>
+                            <td class="py-4 px-6">{{ actividad.desc or 'Sin descripción' }}</td>
+                            <td class="py-4 px-6">{{ actividad.fech_in.strftime('%Y-%m-%d') }}</td>
+                            <td class="py-4 px-6">{{ actividad.fech_fi.strftime('%Y-%m-%d') }}</td>
+                            <td class="py-4 px-6">
+                                {% if actividad.estado == 0 %}
+                                    <span class="text-yellow-600 font-semibold">Pendiente</span>
+                                {% elif actividad.estado == 2 %}
+                                    <span class="text-green-600 font-semibold">Verificada</span>
+                                {% elif actividad.estado == 3 %}
+                                    <span class="text-red-600 font-semibold">Inconclusa</span>
+                                {% else %}
+                                    <span class="text-gray-600">Desconocido</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-4 px-6 space-x-2">
+                                <a href="{{ url_for('BP_capataz.asignar_empleado') }}" class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded text-xs">Asignar</a>
+                                <form action="{{ url_for('BP_capataz.confirmar_actividad', actividad_id=actividad.id, nuevo_estado=2) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white py-1 px-3 rounded text-xs">Verificar</button>
+                                </form>
+                                <form action="{{ url_for('BP_capataz.confirmar_actividad', actividad_id=actividad.id, nuevo_estado=3) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded text-xs">Inconclusa</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

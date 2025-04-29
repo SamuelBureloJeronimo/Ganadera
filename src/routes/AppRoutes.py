@@ -1,6 +1,7 @@
+from functools import wraps
 from flask import Blueprint, render_template, request
 from database.db import *
-from guards.RoutesGuards import owner_protected, super_protected, with_session, veterinary_protected
+from guards.RoutesGuards import owner_protected, super_protected, with_session, veterinary_protected, veterinary_protected
 from routes.GeneralRoutes import convertToObject
 
 # Cargar variables desde el archivo .env
@@ -197,6 +198,10 @@ def view_animal(decoded):
 def panelEmpleados():
     return render_template('contability/panel.html')
 
+@AppRoutes.route('/dashboard/capataz/panel', methods=["GET","POST"])
+@capataz_protected
+def panel_capataz(decoded):
+    return render_template('capataz/panel.html')
 
 #RUTAS PARA JORNALERO
 @AppRoutes.route('/dashboard/jornalero/actividades', methods=["GET", "POST"])

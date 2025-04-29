@@ -61,7 +61,9 @@ def login_user(cursor):
             url += "superuser/metrics"
         elif rol_usuario == "0":
             url += "owner/salud-general"
-        elif rol_usuario in ["1", "2", "3", "4"]:  # Solo empleados
+        elif rol_usuario == "3":
+            url += "jornalero/actividades"
+        elif rol_usuario in ["1", "2", "4"]:  # Solo empleados
             url += "empleoyes/panelEmpleados"
 
         # Generar token JWT

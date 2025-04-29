@@ -16,6 +16,7 @@ from routes.OwnerRoutes import BP_Owner
 from routes.raza import BP_raza
 from routes.buscar import BP_buscar
 from routes.veterinaryRoutes import BP_Veterinary
+from routes.JornaleroRoutes import BP_Jornalero
 
 bp.register_blueprint(BP_SuperUserRoutes)
 bp.register_blueprint(BP_Owner)
@@ -23,3 +24,4 @@ bp.register_blueprint(BP_ani)
 bp.register_blueprint(BP_raza)
 bp.register_blueprint(BP_buscar)
 bp.register_blueprint(BP_Veterinary)
+bp.register_blueprint(BP_Jornalero)

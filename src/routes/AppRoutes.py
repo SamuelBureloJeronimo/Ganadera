@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request
 from database.db import *
-from guards.RoutesGuards import owner_protected, super_protected, with_session
+from guards.RoutesGuards import owner_protected, super_protected, with_session, veterinary_protected
 from routes.GeneralRoutes import convertToObject
 
 # Cargar variables desde el archivo .env
@@ -44,25 +44,34 @@ def settings():
   
 #RUTAS PARA EL VETERINARIO
 @AppRoutes.route('/dashboard/veterinary/panel', methods=["GET", "POST"])
-@owner_protected
+@veterinary_protected
 def panel_veterinary(decoded):
     return render_template('veterinary/panel.html')
 
 @AppRoutes.route('/dashboard/veterinary/register-medicamento',methods=["GET", "POST"])
-@owner_protected
+@veterinary_protected
 def regis_medicamentos(decoded):
     return render_template('veterinary/registros/regis-medicamento.html')
   
 @AppRoutes.route('/dashboard/veterinary/register-alimento',methods=["GET","POST"])
-@owner_protected
+@veterinary_protected
 def regis_alimentos(decoded):
     return render_template('veterinary/registros/regis-alimento.html')
 
 @AppRoutes.route('/dashboard/veterinary/register-insumo',methods=["GET","POST"])
-@owner_protected
+@veterinary_protected
 def regis_insumos(decoded):
   return render_template('veterinary/registros/regis-insumo.html')
   
+@AppRoutes.route('/dashboard/veterinary/register-tratamiento',methods=["GET","POST"])
+@veterinary_protected
+def regis_tratamiento(decoded):
+    return render_template('veterinary/registros/regis-tratamiento.html')
+  
+@AppRoutes.route('/dashboard/veterinary/register-chequeo',methods=["GET","POST"])
+@veterinary_protected
+def regis_chequeo(decoded):
+    return render_template('veterinary/registros/regis-chequeo.html')
 
 # RUTAS PARA EL DUEÑO
 @AppRoutes.route('/dashboard/owner/salud-general', methods=["GET", "POST"])

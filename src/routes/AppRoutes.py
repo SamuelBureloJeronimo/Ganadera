@@ -68,6 +68,11 @@ def regis_insumos(decoded):
 @veterinary_protected
 def regis_tratamiento(decoded):
     return render_template('veterinary/registros/regis-tratamiento.html')
+  
+@AppRoutes.route('/dashboard/veterinary/register-chequeo',methods=["GET","POST"])
+@veterinary_protected
+def regis_chequeo(decoded):
+    return render_template('veterinary/registros/regis-chequeo.html')
 
 # RUTAS PARA EL DUEÑO
 @AppRoutes.route('/dashboard/owner/salud-general', methods=["GET", "POST"])

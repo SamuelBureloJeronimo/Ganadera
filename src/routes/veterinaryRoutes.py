@@ -141,3 +141,36 @@ def registro_tratamiento(cursor):
     cursor.execute(query, (id,nombre,instrucciones,duracion,observaciones))
     
     return jsonify({"success": True, "msg": "Tratamiento registrado"}), 200
+  
+@BP_Veterinary.route('/registro_chequeo',methods=["GET","POST"])
+@jwt_required()
+@with_transaction
+def registro_chequeo(cursor):
+    wt_data=get_jwt()
+    required_fields = ["id", "rfc_vet", "no_arete", "peso", "frec_card","temp_corp","fech","observ"]
+    missing_fields = [field for field in required_fields if not request.form.get(field)]
+
+    # Validar si falta algún campo
+    if missing_fields:
+        return jsonify({"error": f"Faltan los siguientes campos: {', '.join(missing_fields)}"}), 400
+      
+    
+    id = request.form.get("id")
+    rfc_vet=request.form.get("rfc_vet")
+    no_arete=request.form.get("no_arete")
+    peso=request.form.get("peso")
+    frec_card=request.form.get("frec_card")
+    temp_corp=request.form.get("temp_corp")
+    fech=request.form.get("fech")
+    observ=request.form.get("observ")
+    
+    # Consulta SQL corregida
+    query = """
+    INSERT INTO revisiones (id,rfc_vet,no_arete,peso,frec_card,temp_corp,fech,observ)
+    VALUES (%s, %s, %s, %s,%s,%s,%s,%s);
+    """
+    
+    # Ejecutar la consulta con los valores
+    cursor.execute(query, (id,rfc_vet,no_arete,peso,frec_card,temp_corp,fech,observ))
+    
+    return jsonify({"success": True, "msg": "Chequeo registrado"}), 200

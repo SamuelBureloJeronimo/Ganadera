@@ -1,0 +1,12 @@
+[0;1;31m×[0m ganadera.service - Gunicorn instance to serve Ganadera
+     Loaded: loaded (]8;;file://srv768156/etc/systemd/system/ganadera.service/etc/systemd/system/ganadera.service]8;;; [0;1;32menabled[0m; preset: [0;1;32menabled[0m)
+     Active: [0;1;31mfailed[0m (Result: exit-code) since Sat 2025-05-10 23:00:14 UTC; 19s ago
+   Duration: 7ms
+    Process: 21957 ExecStart=/root/Ganadera/venv/bin/gunicorn index:app --bind 127.0.0.1:8000 [0;1;31m(code=exited, status=200/CHDIR)[0m
+   Main PID: 21957 (code=exited, status=200/CHDIR)
+        CPU: 1ms
+
+May 10 23:00:14 srv768156 systemd[1]: Started ganadera.service - Gunicorn instance to serve Ganadera.
+May 10 23:00:14 srv768156 (gunicorn)[21957]: [0;1;31m[0;1;39m[0;1;31mganadera.service: Changing to the requested working directory failed: Permission denied[0m
+May 10 23:00:14 srv768156 systemd[1]: [0;1;39m[0;1;31m[0;1;39mganadera.service: Main process exited, code=exited, status=200/CHDIR[0m
+May 10 23:00:14 srv768156 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mganadera.service: Failed with result 'exit-code'.[0m

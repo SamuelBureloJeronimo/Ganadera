@@ -70,7 +70,12 @@ def with_session(f):
             return jsonify({"error": "Error de integridad en la base de datos.", "detalle": str(e)}), 400
         
         finally:
-            # Cerrar cursor y conexión
+            # Hacer commit antes de cerrar la conexión
+            if conn:
+                try:
+                    conn.commit()
+                except Exception as e:
+                    print(f"Error en commit: {e}")
             if cursor:
                 cursor.close()
             if conn:

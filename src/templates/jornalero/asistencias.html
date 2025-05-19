@@ -1,0 +1,148 @@
+{% extends 'jornalero/dash.html' %}
+
+{% block title_bar %} Mis asistencias {% endblock %}
+
+{% block cont_dash %}
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 bg-white rounded" style="max-width: 500px; margin: auto; text-align: center;">
+        <h2 class="mb-3 text-primary">Bienvenido</h2>
+        <hr>
+        <p class="mb-3"><strong>Correo:</strong> <span id="correo">-</span></p>
+        <p class="mb-3"><strong>Puesto:</strong> <span id="puesto">-</span></p>
+        <p class="mb-2"><strong>Horario:</strong> <span id="horario">-</span></p>
+
+        <div class="d-grid gap-3 mt-4">
+            <button id="btnEntrada" class="btn btn-lg btn-primary" onclick="registrarAsistencia('entrada')">
+                Registrar Entrada
+            </button>
+            <button id="btnSalida" class="btn btn-lg btn-danger" onclick="registrarAsistencia('salida')">
+                Registrar Salida
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función para obtener el token de la cookie
+    function getCookie(name) {
+        let value = "; " + document.cookie;
+        let parts = value.split("; " + name + "=");
+        if (parts.length === 2) return parts.pop().split(";").shift();
+        return null;
+    }
+
+    // Función para registrar asistencia
+    function registrarAsistencia(tipo) {
+        const token = getCookie('token');
+        if (!token) {
+            alert("No se encontró token de autenticación");
+            return;
+        }
+        
+        fetch("/registrar_asistencia", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({ tipo: tipo })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            if (data.message.includes("correctamente")) {
+                location.reload(); // Recargar para actualizar estado
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Error al registrar asistencia");
+        });
+    }
+
+    // Intentar cargar datos del empleado
+    document.addEventListener('DOMContentLoaded', function() {
+        const token = getCookie('token');
+        if (!token) {
+            console.error("No se encontró token de autenticación");
+            return;
+        }
+
+        // Intentar obtener los datos del empleado
+        fetch('/obtener_datos_asistencia', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error ' + response.status + ': ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error(data.error);
+                return;
+            }
+            
+            // Rellenar los campos en la interfaz
+            document.getElementById('correo').textContent = data.correo || '-';
+            document.getElementById('puesto').textContent = data.puesto || '-';
+            document.getElementById('horario').textContent = data.horario || '-';
+            
+            // Actualizar estado de los botones según si ya registró entrada/salida
+            if (data.entrada_registrada) {
+                document.getElementById("btnEntrada").disabled = true;
+                
+                if (data.salida_registrada) {
+                    // Si ya registró salida, deshabilitar el botón de salida
+                    document.getElementById("btnSalida").disabled = true;
+                } else {
+                    // Si no ha registrado salida, verificar horario para habilitar botón
+                    let [hEntrada, hSalida] = data.horario.split(" - ");
+                    let ahora = new Date();
+                    
+                    let [salidaHora, salidaMinuto] = hSalida.split(":");
+                    
+                    let salidaActivaDesde = new Date();
+                    salidaActivaDesde.setHours(parseInt(salidaHora), parseInt(salidaMinuto) - 5);
+                    
+                    if (ahora >= salidaActivaDesde) {
+                        document.getElementById("btnSalida").disabled = false;
+                    } else {
+                        document.getElementById("btnSalida").disabled = true;
+                    }
+                }
+            } else {
+                // Si no ha registrado entrada, deshabilitar botón de salida
+                document.getElementById("btnSalida").disabled = true;
+                
+                // Verificar horario para habilitar botón de entrada
+                let [hEntrada, hSalida] = data.horario.split(" - ");
+                let ahora = new Date();
+                
+                let [entradaHora, entradaMinuto] = hEntrada.split(":");
+                
+                let entradaActivaDesde = new Date();
+                entradaActivaDesde.setHours(parseInt(entradaHora), parseInt(entradaMinuto) - 30);
+                
+                let entradaActivaHasta = new Date();
+                entradaActivaHasta.setHours(parseInt(entradaHora), parseInt(entradaMinuto) + 16);
+                
+                if (ahora >= entradaActivaDesde && ahora <= entradaActivaHasta) {
+                    document.getElementById("btnEntrada").disabled = false;
+                } else {
+                    document.getElementById("btnEntrada").disabled = true;
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener datos:', error);
+            // No mostrar alerta para no interrumpir la experiencia del usuario
+        });
+    });
+</script>
+{% endblock %}

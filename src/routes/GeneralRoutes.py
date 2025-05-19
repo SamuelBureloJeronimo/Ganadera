@@ -9,6 +9,7 @@ import os
 from mysql.connector import Error
 
 from guards.RoutesGuards import with_session, with_transaction
+from flask_jwt_extended import jwt_required, get_jwt
 
 # Cargar variables desde el archivo .env
 load_dotenv()
@@ -62,12 +63,14 @@ def login_user(cursor):
         elif rol_usuario == "0":
             url += "owner/salud-general"
         elif rol_usuario == "3":
-            url += "jornalero/actividades"
-        elif rol_usuario in ["1", "2", "4"]:  # Solo empleados
+            url += "jornalero/panelJornalero"
+        elif rol_usuario == "2":
+            url += "capataz/panelCapataz"
+        elif rol_usuario in ["1", "4"]:  # Solo empleados
             url += "empleoyes/panelEmpleados"
 
         # Generar token JWT
-        access_token = create_access_token(identity=str(email), additional_claims={"rol": rol_usuario, "rfc_comp": res1[3]})
+        access_token = create_access_token(identity=str(email), additional_claims={"rol": rol_usuario, "rfc_comp": res1[3], "rfc_cap": res1[0]})
         response = make_response(jsonify({"success": True, "message": "Inicio de sesión exitoso", "token": access_token, "url": url}), 200)
         
         # Guardar el token en una cookie
@@ -85,26 +88,26 @@ def login_user(cursor):
 
 # Registrar asistencia
 @GeneralRoutes.route('/registrar_asistencia', methods=["POST"])
+@jwt_required()
 @with_session
 def registrar_asistencia(cursor):
-    if 'rfc' not in session:
+    jwt_data = get_jwt()
+    rfc = jwt_data.get("rfc") or jwt_data.get("rfc_jor") or jwt_data.get("rfc_cap")
+    if not rfc:
         return jsonify({"message": "Usuario no autenticado"}), 403
 
     data = request.get_json()
     tipo = data.get("tipo")  # Puede ser 'entrada' o 'salida'
-    rfc = session['rfc']
     hoy = date.today()
 
     try:
         if tipo == "entrada":
-            # Verificar si ya hay una entrada registrada hoy
             cursor.execute("SELECT COUNT(*) FROM asistencias WHERE rfc_emp = %s AND fechentra = %s", (rfc, hoy))
             if cursor.fetchone()[0] > 0:
                 return jsonify({"message": "Ya registraste tu entrada hoy"}), 400
 
-            # Insertar la nueva entrada
             cursor.execute("INSERT INTO asistencias (rfc_emp, fechentra, hora_entrada, estado) VALUES (%s, %s, NOW(), 1)", (rfc, hoy))
-            cursor._connection.commit()  # Corregimos el commit
+            cursor._connection.commit()
 
             if cursor.rowcount > 0:
                 return jsonify({"message": "Entrada registrada correctamente"}), 200
@@ -112,14 +115,12 @@ def registrar_asistencia(cursor):
                 return jsonify({"message": "Error al registrar entrada"}), 500
 
         elif tipo == "salida":
-            # Verificar que exista una entrada antes de permitir registrar la salida
             cursor.execute("SELECT COUNT(*) FROM asistencias WHERE rfc_emp = %s AND fechentra = %s", (rfc, hoy))
             if cursor.fetchone()[0] == 0:
                 return jsonify({"message": "No puedes registrar salida sin haber registrado entrada"}), 400
 
-            # Actualizar la salida
             cursor.execute("UPDATE asistencias SET fecsalida = %s, hora_salida = NOW() WHERE rfc_emp = %s AND fechentra = %s", (hoy, rfc, hoy))
-            cursor._connection.commit()  # Corregimos el commit
+            cursor._connection.commit()
 
             if cursor.rowcount > 0:
                 return jsonify({"message": "Salida registrada correctamente"}), 200
@@ -232,3 +233,74 @@ def get_colonias_by_cp(cursor, cp):
     esta = convertToObject(cursor)
 
     return jsonify({"colonias": colonias, "mun": mun[0]['nom'], "est": esta[0]['nom']}), 200
+
+
+@GeneralRoutes.route('/obtener_datos_asistencia', methods=["GET"])
+@jwt_required()
+@with_session
+def obtener_datos_asistencia(cursor):
+    jwt_data = get_jwt()
+    rfc = jwt_data.get("rfc") or jwt_data.get("rfc_jor") or jwt_data.get("rfc_cap")
+    
+    if not rfc:
+        return jsonify({"error": "Usuario no autenticado"}), 403
+    
+    try:
+        # Consulta simplificada para obtener datos básicos
+        query = """
+        SELECT 
+            p.correo,
+            p.nombre,
+            p.app,
+            p.apm
+        FROM personas p
+        WHERE p.rfc = %s
+        """
+        
+        cursor.execute(query, (rfc,))
+        resultado = cursor.fetchone()
+        
+        if not resultado:
+            return jsonify({"error": "No se encontraron datos del empleado"}), 404
+        
+        # Como solo tienes 4 columnas, ajusta el diccionario:
+        datos_asistencia = {
+            "correo": resultado[0],
+            "nombre_completo": f"{resultado[1]} {resultado[2]} {resultado[3]}",
+            "puesto": "Jornalero",  # Puedes poner un valor por defecto o hacer otra consulta si necesitas el puesto real
+            "horario": "08:00 - 17:00"  # Puedes poner un valor por defecto o hacer otra consulta si necesitas el horario real
+        }
+        
+        # Verificar si ya registró entrada hoy
+        hoy = date.today()
+        cursor.execute("SELECT hora_entrada, hora_salida FROM asistencias WHERE rfc_emp = %s AND fechentra = %s", (rfc, hoy))
+        asistencia_hoy = cursor.fetchone()
+
+        def time_to_str(t):
+            if t is None:
+                return None
+            # Si es timedelta, conviértelo a HH:MM
+            if hasattr(t, "total_seconds"):
+                total_seconds = int(t.total_seconds())
+                hours = total_seconds // 3600
+                minutes = (total_seconds % 3600) // 60
+                return f"{hours:02d}:{minutes:02d}"
+            # Si es datetime.time, usa strftime
+            if hasattr(t, "strftime"):
+                return t.strftime("%H:%M")
+            return str(t)
+
+        if asistencia_hoy:
+            datos_asistencia["entrada_registrada"] = True
+            datos_asistencia["hora_entrada"] = time_to_str(asistencia_hoy[0])
+            datos_asistencia["salida_registrada"] = asistencia_hoy[1] is not None
+            datos_asistencia["hora_salida"] = time_to_str(asistencia_hoy[1])
+        else:
+            datos_asistencia["entrada_registrada"] = False
+            datos_asistencia["salida_registrada"] = False
+        
+        return jsonify(datos_asistencia), 200
+        
+    except Exception as e:
+        print(f"Error en obtener_datos_asistencia: {str(e)}")  # Agregar log para depuración
+        return jsonify({"error": f"Error al obtener datos: {str(e)}"}), 500

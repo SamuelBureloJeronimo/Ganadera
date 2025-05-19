@@ -1,0 +1,53 @@
+{% extends 'dashboard.html' %}
+
+{% block title_bar %}Registrar Nueva Actividad - Capataz{% endblock %}
+
+{% block cont_dash %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2><i class="fas fa-plus-circle me-2"></i>Registrar Nueva Actividad</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="/capataz/registrar-actividad">
+                <div class="sam-form-container">
+                    <div class="sam-form-field">
+                        <input type="text" id="titulo" name="titulo" placeholder=" " required>
+                        <label for="titulo">Título</label>
+                    </div>
+                    <div class="sam-form-field">
+                        <select id="rfc_jor" name="rfc_jor" required>
+                            <option value="" disabled selected>Seleccione un jornalero</option>
+                            {% for jor in jornaleros %}
+                            <option value="{{ jor[0] }}">{{ jor[1] }} {{ jor[2] }} {{ jor[3] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="sam-form-field">
+                        <textarea id="desc" name="desc" placeholder=" " required style="height: 7vh;"></textarea>
+                        <label for="desc">Descripción</label>
+                    </div>
+                    <div class="sam-form-field">
+                        <textarea id="observ" name="observ" placeholder=" " style="height: 7vh;"></textarea>
+                        <label for="observ">Observaciones</label>
+                    </div>
+                    <div class="sam-form-field">
+                        <input type="date" id="fech_fi" name="fech_fi" placeholder=" " required>
+                        <label for="fech_fi">Fecha de finalización</label>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ url_for('BP_Capataz.ver_actividades') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Volver a Actividades
+                    </a>    
+                    <button type="submit" class="btn btn-primary btn-principal">
+                        <i class="fas fa-save me-2"></i>Guardar Actividad
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

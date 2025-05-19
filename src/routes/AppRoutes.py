@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request
 from database.db import *
 from guards.RoutesGuards import owner_protected, super_protected, with_session
 from routes.GeneralRoutes import convertToObject
+from flask import redirect, url_for
 
 # Cargar variables desde el archivo .env
 load_dotenv()
@@ -190,6 +191,23 @@ def panelEmpleados():
 
 
 #RUTAS PARA JORNALERO
+@AppRoutes.route('/dashboard/jornalero/panelJornalero', methods=["GET", "POST"])
+def panelJornalero():
+    return render_template('jornalero/dash.html')
+
 @AppRoutes.route('/dashboard/jornalero/actividades', methods=["GET", "POST"])
 def actividades():
-    return render_template('jornalero/activities.html')
+    return redirect('/ver_actividades')
+
+@AppRoutes.route('/dashboard/jornalero/asistencias', methods=["GET", "POST"])
+def asistencias():
+    return render_template('jornalero/asistencias.html')
+
+# RUTAS PARA CAPATAZ
+@AppRoutes.route('/dashboard/capataz/panelCapataz', methods=["GET", "POST"])
+def panelCapataz():
+    return redirect(url_for('BP_Capataz.actividades_capataz'))
+
+@AppRoutes.route('/dashboard/capataz/registraracti', methods=["GET", "POST"])
+def registraractividades():
+    return render_template('capataz/registrar_actividades.html')

@@ -126,4 +126,26 @@ def owner_protected(f):
             return redirect('/')
 
     return decorated_function
+  
+
+def veterinary_protected(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        try:
+            token = request.cookies.get("token")  # Leer token desde la cookie
+            decoded = jwt.decode(token, os.getenv("SECRET_KEY_JWT"), algorithms=["HS256"])
+            print(decoded)
+            if(decoded['rol'] != str(4)):
+                return redirect('/')
+            
+            response = f(decoded, *args, **kwargs)
+            return response
+        
+        except jwt.ExpiredSignatureError:
+            return redirect('/')
+
+        except jwt.InvalidTokenError:
+            return redirect('/')
+
+    return decorated_function
 

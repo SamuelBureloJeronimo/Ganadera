@@ -1,80 +1,56 @@
-{% extends 'veterinary/panel.html' %} {% block title_bar %} REGISTRAR EMPLEADOS
-{% endblock %} {% block cont_dash %}
+{% extends 'veterinary/panel.html' %} {% block title_bar %} Registro de
+tratamientos {% endblock %} {% block cont_dash %}
 <form
   id="regForm"
-  action="{{ url_for('BP_Veterinary.registro_alimento') }}"
+  action="{{ url_for('BP_Veterinary.registro_tratamiento') }}"
   method="POST"
   style="padding: 2%"
 >
   <div style="margin-bottom: 3vh">
-    <label>Datos del Alimento</label>
+    <label>Datos del tratamiento</label>
     <hr />
   </div>
-  <!-- DATOS IMPORTANTES DE MEDICAMENTO -->
+  <!-- DATOS IMPORTANTES DEL TRATAMIENTO -->
 
   <div class="sam-form-container">
-    <div class="sam-form-field">
-      <input type="number" id="id" placeholder="" name="id" required />
-      <label class="itim-regular">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#000000"
-        ></svg>
-        Codigo de barra</label
-      >
-    </div>
-
-    <div class="sam-form-field">
-      <input type="text" id="nombre" placeholder="" name="nombre" required />
-      <label class="itim-regular">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#000000"
-        ></svg>
-        Nombre del alimento</label
-      >
-    </div>
-
-    <div class="sam-form-field">
-      <input type="text" id="tipo" placeholder=" " name="tipo" required />
-      <label class="itim-regular">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="#000000"
-        ></svg>
-        Tipo:</label
-      >
-    </div>
-
     <!--here-->
     <div class="sam-form-field">
+      <input type="number" id="id" placeholder=" " name="id" required />
+      <label class="itim-regular">Clave del tratamiento</label>
+    </div>
+    <div class="sam-form-field">
+      <input type="text" id="nombre" placeholder=" " name="nombre" required />
+      <label class="itim-regular">Nombre del tratamiento</label>
+    </div>
+    <div class="sam-form-field">
       <input
-        type="number"
-        id="calorias"
+        type="text"
+        id="instrucciones"
         placeholder=" "
-        name="calorias"
+        name="instrucciones"
         required
       />
-      <label class="itim-regular">Calorias</label>
+      <label class="itim-regular">Instrucciones</label>
     </div>
     <div class="sam-form-field">
       <input
         type="number"
-        id="costo_kg_lt"
+        id="duracion"
         placeholder=" "
-        name="costo_kg_lt"
+        name="duracion"
         required
       />
-      <label class="itim-regular">Costo por kg</label>
+      <label class="itim-regular">Duracion en días</label>
+    </div>
+    <div class="sam-form-field">
+      <input
+        type="text"
+        id="observaciones"
+        placeholder=" "
+        name="observaciones"
+        required
+      />
+      <label class="itim-regular">Observaciones</label>
     </div>
   </div>
   <button class="btn btn-primary" color="primary" type="submit">
@@ -83,7 +59,7 @@
 </form>
 
 <script>
-  addSwalAlertCre("regForm", "/registro_alimento");
+  addSwalAlertCre("regForm", "/registro_tratamiento");
   function addSwalAlertCre(id, endpoint, url_redir) {
     document.getElementById(id).addEventListener("submit", function (event) {
       event.preventDefault(); // Evita que la página se recargue
@@ -125,7 +101,7 @@
             return response.json().then((data) => {
               document.getElementById("regForm").reset();
               Swal.fire({
-                title: "Medicamento registrado",
+                title: "Tratamiento registrado",
                 text: data.msg,
                 icon: "success",
               });
